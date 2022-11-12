@@ -6,7 +6,6 @@ namespace FalconeOne.BLL.DTOs
     {
         public string JWTToken { get; set; }
 
-        [JsonIgnore]
         public string RefreshToken { get; set; }
     }
 }

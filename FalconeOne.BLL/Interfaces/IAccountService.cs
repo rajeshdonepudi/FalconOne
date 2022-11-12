@@ -10,12 +10,12 @@ namespace FalconeOne.BLL.Interfaces
     {
         Task<ApiResponse> AuthenticateUserAsync(AuthenticateRequestDTO model);
         Task<AuthenticateResponseDTO> GetNewJWTByRefreshTokenAsync(string refreshToken);
-        Task RevokeRefreshToken(string token);
+        Task<ApiResponse> RevokeRefreshTokenAsync(string refreshToken);
         Task<ApiResponse> CreateNewUserAsync(RegisterNewUserRequestDTO model);
         Task<ApiResponse> VerifyEmailAsync(VerifyEmailDTO model);
         Task<ApiResponse> ForgotPasswordAsync(ForgotPasswordRequestDTO model);
         Task<ApiResponse> ResetPasswordAsync(ResetPasswordRequestDTO model);
-        Task<IEnumerable<AccountDTO>> GetAllAsync();
+        Task<ApiResponse> GetAllAsync();
         Task<ApiResponse> GetByIdAsync(string userId);
         Task<AuthenticateResponseDTO> UpdateUserAsync(int id, RegisterNewUserRequestDTO model);
         Task<ApiResponse> DeleteAsync(string userId);

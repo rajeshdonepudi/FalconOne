@@ -33,7 +33,7 @@ namespace FalconOne.API.Controllers
         public async Task<IActionResult> Login(AuthenticateRequestDTO model)
         {
             var response = await _accountService.AuthenticateUserAsync(model);
-            
+
             //AddResponseHeader("RefreshToken", response.Data.RefreshToken);
             //var result = JsonConvert.SerializeObject(response);
             return ReturnResponse(response);
@@ -43,14 +43,14 @@ namespace FalconOne.API.Controllers
         public async Task<IActionResult> GetAllUsers()
         {
             var response = await _accountService.GetAllAsync();
-            return Ok(response);
+            return ReturnResponse(response);
         }
 
         [HttpGet("get-user")]
         public async Task<IActionResult> GetByUserId(string userId)
         {
             var response = await _accountService.GetByIdAsync(userId);
-            return Ok(response);
+            return ReturnResponse(response);
         }
 
         [HttpPost("forgot-password")]
@@ -59,7 +59,7 @@ namespace FalconOne.API.Controllers
             if (ModelState.IsValid)
             {
                 var response = await _accountService.ForgotPasswordAsync(model);
-                return Ok(response);
+                return ReturnResponse(response);
             }
             else
             {
@@ -73,7 +73,21 @@ namespace FalconOne.API.Controllers
             if (ModelState.IsValid)
             {
                 var response = await _accountService.ResetPasswordAsync(model);
-                return Ok(response);
+                return ReturnResponse(response);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
+
+        [HttpPost("revoke-refresh-token")]
+        public async Task<IActionResult> RevokeRefreshToken(RevokeRefreshTokenRequestDTO model)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _accountService.RevokeRefreshTokenAsync(model.RefreshToken);
+                return ReturnResponse(response);
             }
             else
             {

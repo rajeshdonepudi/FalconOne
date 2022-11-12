@@ -162,18 +162,23 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.FORGOT_PASSWORD_SUCCESS, resetToken));
 
         }
-        public async Task<IEnumerable<AccountDTO>> GetAllAsync()
+        public async Task<ApiResponse> GetAllAsync()
         {
             var result = new List<AccountDTO>();
 
             var users = await _userManager.Users.ToListAsync();
+
+            if (!users.Any())
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.NO_USERS_FOUND));
+            }
 
             foreach (var user in users)
             {
                 var res = _mapper.Map<AccountDTO>(user);
                 result.Add(res);
             }
-            return result;
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result));
         }
         public async Task<ApiResponse> GetByIdAsync(string userId)
         {
@@ -215,9 +220,32 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.RESET_PASSWORD_SUCESS, model));
         }
 
-        public Task RevokeRefreshToken(string token)
+        public async Task<ApiResponse> RevokeRefreshTokenAsync(string refreshToken)
         {
-            throw new NotImplementedException();
+            var token = await _userManager.Users.AsNoTracking().SelectMany(t => t.RefreshTokens).FirstOrDefaultAsync(t => t.Token == refreshToken);
+
+            if (token is null)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.REFRESH_TOKEN_NOT_FOUND));
+            }
+
+            var account = await _userManager.Users.FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
+
+            if (account is null)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
+            }
+
+            if (!token.IsActive)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.REFRESH_TOKEN_EXPIRED));
+            }
+
+            UpdateRefreshTokenSettings(token, string.Empty, MessageHelper.REFRESH_TOKEN_REVOKED, string.Empty);
+
+            await _userManager.UpdateAsync(account);
+
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.Accepted, MessageHelper.SUCESSFULL));
         }
 
         public Task<AuthenticateResponseDTO> UpdateUserAsync(int id, RegisterNewUserRequestDTO model)
@@ -306,6 +334,13 @@ namespace FalconeOne.BLL.Services
             int res = user.RefreshTokens.RemoveAll(x => !x.IsActive && x.Created.AddMinutes(3) <= DateTime.UtcNow);
 
             await _userManager.UpdateAsync(user);
+        }
+        private void UpdateRefreshTokenSettings(RefreshToken token, string ipAddress = "", string reason = null, string replacedByToken = null)
+        {
+            token.Revoked = DateTime.UtcNow;
+            token.RevokedByIp = ipAddress;
+            token.ReasonRevoked = reason;
+            token.ReplacedByToken = replacedByToken;
         }
         #endregion
     }

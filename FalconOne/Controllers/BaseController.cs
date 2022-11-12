@@ -37,6 +37,8 @@ namespace FalconOne.API.Controllers
                     return Accepted(response);
                 case HttpStatusCode.InternalServerError:
                     return BadRequest();
+                case HttpStatusCode.BadRequest:
+                    return BadRequest();
                 default:
                     return NoContent();
             }

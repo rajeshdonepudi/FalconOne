@@ -16,8 +16,12 @@
         public static string INVALID_USER_ID;
         public static string USER_DELETION_FAILED;
         public static string USER_DELETED_SUCCESSFULLY;
-        internal static string SUCESSFULL;
-        internal static string FAILED_TO_CONFIRM_EMAIL;
-        internal static string PLEASE_CONFIRM_EMAIL;
+        public static string SUCESSFULL;
+        public static string FAILED_TO_CONFIRM_EMAIL;
+        public static string PLEASE_CONFIRM_EMAIL;
+        public static string NO_USERS_FOUND;
+        internal static string REFRESH_TOKEN_EXPIRED;
+        internal static string REFRESH_TOKEN_NOT_FOUND;
+        internal static string REFRESH_TOKEN_REVOKED;
     }
 }
