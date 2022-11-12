@@ -20,8 +20,11 @@
         public static string FAILED_TO_CONFIRM_EMAIL;
         public static string PLEASE_CONFIRM_EMAIL;
         public static string NO_USERS_FOUND;
-        internal static string REFRESH_TOKEN_EXPIRED;
-        internal static string REFRESH_TOKEN_NOT_FOUND;
-        internal static string REFRESH_TOKEN_REVOKED;
+        public static string REFRESH_TOKEN_EXPIRED;
+        public static string REFRESH_TOKEN_NOT_FOUND;
+        public static string REFRESH_TOKEN_REVOKED;
+        public static string INVALID_REFRESH_TOKEN;
+        public static string REUSE_OF_REVOKED_ANCESTOR_TOKEN;
+        public static string REPLACED_WITH_NEW_TOKEN = "Replaced by new token.";
     }
 }

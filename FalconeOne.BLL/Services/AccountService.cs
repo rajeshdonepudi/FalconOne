@@ -83,7 +83,7 @@ namespace FalconeOne.BLL.Services
 
             var refreshToken = await GenerateRefreshToken();
 
-            await RemoveOldRefreshTokens(user);
+            await RemoveExpiredRefreshTokens(user);
 
             user.RefreshTokens.Add(refreshToken);
 
@@ -198,9 +198,55 @@ namespace FalconeOne.BLL.Services
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result));
         }
-        public Task<AuthenticateResponseDTO> GetNewJWTByRefreshTokenAsync(string refreshToken)
+        public async Task<ApiResponse> GetNewJWTByRefreshTokenAsync(string refreshToken)
         {
-            throw new NotImplementedException();
+            var account = await _userManager.Users.FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
+
+            var token = account.RefreshTokens.FirstOrDefault(x => x.Token == refreshToken);
+
+            if (account is null || token is null)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REFRESH_TOKEN));
+            }
+
+            if (token.IsRevoked)
+            {
+                await RevokeDescendantRefreshTokens(token, account, "", MessageHelper.REUSE_OF_REVOKED_ANCESTOR_TOKEN);
+
+                var updateResult = await _userManager.UpdateAsync(account);
+
+                if (!updateResult.Succeeded)
+                {
+                    return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG));
+                }
+            }
+
+            if (!token.IsActive)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REFRESH_TOKEN));
+            }
+
+            var newRefreshToken = await RotateRefreshToken(token, "");
+            account.RefreshTokens.Add(newRefreshToken);
+
+            await RemoveExpiredRefreshTokens(account);
+
+            var result = await _userManager.UpdateAsync(account);
+
+            if (!result.Succeeded)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG));
+            }
+
+            var jwtToken = await GenerateJWTToken(account);
+
+            var response = new AuthenticateResponseDTO
+            {
+                JWTToken = jwtToken,
+                RefreshToken = newRefreshToken.Token
+            };
+
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, response));
         }
         public async Task<ApiResponse> ResetPasswordAsync(ResetPasswordRequestDTO model)
         {
@@ -222,18 +268,13 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> RevokeRefreshTokenAsync(string refreshToken)
         {
-            var token = await _userManager.Users.AsNoTracking().SelectMany(t => t.RefreshTokens).FirstOrDefaultAsync(t => t.Token == refreshToken);
-
-            if (token is null)
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.REFRESH_TOKEN_NOT_FOUND));
-            }
-
             var account = await _userManager.Users.FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
+
+            var token = account.RefreshTokens.FirstOrDefault(x => x.Token == refreshToken);
 
             if (account is null)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REFRESH_TOKEN));
             }
 
             if (!token.IsActive)
@@ -329,11 +370,31 @@ namespace FalconeOne.BLL.Services
         {
             return RandomNumberGenerator.GetBytes(length);
         }
-        private async Task RemoveOldRefreshTokens(User user)
+        private async Task RemoveExpiredRefreshTokens(User user)
         {
             int res = user.RefreshTokens.RemoveAll(x => !x.IsActive && x.Created.AddMinutes(3) <= DateTime.UtcNow);
 
             await _userManager.UpdateAsync(user);
+        }
+
+        private async Task RevokeDescendantRefreshTokens(RefreshToken refreshToken, User user, string ipAddress, string reason)
+        {
+            if (!string.IsNullOrEmpty(refreshToken.ReplacedByToken))
+            {
+                var childRefreshToken = user.RefreshTokens.SingleOrDefault(t => t.Token == refreshToken.ReplacedByToken);
+
+                if (childRefreshToken is not null)
+                {
+                    if (childRefreshToken.IsActive)
+                    {
+                        UpdateRefreshTokenSettings(childRefreshToken);
+                    }
+                    else
+                    {
+                        await RevokeDescendantRefreshTokens(childRefreshToken, user, ipAddress, reason);
+                    }
+                }
+            }
         }
         private void UpdateRefreshTokenSettings(RefreshToken token, string ipAddress = "", string reason = null, string replacedByToken = null)
         {
@@ -341,6 +402,13 @@ namespace FalconeOne.BLL.Services
             token.RevokedByIp = ipAddress;
             token.ReasonRevoked = reason;
             token.ReplacedByToken = replacedByToken;
+        }
+
+        private async Task<RefreshToken> RotateRefreshToken(RefreshToken refreshToken, string ipAddress)
+        {
+            var newRefreshToken = await GenerateRefreshToken();
+            UpdateRefreshTokenSettings(refreshToken, ipAddress, MessageHelper.REPLACED_WITH_NEW_TOKEN, newRefreshToken.Token);
+            return newRefreshToken;
         }
         #endregion
     }

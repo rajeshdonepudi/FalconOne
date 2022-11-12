@@ -94,5 +94,20 @@ namespace FalconOne.API.Controllers
                 return BadRequest(ModelState);
             }
         }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(RefreshTokenRequestDTO model)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _accountService.GetNewJWTByRefreshTokenAsync(model.RefreshToken);
+
+                return ReturnResponse(response);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
     }
 }
