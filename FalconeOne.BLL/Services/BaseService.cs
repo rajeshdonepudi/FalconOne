@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using FalconeOne.BLL.DTOs;
 using FalconOne.DLL;
 using FalconOne.DLL.Entities;
 using FalconOne.DLL.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Utilities.DTOs;
 
 namespace FalconeOne.BLL.Services
 {

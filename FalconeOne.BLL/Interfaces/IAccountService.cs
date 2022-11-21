@@ -1,5 +1,5 @@
-﻿using FalconeOne.BLL.DTOs;
-using FalconeOne.BLL.Helpers;
+﻿using FalconeOne.BLL.Helpers;
+using Utilities.DTOs;
 
 namespace FalconeOne.BLL.Interfaces
 {
@@ -19,5 +19,6 @@ namespace FalconeOne.BLL.Interfaces
         Task<ApiResponse> GetByIdAsync(string userId);
         Task<AuthenticateResponseDTO> UpdateUserAsync(int id, RegisterNewUserRequestDTO model);
         Task<ApiResponse> DeleteAsync(string userId);
+        Task<ApiResponse> AddUserToRoleAsync(AddToRoleDTO model);
     }
 }

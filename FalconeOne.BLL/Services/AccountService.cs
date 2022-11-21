@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using FalconeOne.BLL.DTOs;
 using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
 using FalconOne.DLL.Entities;
@@ -15,6 +14,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Net;
+using Utilities.DTOs;
 
 namespace FalconeOne.BLL.Services
 {
@@ -25,8 +25,9 @@ namespace FalconeOne.BLL.Services
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly SignInManager<User> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<UserRole> _roleManager;
         private readonly IOptions<IdentityOptions> _optionsAccessor;
+        private readonly ITokenService _tokenService;
 
         /// <summary>
         /// The data protection purpose used for the reset password related methods.
@@ -49,8 +50,9 @@ namespace FalconeOne.BLL.Services
             IMapper mapper,
             IUnitOfWork unitOfWork,
             SignInManager<User> signInManager,
-            RoleManager<IdentityRole> roleManager,
-            IOptions<IdentityOptions> optionsAccessor) : base(mapper, unitOfWork)
+            RoleManager<UserRole> roleManager,
+            IOptions<IdentityOptions> optionsAccessor,
+            ITokenService tokenService) : base(mapper, unitOfWork)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -58,6 +60,7 @@ namespace FalconeOne.BLL.Services
             _userManager = userManager;
             _roleManager = roleManager;
             _optionsAccessor = optionsAccessor;
+            _tokenService = tokenService;
         }
         #endregion
 
@@ -311,6 +314,37 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.EMAIL_CONFIRM_SUCCESS));
         }
 
+        public async Task<ApiResponse> AddUserToRoleAsync(AddToRoleDTO addToRoleDTO)
+        {
+            if (addToRoleDTO is null)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REQUEST));
+            }
+
+            var user = await _userManager.FindByIdAsync(addToRoleDTO.UserId);
+
+            if (user is null)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
+            }
+
+            var role = await _roleManager.FindByIdAsync(addToRoleDTO.RoleId);
+
+            if (role is null)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.ROLE_NOT_FOUND));
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, role.Name);
+
+            if (!result.Succeeded)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG, null, result.Errors));
+            }
+
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
+        }
+
         #endregion
 
         #region Private methods
@@ -318,25 +352,9 @@ namespace FalconeOne.BLL.Services
         {
             var claims = await _userManager.GetClaimsAsync(user);
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = await _tokenService.GenerateJWTToken<User, IList<Claim>>(user, claims);
 
-            var key = Encoding.ASCII.GetBytes(@"Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                                                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-                                                when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                                                It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-                                                It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
-                                                and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(15),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return tokenHandler.WriteToken(token);
+            return await Task.FromResult(token);
         }
         private async Task<RefreshToken> GenerateRefreshToken()
         {
@@ -376,7 +394,6 @@ namespace FalconeOne.BLL.Services
 
             await _userManager.UpdateAsync(user);
         }
-
         private async Task RevokeDescendantRefreshTokens(RefreshToken refreshToken, User user, string ipAddress, string reason)
         {
             if (!string.IsNullOrEmpty(refreshToken.ReplacedByToken))
@@ -403,7 +420,6 @@ namespace FalconeOne.BLL.Services
             token.ReasonRevoked = reason;
             token.ReplacedByToken = replacedByToken;
         }
-
         private async Task<RefreshToken> RotateRefreshToken(RefreshToken refreshToken, string ipAddress)
         {
             var newRefreshToken = await GenerateRefreshToken();

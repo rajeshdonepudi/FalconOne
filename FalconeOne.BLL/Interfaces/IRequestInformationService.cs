@@ -1,4 +1,4 @@
-﻿using FalconeOne.BLL.DTOs;
+﻿using Utilities.DTOs;
 
 namespace FalconeOne.BLL.Interfaces
 {

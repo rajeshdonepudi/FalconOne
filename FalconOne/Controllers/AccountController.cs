@@ -1,6 +1,9 @@
-﻿using FalconeOne.BLL.DTOs;
-using FalconeOne.BLL.Interfaces;
+﻿using FalconeOne.BLL.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using Utilities.DTOs;
 
 namespace FalconOne.API.Controllers
 {
@@ -9,10 +12,12 @@ namespace FalconOne.API.Controllers
     public class AccountController : BaseController
     {
         private readonly IAccountService _accountService;
+        private readonly IAppRoleService _appRoleService;
 
-        public AccountController(IAccountService accountService)
+        public AccountController(IAccountService accountService, IAppRoleService appRoleService)
         {
             _accountService = accountService;
+            _appRoleService = appRoleService;
         }
 
         [HttpPost("register-new-user")]
@@ -21,6 +26,7 @@ namespace FalconOne.API.Controllers
             if (ModelState.IsValid)
             {
                 var response = await _accountService.CreateNewUserAsync(model);
+
                 return Ok(response);
             }
             else
@@ -40,9 +46,11 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpGet("all-users")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> GetAllUsers()
         {
             var response = await _accountService.GetAllAsync();
+
             return ReturnResponse(response);
         }
 
@@ -50,6 +58,7 @@ namespace FalconOne.API.Controllers
         public async Task<IActionResult> GetByUserId(string userId)
         {
             var response = await _accountService.GetByIdAsync(userId);
+
             return ReturnResponse(response);
         }
 
@@ -59,6 +68,7 @@ namespace FalconOne.API.Controllers
             if (ModelState.IsValid)
             {
                 var response = await _accountService.ForgotPasswordAsync(model);
+
                 return ReturnResponse(response);
             }
             else
@@ -73,6 +83,7 @@ namespace FalconOne.API.Controllers
             if (ModelState.IsValid)
             {
                 var response = await _accountService.ResetPasswordAsync(model);
+
                 return ReturnResponse(response);
             }
             else
@@ -87,6 +98,7 @@ namespace FalconOne.API.Controllers
             if (ModelState.IsValid)
             {
                 var response = await _accountService.RevokeRefreshTokenAsync(model.RefreshToken);
+
                 return ReturnResponse(response);
             }
             else
