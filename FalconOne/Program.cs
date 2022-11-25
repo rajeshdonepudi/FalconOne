@@ -1,10 +1,11 @@
-using FalconeOne.BLL.Interfaces;
 using FalconeOne.BLL.Services;
+using FalconOne.API.AuthenticationConfig;
+using FalconOne.API.AuthorizationConfig;
+using FalconOne.API.DependencyConfig;
+using FalconOne.API.SwaggerConfig;
 using FalconOne.DLL;
-using FalconOne.DLL.Entities;
-using FalconOne.DLL.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Utilities.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,26 +18,14 @@ builder.Services.AddControllers(c =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAutoMapper(typeof(FalconeOne.BLL.AutoMapperProfile));
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddTransient<IRequestInformationService, RequestInformationService>();
-builder.Services.AddTransient<IAccountService, AccountService>();
-builder.Services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<AsyncActionFilter>();
-builder.Services.AddIdentity<User, IdentityRole>(options =>
-{
-    options.User.RequireUniqueEmail = true;
-    options.Password = new PasswordOptions
-    {
-        RequireDigit = true,
-        RequiredLength = 8,
-        RequireLowercase = true,
-        RequireUppercase = true
-    };
-})
-.AddEntityFrameworkStores<FalconOneContext>()
-.AddDefaultTokenProviders();
+
+DependencyConfig.Configure(builder);
+AuthenticationConfig.Configure(builder);
+SwaggerConfig.Configure(builder);
+AuthorizationConfig.Configure(builder);
+
 builder.Services.AddDbContext<FalconOneContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")), ServiceLifetime.Transient);
 
 var app = builder.Build();

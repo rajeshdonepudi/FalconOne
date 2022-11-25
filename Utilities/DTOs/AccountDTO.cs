@@ -1,6 +1,6 @@
-﻿namespace FalconeOne.BLL.DTOs
+﻿namespace Utilities.DTOs
 {
-    public class AccountDTO : BaseDTO
+    public class AccountDTO
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

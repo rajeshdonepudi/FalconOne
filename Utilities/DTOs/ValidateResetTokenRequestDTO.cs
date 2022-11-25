@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FalconeOne.BLL.DTOs
+namespace Utilities.DTOs
 {
     public class ValidateResetTokenRequestDTO
     {

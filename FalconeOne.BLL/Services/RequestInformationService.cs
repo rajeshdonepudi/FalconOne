@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using FalconeOne.BLL.DTOs;
 using FalconeOne.BLL.Interfaces;
 using FalconOne.DLL.Entities;
 using FalconOne.DLL.Interfaces;
+using Utilities.DTOs;
 
 namespace FalconeOne.BLL.Services
 {

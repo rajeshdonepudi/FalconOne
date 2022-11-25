@@ -1,8 +1,9 @@
-﻿using FalconeOne.BLL;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System.Net;
-using System.Text.Json;
+using Utilities.Exceptions;
 
-namespace FalconOne.API.Middleware
+namespace Utilities.Middleware
 {
     public class ErrorHandlerMiddleware
     {
@@ -44,7 +45,7 @@ namespace FalconOne.API.Middleware
                         break;
                 }
 
-               // var result = JsonSerializer.Serialize(new { message = error?.Message, errors = _errors });
+                // var result = JsonSerializer.Serialize(new { message = error?.Message, errors = _errors });
                 await response.WriteAsync("Something went wrong!!!");
             }
         }

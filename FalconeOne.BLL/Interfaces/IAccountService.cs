@@ -1,5 +1,5 @@
-﻿using FalconeOne.BLL.DTOs;
-using FalconeOne.BLL.Helpers;
+﻿using FalconeOne.BLL.Helpers;
+using Utilities.DTOs;
 
 namespace FalconeOne.BLL.Interfaces
 {
@@ -9,15 +9,16 @@ namespace FalconeOne.BLL.Interfaces
     public interface IAccountService
     {
         Task<ApiResponse> AuthenticateUserAsync(AuthenticateRequestDTO model);
-        Task<AuthenticateResponseDTO> GetNewJWTByRefreshTokenAsync(string refreshToken);
-        Task RevokeRefreshToken(string token);
+        Task<ApiResponse> GetNewJWTByRefreshTokenAsync(string refreshToken);
+        Task<ApiResponse> RevokeRefreshTokenAsync(string refreshToken);
         Task<ApiResponse> CreateNewUserAsync(RegisterNewUserRequestDTO model);
         Task<ApiResponse> VerifyEmailAsync(VerifyEmailDTO model);
         Task<ApiResponse> ForgotPasswordAsync(ForgotPasswordRequestDTO model);
         Task<ApiResponse> ResetPasswordAsync(ResetPasswordRequestDTO model);
-        Task<IEnumerable<AccountDTO>> GetAllAsync();
+        Task<ApiResponse> GetAllAsync();
         Task<ApiResponse> GetByIdAsync(string userId);
         Task<AuthenticateResponseDTO> UpdateUserAsync(int id, RegisterNewUserRequestDTO model);
         Task<ApiResponse> DeleteAsync(string userId);
+        Task<ApiResponse> AddUserToRoleAsync(AddToRoleDTO model);
     }
 }

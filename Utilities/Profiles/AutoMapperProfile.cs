@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
-using FalconeOne.BLL.DTOs;
 using FalconOne.DLL.Entities;
+using Microsoft.AspNetCore.Identity;
+using Utilities.DTOs;
 
-namespace FalconeOne.BLL
+namespace Utilities.Profiles
 {
     public class AutoMapperProfile : Profile
     {
@@ -15,6 +16,7 @@ namespace FalconeOne.BLL
 
             CreateMap<RequestInformationDTO, RequestInformation>().ReverseMap();
             CreateMap<User, AccountDTO>();
+            CreateMap<UserRoleDTO, UserRole>().ReverseMap();
         }
     }
 }

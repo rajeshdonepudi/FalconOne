@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using FalconeOne.BLL.DTOs;
 using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
 using FalconOne.DLL.Entities;
@@ -15,6 +14,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Net;
+using Utilities.DTOs;
 
 namespace FalconeOne.BLL.Services
 {
@@ -25,8 +25,9 @@ namespace FalconeOne.BLL.Services
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly SignInManager<User> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<UserRole> _roleManager;
         private readonly IOptions<IdentityOptions> _optionsAccessor;
+        private readonly ITokenService _tokenService;
 
         /// <summary>
         /// The data protection purpose used for the reset password related methods.
@@ -49,8 +50,9 @@ namespace FalconeOne.BLL.Services
             IMapper mapper,
             IUnitOfWork unitOfWork,
             SignInManager<User> signInManager,
-            RoleManager<IdentityRole> roleManager,
-            IOptions<IdentityOptions> optionsAccessor) : base(mapper, unitOfWork)
+            RoleManager<UserRole> roleManager,
+            IOptions<IdentityOptions> optionsAccessor,
+            ITokenService tokenService) : base(mapper, unitOfWork)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -58,6 +60,7 @@ namespace FalconeOne.BLL.Services
             _userManager = userManager;
             _roleManager = roleManager;
             _optionsAccessor = optionsAccessor;
+            _tokenService = tokenService;
         }
         #endregion
 
@@ -83,7 +86,7 @@ namespace FalconeOne.BLL.Services
 
             var refreshToken = await GenerateRefreshToken();
 
-            await RemoveOldRefreshTokens(user);
+            await RemoveExpiredRefreshTokens(user);
 
             user.RefreshTokens.Add(refreshToken);
 
@@ -162,18 +165,23 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.FORGOT_PASSWORD_SUCCESS, resetToken));
 
         }
-        public async Task<IEnumerable<AccountDTO>> GetAllAsync()
+        public async Task<ApiResponse> GetAllAsync()
         {
             var result = new List<AccountDTO>();
 
             var users = await _userManager.Users.ToListAsync();
+
+            if (!users.Any())
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.NO_USERS_FOUND));
+            }
 
             foreach (var user in users)
             {
                 var res = _mapper.Map<AccountDTO>(user);
                 result.Add(res);
             }
-            return result;
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result));
         }
         public async Task<ApiResponse> GetByIdAsync(string userId)
         {
@@ -193,9 +201,55 @@ namespace FalconeOne.BLL.Services
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result));
         }
-        public Task<AuthenticateResponseDTO> GetNewJWTByRefreshTokenAsync(string refreshToken)
+        public async Task<ApiResponse> GetNewJWTByRefreshTokenAsync(string refreshToken)
         {
-            throw new NotImplementedException();
+            var account = await _userManager.Users.FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
+
+            var token = account.RefreshTokens.FirstOrDefault(x => x.Token == refreshToken);
+
+            if (account is null || token is null)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REFRESH_TOKEN));
+            }
+
+            if (token.IsRevoked)
+            {
+                await RevokeDescendantRefreshTokens(token, account, "", MessageHelper.REUSE_OF_REVOKED_ANCESTOR_TOKEN);
+
+                var updateResult = await _userManager.UpdateAsync(account);
+
+                if (!updateResult.Succeeded)
+                {
+                    return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG));
+                }
+            }
+
+            if (!token.IsActive)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REFRESH_TOKEN));
+            }
+
+            var newRefreshToken = await RotateRefreshToken(token, "");
+            account.RefreshTokens.Add(newRefreshToken);
+
+            await RemoveExpiredRefreshTokens(account);
+
+            var result = await _userManager.UpdateAsync(account);
+
+            if (!result.Succeeded)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG));
+            }
+
+            var jwtToken = await GenerateJWTToken(account);
+
+            var response = new AuthenticateResponseDTO
+            {
+                JWTToken = jwtToken,
+                RefreshToken = newRefreshToken.Token
+            };
+
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, response));
         }
         public async Task<ApiResponse> ResetPasswordAsync(ResetPasswordRequestDTO model)
         {
@@ -215,9 +269,27 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.RESET_PASSWORD_SUCESS, model));
         }
 
-        public Task RevokeRefreshToken(string token)
+        public async Task<ApiResponse> RevokeRefreshTokenAsync(string refreshToken)
         {
-            throw new NotImplementedException();
+            var account = await _userManager.Users.FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
+
+            var token = account.RefreshTokens.FirstOrDefault(x => x.Token == refreshToken);
+
+            if (account is null)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REFRESH_TOKEN));
+            }
+
+            if (!token.IsActive)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.REFRESH_TOKEN_EXPIRED));
+            }
+
+            UpdateRefreshTokenSettings(token, string.Empty, MessageHelper.REFRESH_TOKEN_REVOKED, string.Empty);
+
+            await _userManager.UpdateAsync(account);
+
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.Accepted, MessageHelper.SUCESSFULL));
         }
 
         public Task<AuthenticateResponseDTO> UpdateUserAsync(int id, RegisterNewUserRequestDTO model)
@@ -242,6 +314,37 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.EMAIL_CONFIRM_SUCCESS));
         }
 
+        public async Task<ApiResponse> AddUserToRoleAsync(AddToRoleDTO addToRoleDTO)
+        {
+            if (addToRoleDTO is null)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REQUEST));
+            }
+
+            var user = await _userManager.FindByIdAsync(addToRoleDTO.UserId);
+
+            if (user is null)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
+            }
+
+            var role = await _roleManager.FindByIdAsync(addToRoleDTO.RoleId);
+
+            if (role is null)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.ROLE_NOT_FOUND));
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, role.Name);
+
+            if (!result.Succeeded)
+            {
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG, null, result.Errors));
+            }
+
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
+        }
+
         #endregion
 
         #region Private methods
@@ -249,25 +352,9 @@ namespace FalconeOne.BLL.Services
         {
             var claims = await _userManager.GetClaimsAsync(user);
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = await _tokenService.GenerateJWTToken<User, IList<Claim>>(user, claims);
 
-            var key = Encoding.ASCII.GetBytes(@"Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                                                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-                                                when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                                                It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-                                                It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
-                                                and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(15),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return tokenHandler.WriteToken(token);
+            return await Task.FromResult(token);
         }
         private async Task<RefreshToken> GenerateRefreshToken()
         {
@@ -301,11 +388,43 @@ namespace FalconeOne.BLL.Services
         {
             return RandomNumberGenerator.GetBytes(length);
         }
-        private async Task RemoveOldRefreshTokens(User user)
+        private async Task RemoveExpiredRefreshTokens(User user)
         {
             int res = user.RefreshTokens.RemoveAll(x => !x.IsActive && x.Created.AddMinutes(3) <= DateTime.UtcNow);
 
             await _userManager.UpdateAsync(user);
+        }
+        private async Task RevokeDescendantRefreshTokens(RefreshToken refreshToken, User user, string ipAddress, string reason)
+        {
+            if (!string.IsNullOrEmpty(refreshToken.ReplacedByToken))
+            {
+                var childRefreshToken = user.RefreshTokens.SingleOrDefault(t => t.Token == refreshToken.ReplacedByToken);
+
+                if (childRefreshToken is not null)
+                {
+                    if (childRefreshToken.IsActive)
+                    {
+                        UpdateRefreshTokenSettings(childRefreshToken);
+                    }
+                    else
+                    {
+                        await RevokeDescendantRefreshTokens(childRefreshToken, user, ipAddress, reason);
+                    }
+                }
+            }
+        }
+        private void UpdateRefreshTokenSettings(RefreshToken token, string ipAddress = "", string reason = null, string replacedByToken = null)
+        {
+            token.Revoked = DateTime.UtcNow;
+            token.RevokedByIp = ipAddress;
+            token.ReasonRevoked = reason;
+            token.ReplacedByToken = replacedByToken;
+        }
+        private async Task<RefreshToken> RotateRefreshToken(RefreshToken refreshToken, string ipAddress)
+        {
+            var newRefreshToken = await GenerateRefreshToken();
+            UpdateRefreshTokenSettings(refreshToken, ipAddress, MessageHelper.REPLACED_WITH_NEW_TOKEN, newRefreshToken.Token);
+            return newRefreshToken;
         }
         #endregion
     }

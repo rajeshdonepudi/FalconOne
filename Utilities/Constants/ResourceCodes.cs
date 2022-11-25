@@ -1,4 +1,4 @@
-﻿namespace FalconeOne.BLL
+﻿namespace Utilities.Constants
 {
     public static class ResourceCodes
     {

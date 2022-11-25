@@ -1,12 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace FalconeOne.BLL.DTOs
+namespace Utilities.DTOs
 {
     public class AuthenticateResponseDTO
     {
         public string JWTToken { get; set; }
 
-        [JsonIgnore]
         public string RefreshToken { get; set; }
     }
 }

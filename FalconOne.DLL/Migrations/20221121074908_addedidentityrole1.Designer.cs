@@ -4,6 +4,7 @@ using FalconOne.DLL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FalconOne.DLL.Migrations
 {
     [DbContext(typeof(FalconOneContext))]
-    partial class FalconOneContextModelSnapshot : ModelSnapshot
+    [Migration("20221121074908_addedidentityrole1")]
+    partial class addedidentityrole1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,25 +156,6 @@ namespace FalconOne.DLL.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("FalconOne.DLL.Entities.UserClaim", b =>
-                {
-                    b.Property<Guid>("ClaimId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ClaimId");
-
-                    b.ToTable("UserClaims");
                 });
 
             modelBuilder.Entity("FalconOne.DLL.Entities.UserRole", b =>

@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace FalconeOne.BLL
+namespace Utilities.Exceptions
 {
     public class AppException : Exception
     {

@@ -9,6 +9,6 @@ namespace FalconOne.DLL.Interfaces
         void Add(T entity);
         void Delete(T entity);
         void Update(T entity);
-        Task<T> FindAsync(Expression<Func<T>> expression);
+        Task<T> FindAsync(Expression<Func<T, bool>> expression);
     }
 }

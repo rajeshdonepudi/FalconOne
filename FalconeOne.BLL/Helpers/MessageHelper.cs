@@ -16,8 +16,18 @@
         public static string INVALID_USER_ID;
         public static string USER_DELETION_FAILED;
         public static string USER_DELETED_SUCCESSFULLY;
-        internal static string SUCESSFULL;
-        internal static string FAILED_TO_CONFIRM_EMAIL;
-        internal static string PLEASE_CONFIRM_EMAIL;
+        public static string SUCESSFULL;
+        public static string FAILED_TO_CONFIRM_EMAIL;
+        public static string PLEASE_CONFIRM_EMAIL;
+        public static string NO_USERS_FOUND;
+        public static string REFRESH_TOKEN_EXPIRED;
+        public static string REFRESH_TOKEN_NOT_FOUND;
+        public static string REFRESH_TOKEN_REVOKED;
+        public static string INVALID_REFRESH_TOKEN;
+        public static string REUSE_OF_REVOKED_ANCESTOR_TOKEN;
+        public static string REPLACED_WITH_NEW_TOKEN = "Replaced by new token.";
+        public static string INVALID_REQUEST = "Invalid request.";
+
+        public static string ROLE_NOT_FOUND { get; internal set; }
     }
 }

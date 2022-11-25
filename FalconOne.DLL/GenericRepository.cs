@@ -28,9 +28,9 @@ namespace FalconOne.DLL
             return await _falconOneContext.Set<T>().FindAsync(id);
         }
 
-        public async Task<T> FindAsync(Expression<Func<T>> expression)
+        public async Task<T> FindAsync(Expression<Func<T, bool>> expression)
         {
-            return await _falconOneContext.Set<T>().FindAsync(expression);
+            return await _falconOneContext.Set<T>().Where(expression).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
