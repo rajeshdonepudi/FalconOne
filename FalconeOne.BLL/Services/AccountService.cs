@@ -8,12 +8,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
-using System.Net;
 using Utilities.DTOs;
 
 namespace FalconeOne.BLL.Services
@@ -92,13 +89,12 @@ namespace FalconeOne.BLL.Services
 
             await _userManager.UpdateAsync(user);
 
-            var response = new AuthenticateResponseDTO
-            {
-                JWTToken = jwtToken,
-                RefreshToken = refreshToken.Token
-            };
+            var authResponse = _mapper.Map<AuthenticateResponseDTO>(user);
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.LOGIN_SUCCESSFULL, response));
+            authResponse.JWTToken = jwtToken;
+            authResponse.RefreshToken = refreshToken.Token;
+
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.LOGIN_SUCCESSFULL, authResponse));
         }
 
         [ProducesResponseType(typeof(AccountDTO), StatusCodes.Status200OK)]

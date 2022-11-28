@@ -1,5 +1,3 @@
-using FalconeOne.BLL.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,7 +21,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "")]
+        [Authorize(Policy = "testpolicy", Roles = "Admin,User")]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

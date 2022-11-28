@@ -1,7 +1,6 @@
 ﻿using FalconeOne.BLL.Interfaces;
 using FalconOne.DLL.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -40,7 +39,7 @@ namespace FalconeOne.BLL.Services
 
             if (claims != null && claims is IEnumerable<Claim>)
             {
-                tokenDescriptor.Subject = new ClaimsIdentity((IEnumerable<Claim>) claims);
+                tokenDescriptor.Subject = new ClaimsIdentity((IEnumerable<Claim>)claims);
             }
 
             var token = tokenHandler.CreateToken(tokenDescriptor);

@@ -22,9 +22,24 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Services.AddHttpContextAccessor();
 
 DependencyConfig.Configure(builder);
+
 AuthenticationConfig.Configure(builder);
+
 SwaggerConfig.Configure(builder);
+
 AuthorizationConfig.Configure(builder);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "ReactAppOrigin",
+    builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .SetIsOriginAllowedToAllowWildcardSubdomains();
+    });
+});
 
 builder.Services.AddDbContext<FalconOneContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")), ServiceLifetime.Transient);
 
@@ -36,9 +51,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("ReactAppOrigin");
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 app.MapControllers();

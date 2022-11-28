@@ -8,7 +8,7 @@ namespace FalconOne.API.Policies
         {
             options.AddPolicy("string", policy =>
             {
-                
+                policy.RequireClaim("string");
             });
         }
     }

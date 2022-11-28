@@ -1,5 +1,4 @@
 ﻿using FalconOne.API.Policies;
-using Microsoft.AspNetCore.Authorization;
 
 namespace FalconOne.API.AuthorizationConfig
 {
