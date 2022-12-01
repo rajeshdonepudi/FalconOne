@@ -17,6 +17,7 @@ namespace Utilities.Profiles
             CreateMap<User, AccountDTO>();
             CreateMap<UserRoleDTO, UserRole>().ReverseMap();
             CreateMap<AuthenticateResponseDTO, User>().ReverseMap();
+            CreateMap<CreatePolicyDTO, ApplicationPolicy>().ReverseMap();
         }
     }
 }

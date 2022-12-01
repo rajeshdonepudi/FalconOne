@@ -3,12 +3,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FalconOne.DLL.Entities
 {
-    public class UserClaim
+    public class ApplicationPolicy
     {
+        public ApplicationPolicy()
+        {
+            PolicyClaims = new List<ApplicationClaim>();
+        }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid ClaimId { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
-        public string Type { get; set; }
+        public virtual List<ApplicationClaim> PolicyClaims { get; set; }
     }
 }

@@ -28,5 +28,13 @@ namespace FalconOne.API.Controllers
                 return BadRequest(ModelState);
             }
         }
+
+        [HttpGet("get-all-claims")]
+        public async Task<IActionResult> GetAllClaims()
+        {
+            var response = await _appClaimService.GetAllClaimsAsync();
+
+            return ReturnResponse(response);
+        }
     }
 }

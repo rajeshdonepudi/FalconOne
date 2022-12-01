@@ -1,7 +1,6 @@
 ﻿using FalconOne.DLL;
 using FalconOne.DLL.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -44,6 +43,12 @@ namespace FalconOne.API.AuthenticationConfig
                     RequireExpirationTime = true,
                     ValidateIssuerSigningKey = false
                 };
+            });
+
+            builder.Services.AddAuthentication().AddMicrosoftAccount(opt =>
+            {
+                opt.ClientId = "1234567890-abc123def456.apps.googleusercontent.com";
+                opt.ClientSecret = "1234567890-abc123def456.apps.googleusercontent.com";
             });
         }
     }

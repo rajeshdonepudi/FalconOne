@@ -39,6 +39,8 @@ namespace FalconOne.API.Controllers
                     return BadRequest();
                 case HttpStatusCode.BadRequest:
                     return BadRequest();
+                case HttpStatusCode.Created:
+                    return Created(string.Empty, null);
                 default:
                     return NoContent();
             }

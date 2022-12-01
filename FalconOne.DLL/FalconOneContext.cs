@@ -6,8 +6,9 @@ namespace FalconOne.DLL
 {
     public class FalconOneContext : IdentityDbContext<User, UserRole, string>
     {
-        public DbSet<RequestInformation> RequestInformation { get; set; }
-        public DbSet<UserClaim> UserClaims { get; set; }
+        public DbSet<RequestInformation> RequestInformations { get; set; }
+        public DbSet<ApplicationClaim> ApplicationClaims { get; set; }
+        public DbSet<ApplicationPolicy> ApplicationPolicies { get; set; }
 
         public FalconOneContext(DbContextOptions<FalconOneContext> options) : base(options)
         {

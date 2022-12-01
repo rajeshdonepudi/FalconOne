@@ -24,7 +24,7 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> CreateClaimAsync(UserClaimDTO model)
         {
-            _unitOfWork.UserClaimRepository.Add(new UserClaim
+            _unitOfWork.UserClaimRepository.Add(new ApplicationClaim
             {
                 Name = model.Name,
                 Type = model.Type
@@ -73,5 +73,15 @@ namespace FalconeOne.BLL.Services
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
         }
+
+        public async Task<ApiResponse> GetAllClaimsAsync()
+        {
+            var result = await _unitOfWork.UserClaimRepository.GetAllAsync();
+
+            var claims = result.Select(x => x.Name).ToList();
+
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, claims));
+        }
     }
+
 }

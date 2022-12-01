@@ -11,12 +11,9 @@ namespace FalconOne.API.Controllers
     public class AccountController : BaseController
     {
         private readonly IAccountService _accountService;
-        private readonly IAppRoleService _appRoleService;
-
-        public AccountController(IAccountService accountService, IAppRoleService appRoleService)
+        public AccountController(IAccountService accountService)
         {
             _accountService = accountService;
-            _appRoleService = appRoleService;
         }
 
         [HttpPost("register-new-user")]
@@ -26,7 +23,7 @@ namespace FalconOne.API.Controllers
             {
                 var response = await _accountService.CreateNewUserAsync(model);
 
-                return Ok(response);
+                return ReturnResponse(response);
             }
             else
             {
@@ -37,11 +34,16 @@ namespace FalconOne.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(AuthenticateRequestDTO model)
         {
-            var response = await _accountService.AuthenticateUserAsync(model);
+            if (ModelState.IsValid)
+            {
+                var response = await _accountService.AuthenticateUserAsync(model);
 
-            //AddResponseHeader("RefreshToken", response.Data.RefreshToken);
-            //var result = JsonConvert.SerializeObject(response);
-            return ReturnResponse(response);
+                return ReturnResponse(response);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpGet("all-users")]

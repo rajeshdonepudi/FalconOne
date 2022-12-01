@@ -9,5 +9,6 @@ namespace FalconeOne.BLL.Interfaces
         Task<ApiResponse> AddClaimToUserAsync(AddClaimToUserDTO model);
         Task<ApiResponse> AddClaimsToUserAsync(AddClaimsToUserDTO model);
         Task<ApiResponse> CreateClaimAsync(UserClaimDTO model);
+        Task<ApiResponse> GetAllClaimsAsync();
     }
 }

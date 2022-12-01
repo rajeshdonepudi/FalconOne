@@ -9,25 +9,25 @@ using Utilities.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers(c =>
-{
-    c.Filters.Add(new AsyncActionFilter());
-});
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
-builder.Services.AddHttpContextAccessor();
-
 DependencyConfig.Configure(builder);
 
 AuthenticationConfig.Configure(builder);
 
 SwaggerConfig.Configure(builder);
 
-AuthorizationConfig.Configure(builder);
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
+builder.Services.AddHttpContextAccessor();
+
+// Add services to the container.
+builder.Services.AddControllers(c =>
+{
+    c.Filters.Add(new AsyncActionFilter());
+});
 
 builder.Services.AddCors(options =>
 {
@@ -43,6 +43,10 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<FalconOneContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")), ServiceLifetime.Transient);
 
+var providerBuilder = builder.Services.BuildServiceProvider();
+
+AuthorizationConfig.Configure(builder, providerBuilder);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -54,6 +58,9 @@ if (app.Environment.IsDevelopment())
 app.UseCors("ReactAppOrigin");
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();

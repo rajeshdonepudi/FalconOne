@@ -25,6 +25,7 @@ namespace FalconeOne.BLL.Services
         private readonly RoleManager<UserRole> _roleManager;
         private readonly IOptions<IdentityOptions> _optionsAccessor;
         private readonly ITokenService _tokenService;
+        private readonly IAppConfigService _appConfigService;
 
         /// <summary>
         /// The data protection purpose used for the reset password related methods.
@@ -49,7 +50,8 @@ namespace FalconeOne.BLL.Services
             SignInManager<User> signInManager,
             RoleManager<UserRole> roleManager,
             IOptions<IdentityOptions> optionsAccessor,
-            ITokenService tokenService) : base(mapper, unitOfWork)
+            ITokenService tokenService,
+            IAppConfigService appConfigService) : base(mapper, unitOfWork)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -58,6 +60,7 @@ namespace FalconeOne.BLL.Services
             _roleManager = roleManager;
             _optionsAccessor = optionsAccessor;
             _tokenService = tokenService;
+            _appConfigService = appConfigService;
         }
         #endregion
 
@@ -117,7 +120,7 @@ namespace FalconeOne.BLL.Services
             }
             var account = _mapper.Map<AccountDTO>(user);
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.USER_CREATED_SUCCESSFULLY, account));
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.Created, MessageHelper.USER_CREATED_SUCCESSFULLY, account));
         }
 
         public async Task<ApiResponse> DeleteAsync(string userId)
@@ -140,7 +143,7 @@ namespace FalconeOne.BLL.Services
             {
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.USER_DELETION_FAILED));
             }
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.USER_DELETED_SUCCESSFULLY));
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.NoContent, MessageHelper.USER_DELETED_SUCCESSFULLY));
         }
 
         public async Task<ApiResponse> ForgotPasswordAsync(ForgotPasswordRequestDTO model)
@@ -354,7 +357,7 @@ namespace FalconeOne.BLL.Services
         }
         private async Task<RefreshToken> GenerateRefreshToken()
         {
-            var refreshToken = GetToken();
+            var refreshToken = await GetToken();
 
             var refreshTokens = await _userManager.Users.AsNoTracking().SelectMany(x => x.RefreshTokens).ToListAsync();
 
@@ -370,15 +373,15 @@ namespace FalconeOne.BLL.Services
             }
             return await Task.FromResult(refreshToken);
         }
-        private RefreshToken GetToken()
+        private async Task<RefreshToken> GetToken()
         {
-            return new RefreshToken
+            return await Task.FromResult(new RefreshToken
             {
                 Token = Convert.ToHexString(GetRandomBytes(64)),
-                Expires = DateTime.UtcNow.AddMinutes(3),
+                Expires = DateTime.UtcNow.AddMinutes(double.Parse(await _appConfigService.GetValue("JWT:Expires"))),
                 Created = DateTime.UtcNow,
                 CreatedByIp = ""
-            };
+            });
         }
         private byte[] GetRandomBytes(int length)
         {

@@ -4,6 +4,7 @@ using FalconOne.DLL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FalconOne.DLL.Migrations
 {
     [DbContext(typeof(FalconOneContext))]
-    partial class FalconOneContextModelSnapshot : ModelSnapshot
+    [Migration("20221130134720_UpdatedEntities")]
+    partial class UpdatedEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,7 +45,7 @@ namespace FalconOne.DLL.Migrations
 
                     b.HasIndex("ApplicationPolicyId");
 
-                    b.ToTable("ApplicationClaims");
+                    b.ToTable("UserClaims");
                 });
 
             modelBuilder.Entity("FalconOne.DLL.Entities.ApplicationPolicy", b =>
@@ -58,7 +60,7 @@ namespace FalconOne.DLL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApplicationPolicies");
+                    b.ToTable("ApplicationPolicy");
                 });
 
             modelBuilder.Entity("FalconOne.DLL.Entities.RequestInformation", b =>
@@ -119,7 +121,7 @@ namespace FalconOne.DLL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RequestInformations");
+                    b.ToTable("RequestInformation");
                 });
 
             modelBuilder.Entity("FalconOne.DLL.Entities.User", b =>
@@ -379,7 +381,7 @@ namespace FalconOne.DLL.Migrations
 
                             b1.HasIndex("UserId");
 
-                            b1.ToTable("RefreshTokens");
+                            b1.ToTable("RefreshToken");
 
                             b1.WithOwner("User")
                                 .HasForeignKey("UserId");

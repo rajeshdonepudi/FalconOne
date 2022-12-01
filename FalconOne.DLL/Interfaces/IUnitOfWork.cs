@@ -6,7 +6,8 @@ namespace FalconOne.DLL.Interfaces
     {
         public IGenericRepository<RequestInformation> RequestInformationRepository { get; }
         public IGenericRepository<RefreshToken> RefreshTokenRepository { get; }
-        public IGenericRepository<UserClaim> UserClaimRepository { get; }
+        public IGenericRepository<ApplicationClaim> UserClaimRepository { get; }
+        public IGenericRepository<ApplicationPolicy> ApplicationPolicyRepository { get; }
 
         void Save();
         Task CreateTransaction();
