@@ -11,6 +11,6 @@ namespace FalconOne.DLL.Entities
         public string Name { get; set; }
         public string Type { get; set; }
         public Guid? ApplicationPolicyId { get; set; }
-        public virtual ApplicationPolicy ApplicationPolicyID { get; set; }
+        public virtual ApplicationPolicy ApplicationPolicy { get; set; }
     }
 }

@@ -16,7 +16,7 @@ namespace FalconOne.API.Policies
 
                 var policies = appPolicyService.GetAllPolicies().Result;
 
-                foreach (var policy in (IEnumerable<ApplicationPolicy>)policies.Response)
+                foreach (var policy in policies.Response as IEnumerable<ApplicationPolicy>)
                 {
                     if (policy.PolicyClaims.Any())
                     {

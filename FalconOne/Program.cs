@@ -23,7 +23,6 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddHttpContextAccessor();
 
-// Add services to the container.
 builder.Services.AddControllers(c =>
 {
     c.Filters.Add(new AsyncActionFilter());

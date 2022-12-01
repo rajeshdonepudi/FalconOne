@@ -29,5 +29,12 @@ namespace FalconOne.API.Controllers
                 return BadRequest(ModelState);
             }
         }
+
+        [HttpGet("get-all-policies")]
+        public async Task<IActionResult> GetAllPolicies()
+        {
+            var response = await _appPolicyService.GetAllPolicies();
+            return ReturnResponse(response);
+        }
     }
 }
