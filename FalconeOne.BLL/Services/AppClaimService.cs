@@ -38,7 +38,7 @@ namespace FalconeOne.BLL.Services
         {
             var role = await _roleManager.FindByIdAsync(model.RoleId);
 
-            var res = await _unitOfWork.UserClaimRepository.FindAsync(x => x.ClaimId == model.ClaimId);
+            var res = await _unitOfWork.UserClaimRepository.FindAsync(x => x.Id == model.ClaimId);
 
             await _roleManager.AddClaimAsync(role, new Claim(res.Type, res.Name));
 
@@ -49,7 +49,7 @@ namespace FalconeOne.BLL.Services
         {
             var user = await _userManager.FindByIdAsync(model.UserId);
 
-            var res = await _unitOfWork.UserClaimRepository.FindAsync(x => x.ClaimId == model.ClaimId);
+            var res = await _unitOfWork.UserClaimRepository.FindAsync(x => x.Id == model.ClaimId);
 
             await _userManager.AddClaimAsync(user, new Claim(res.Type, res.Name));
 
@@ -64,7 +64,7 @@ namespace FalconeOne.BLL.Services
 
             foreach (var claim in model.Claims)
             {
-                var r = await _unitOfWork.UserClaimRepository.FindAsync(x => x.ClaimId == claim);
+                var r = await _unitOfWork.UserClaimRepository.FindAsync(x => x.Id == claim);
 
                 claims.Add(new Claim(r.Type, r.Name));
             }

@@ -24,7 +24,7 @@ namespace FalconOne.API.Policies
                         {
                             foreach (var claim in policy.PolicyClaims)
                             {
-                                p.RequireClaim(claim.Type, claim.Name);
+                                p.RequireClaim(claim.Type, claim.Values.Split(','));
                             }
                         });
                     }

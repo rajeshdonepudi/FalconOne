@@ -4,6 +4,7 @@ using FalconOne.DLL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FalconOne.DLL.Migrations
 {
     [DbContext(typeof(FalconOneContext))]
-    partial class FalconOneContextModelSnapshot : ModelSnapshot
+    [Migration("20221202053735_fix")]
+    partial class fix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,16 +50,6 @@ namespace FalconOne.DLL.Migrations
                     b.HasIndex("ApplicationPolicyId");
 
                     b.ToTable("ApplicationClaims");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
-                            ApplicationPolicyId = new Guid("9fa14d9e-0d8e-4b51-85e4-c4bdd5873d14"),
-                            Name = "user-claim",
-                            Type = "http://schemas.xmlsoap.org/ws/2009/09/identity/claims/actor",
-                            Values = "can-login,can-signup,can-reset-password,can-create-account"
-                        });
                 });
 
             modelBuilder.Entity("FalconOne.DLL.Entities.ApplicationPolicy", b =>
@@ -73,18 +65,6 @@ namespace FalconOne.DLL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ApplicationPolicies");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("9fa14d9e-0d8e-4b51-85e4-c4bdd5873d14"),
-                            Name = "user-policy"
-                        },
-                        new
-                        {
-                            Id = new Guid("b7538a53-d3b2-4b66-ba40-97619cda8d00"),
-                            Name = "admin-policy"
-                        });
                 });
 
             modelBuilder.Entity("FalconOne.DLL.Entities.ApplicationSetting", b =>
@@ -119,6 +99,9 @@ namespace FalconOne.DLL.Migrations
                     b.Property<Guid>("ApplicationClaimId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("ClaimId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -136,24 +119,6 @@ namespace FalconOne.DLL.Migrations
                     b.HasIndex("ApplicationClaimId");
 
                     b.ToTable("Navigation");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("b8eb47be-3a07-4a13-ad9c-bdefbad17d33"),
-                            ApplicationClaimId = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
-                            Description = "User login",
-                            Name = "Login",
-                            URL = "login"
-                        },
-                        new
-                        {
-                            Id = new Guid("b0c91f26-2b0d-4e70-ac61-58c8f71d2c81"),
-                            ApplicationClaimId = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
-                            Description = "User signup",
-                            Name = "Singup",
-                            URL = "signup"
-                        });
                 });
 
             modelBuilder.Entity("FalconOne.DLL.Entities.RequestInformation", b =>
@@ -292,20 +257,18 @@ namespace FalconOne.DLL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "9a44830f-d5ce-4271-b398-1f8df4991979",
+                            Id = "9dc6ed9b-ec2e-43e4-90a1-fd68f97ab65f",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cd3b83eb-1539-4bca-b104-aeecb1ed2558",
+                            ConcurrencyStamp = "6f4c3b4e-5ac7-4b87-b756-11dfd9199e4b",
                             Email = "rajesh.dnp01@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Rajesh",
                             LastName = "Donepudi",
                             LockoutEnabled = false,
-                            NormalizedEmail = "rajesh.dnp01@gmail.com",
-                            NormalizedUserName = "rajesh.dnp01",
-                            PasswordHash = "AQAAAAEAACcQAAAAENz77V15NMn+bGr/IexL7NCJ64PwftsSUPA4FdpTpHDgajIKcc9TdGe4X6B81zC3QA==",
+                            PasswordHash = "APmjA+4E8IEIpgaWV7BE3IK/XluflLqAi3BgObZX3fz/spKMENKFexlF+UDHTsUK1Q==",
                             PhoneNumber = "8886014996",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f4895549-a0fb-4b40-a72b-41e383a757e1",
+                            SecurityStamp = "9724a6fe-664d-49f8-9d11-6c414273bfea",
                             TwoFactorEnabled = false,
                             UserName = "rajesh.dnp01"
                         });

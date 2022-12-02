@@ -18,6 +18,7 @@ namespace FalconOne.DLL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            DatabaseSeed.Seed(modelBuilder);
             base.OnModelCreating(modelBuilder);
         }
     }

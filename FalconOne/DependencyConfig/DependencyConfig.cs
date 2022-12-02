@@ -19,7 +19,7 @@ namespace FalconOne.API.DependencyConfig
             builder.Services.AddTransient<IAppConfigService, AppConfigService>();
             builder.Services.AddTransient<IAppClaimService, AppClaimService>();
             builder.Services.AddTransient<IAppPolicyService, AppPolicyService>();
-            builder.Services.AddSingleton<ISettingsService, SettingsService>();
+            builder.Services.AddScoped<ISettingsService, SettingsService>();
         }
     }
 }

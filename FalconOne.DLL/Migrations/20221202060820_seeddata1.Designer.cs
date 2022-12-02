@@ -4,6 +4,7 @@ using FalconOne.DLL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FalconOne.DLL.Migrations
 {
     [DbContext(typeof(FalconOneContext))]
-    partial class FalconOneContextModelSnapshot : ModelSnapshot
+    [Migration("20221202060820_seeddata1")]
+    partial class seeddata1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -140,7 +142,7 @@ namespace FalconOne.DLL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b8eb47be-3a07-4a13-ad9c-bdefbad17d33"),
+                            Id = new Guid("303a4b9f-a426-4885-9ec4-f237a795f3ad"),
                             ApplicationClaimId = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
                             Description = "User login",
                             Name = "Login",
@@ -148,7 +150,7 @@ namespace FalconOne.DLL.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b0c91f26-2b0d-4e70-ac61-58c8f71d2c81"),
+                            Id = new Guid("6455f8f2-92b8-4449-9cf8-cc3b5257fbb1"),
                             ApplicationClaimId = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
                             Description = "User signup",
                             Name = "Singup",
@@ -292,20 +294,18 @@ namespace FalconOne.DLL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "9a44830f-d5ce-4271-b398-1f8df4991979",
+                            Id = "88ee42f4-7508-428f-9687-b4392ac6618c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cd3b83eb-1539-4bca-b104-aeecb1ed2558",
+                            ConcurrencyStamp = "6d21179e-1dc0-4e79-83a9-39eda2b8cdef",
                             Email = "rajesh.dnp01@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Rajesh",
                             LastName = "Donepudi",
                             LockoutEnabled = false,
-                            NormalizedEmail = "rajesh.dnp01@gmail.com",
-                            NormalizedUserName = "rajesh.dnp01",
-                            PasswordHash = "AQAAAAEAACcQAAAAENz77V15NMn+bGr/IexL7NCJ64PwftsSUPA4FdpTpHDgajIKcc9TdGe4X6B81zC3QA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEB9pQSSJODwK37JModPay/apjS02usEPb8i6LDUOqdmd7EnK9hIT0Dj0LM36goxomA==",
                             PhoneNumber = "8886014996",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f4895549-a0fb-4b40-a72b-41e383a757e1",
+                            SecurityStamp = "5f0882d8-ba01-4f03-b794-1b2b4ece4d1b",
                             TwoFactorEnabled = false,
                             UserName = "rajesh.dnp01"
                         });
