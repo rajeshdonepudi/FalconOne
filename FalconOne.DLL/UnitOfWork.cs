@@ -16,12 +16,13 @@ namespace FalconOne.DLL
             RefreshTokenRepository = new GenericRepository<RefreshToken>(falconOneContext);
             UserClaimRepository = new GenericRepository<ApplicationClaim>(falconOneContext);
             ApplicationPolicyRepository = new GenericRepository<ApplicationPolicy>(falconOneContext);
+            ApplicationSettingRepository = new GenericRepository<ApplicationSetting>(falconOneContext);
         }
-
         public IGenericRepository<RequestInformation> RequestInformationRepository { get; private set; }
         public IGenericRepository<RefreshToken> RefreshTokenRepository { get; private set; }
         public IGenericRepository<ApplicationClaim> UserClaimRepository { get; private set; }
         public IGenericRepository<ApplicationPolicy> ApplicationPolicyRepository { get; private set; }
+        public IGenericRepository<ApplicationSetting> ApplicationSettingRepository { get; }
 
         public void Save()
         {

@@ -33,10 +33,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "ReactAppOrigin",
     builder =>
     {
-        builder.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .SetIsOriginAllowedToAllowWildcardSubdomains();
+        builder.WithOrigins("http://localhost:8080/")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .SetIsOriginAllowedToAllowWildcardSubdomains();
     });
 });
 

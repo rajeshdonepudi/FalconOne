@@ -27,7 +27,6 @@
         public static string REUSE_OF_REVOKED_ANCESTOR_TOKEN;
         public static string REPLACED_WITH_NEW_TOKEN = "Replaced by new token.";
         public static string INVALID_REQUEST = "Invalid request.";
-
         public static string ROLE_NOT_FOUND { get; internal set; }
     }
 }

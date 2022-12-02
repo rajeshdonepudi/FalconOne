@@ -9,6 +9,7 @@ namespace FalconOne.DLL
         public DbSet<RequestInformation> RequestInformations { get; set; }
         public DbSet<ApplicationClaim> ApplicationClaims { get; set; }
         public DbSet<ApplicationPolicy> ApplicationPolicies { get; set; }
+        public DbSet<ApplicationSetting> ApplicationSettings { get; set; }
 
         public FalconOneContext(DbContextOptions<FalconOneContext> options) : base(options)
         {

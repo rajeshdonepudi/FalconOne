@@ -7,8 +7,8 @@ namespace FalconeOne.BLL.Services
 {
     public class BaseService
     {
-        private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;
+        protected readonly IMapper _mapper;
+        protected readonly IUnitOfWork _unitOfWork;
 
         public BaseService(IMapper mapper, IUnitOfWork unitOfWork)
         {
