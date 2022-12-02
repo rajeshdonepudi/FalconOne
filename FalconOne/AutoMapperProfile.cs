@@ -2,7 +2,7 @@
 using FalconOne.DLL.Entities;
 using Utilities.DTOs;
 
-namespace Utilities.Profiles
+namespace FalconOne.API
 {
     public class AutoMapperProfile : Profile
     {

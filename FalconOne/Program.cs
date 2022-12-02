@@ -1,11 +1,11 @@
 using FalconeOne.BLL.Services;
+using FalconOne.API;
 using FalconOne.API.AuthenticationConfig;
 using FalconOne.API.AuthorizationConfig;
 using FalconOne.API.DependencyConfig;
 using FalconOne.API.SwaggerConfig;
 using FalconOne.DLL;
 using Microsoft.EntityFrameworkCore;
-using Utilities.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,23 +23,24 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddControllers(c =>
-{
-    c.Filters.Add(new AsyncActionFilter());
-});
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "ReactAppOrigin",
     builder =>
     {
-        builder.WithOrigins("http://localhost:8080/")
-        .AllowAnyMethod()
+        builder.AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials()
-        .SetIsOriginAllowedToAllowWildcardSubdomains();
+        .SetIsOriginAllowed((host) => true)
+        .WithOrigins("http://localhost:3000", "https://localhost:3000");
     });
 });
+
+builder.Services.AddControllers(c =>
+{
+    c.Filters.Add(new AsyncActionFilter());
+});
+
 
 builder.Services.AddDbContext<FalconOneContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")), ServiceLifetime.Transient);
 

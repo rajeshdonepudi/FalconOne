@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
 using FalconOne.DLL.Entities;
 using FalconOne.DLL.Interfaces;
+using System.Net;
 using Utilities.DTOs;
+using Utilities.Helpers;
 
 namespace FalconeOne.BLL.Services
 {
@@ -22,6 +25,13 @@ namespace FalconeOne.BLL.Services
             var info = _mapper.Map<RequestInformation>(model);
             _unitOfWork.RequestInformationRepository.Add(info);
             _unitOfWork.Save();
+        }
+
+        public async Task<ApiResponse> GetAllAsync(PageParams pageParams)
+        {
+            var res = await _unitOfWork.RequestInformationRepository.GetAllAsync(pageParams);
+
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, res));
         }
     }
 }

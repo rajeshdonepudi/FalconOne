@@ -1,6 +1,7 @@
 ﻿using FalconOne.DLL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Utilities.Helpers;
 
 namespace FalconOne.DLL
 {
@@ -36,6 +37,13 @@ namespace FalconOne.DLL
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _falconOneContext.Set<T>().ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> GetAllAsync(PageParams pageParams)
+        {
+            return await _falconOneContext.Set<T>().Skip((pageParams.PageNumber - 1) * pageParams.PageSize)
+                                        .Take(pageParams.PageSize)
+                                        .ToListAsync();
         }
 
         public void Update(T entity)

@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Utilities.Helpers;
 
 namespace FalconOne.DLL.Interfaces
 {
@@ -10,5 +11,6 @@ namespace FalconOne.DLL.Interfaces
         void Delete(T entity);
         void Update(T entity);
         Task<T> FindAsync(Expression<Func<T, bool>> expression);
+        Task<IEnumerable<T>> GetAllAsync(PageParams pageParams);
     }
 }
