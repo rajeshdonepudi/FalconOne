@@ -1,6 +1,6 @@
-﻿using FalconOne.DLL.Entities;
+﻿using FalconOne.DAL.Entities;
 
-namespace FalconOne.DLL.Interfaces
+namespace FalconOne.DAL.Interfaces
 {
     public interface IUnitOfWork
     {
@@ -9,9 +9,7 @@ namespace FalconOne.DLL.Interfaces
         public IGenericRepository<ApplicationClaim> UserClaimRepository { get; }
         public IGenericRepository<ApplicationPolicy> ApplicationPolicyRepository { get; }
         public IGenericRepository<ApplicationSetting> ApplicationSettingRepository { get; }
-
-        void Save();
-        Task CreateTransaction();
-        Task CommitTransaction();
+        public IGenericRepository<Department> DepartmentRepository { get; }
+        Task<int> SaveChangesAsync();
     }
 }

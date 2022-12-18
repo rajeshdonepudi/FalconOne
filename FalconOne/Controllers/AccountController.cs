@@ -1,6 +1,4 @@
 ﻿using FalconeOne.BLL.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Utilities.DTOs;
 
@@ -47,7 +45,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpGet("all-users")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> GetAllUsers()
         {
             var response = await _accountService.GetAllAsync();

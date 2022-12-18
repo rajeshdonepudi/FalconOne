@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using FalconOne.DLL.Entities;
-using FalconOne.DLL.Interfaces;
+using FalconOne.DAL.Entities;
+using FalconOne.DAL.Interfaces;
 using System.Net;
 using Utilities.DTOs;
 
@@ -22,9 +22,9 @@ namespace FalconeOne.BLL.Services
         {
             var policy = _mapper.Map<ApplicationPolicy>(model);
 
-            _unitOfWork.ApplicationPolicyRepository.Add(policy);
+            await _unitOfWork.ApplicationPolicyRepository.AddAsync(policy);
 
-            _unitOfWork.Save();
+            await _unitOfWork.SaveChangesAsync();
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.Created, MessageHelper.SUCESSFULL));
         }

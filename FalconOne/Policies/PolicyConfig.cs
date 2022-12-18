@@ -1,5 +1,5 @@
 ﻿using FalconeOne.BLL.Interfaces;
-using FalconOne.DLL.Entities;
+using FalconOne.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FalconOne.API.Policies
@@ -11,6 +11,11 @@ namespace FalconOne.API.Policies
             using (var serviceScope = provider.CreateScope())
             {
                 var services = serviceScope.ServiceProvider;
+
+                //var context = serviceScope.ServiceProvider.GetService<FalconOneContext>();
+
+                //// auto migration
+                //context.Database.Migrate();
 
                 var appPolicyService = services.GetService<IAppPolicyService>();
 

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using FalconOne.DLL.Entities;
-using FalconOne.DLL.Interfaces;
+using FalconOne.DAL.Entities;
+using FalconOne.DAL.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
 using Utilities.DTOs;

@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FalconOne.DLL\FalconOne.DLL.csproj" />
+    <ProjectReference Include="..\FalconOne.DLL\FalconOne.DAL.csproj" />
     <ProjectReference Include="..\Utilities\Utilities.csproj" />
   </ItemGroup>
 

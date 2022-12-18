@@ -1,5 +1,5 @@
-﻿using FalconOne.DLL;
-using FalconOne.DLL.Entities;
+﻿using FalconOne.DAL;
+using FalconOne.DAL.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;

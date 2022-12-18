@@ -1,6 +1,5 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Utilities.DTOs;
 
@@ -38,7 +37,7 @@ namespace FalconOne.API.Controllers
 
             if (validId)
             {
-                var response = await _settingsService.DeletSetting(settingId);
+                var response = await _settingsService.DeleteSetting(settingId);
                 return ReturnResponse(response);
             }
             else

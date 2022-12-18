@@ -34,6 +34,7 @@ namespace FalconOne.API.Controllers
         public async Task<IActionResult> GetAllPolicies()
         {
             var response = await _appPolicyService.GetAllPolicies();
+
             return ReturnResponse(response);
         }
     }

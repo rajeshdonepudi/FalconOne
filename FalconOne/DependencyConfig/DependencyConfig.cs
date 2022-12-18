@@ -1,7 +1,7 @@
 ﻿using FalconeOne.BLL.Interfaces;
 using FalconeOne.BLL.Services;
-using FalconOne.DLL;
-using FalconOne.DLL.Interfaces;
+using FalconOne.DAL;
+using FalconOne.DAL.Interfaces;
 
 namespace FalconOne.API.DependencyConfig
 {
@@ -14,11 +14,12 @@ namespace FalconOne.API.DependencyConfig
             builder.Services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAppRoleService, AppRoleService>();
-            builder.Services.AddScoped<AsyncActionFilter>();
+            builder.Services.AddTransient<AsyncActionFilter>();
             builder.Services.AddTransient<ITokenService, TokenService>();
             builder.Services.AddTransient<IAppConfigService, AppConfigService>();
             builder.Services.AddTransient<IAppClaimService, AppClaimService>();
             builder.Services.AddTransient<IAppPolicyService, AppPolicyService>();
+            builder.Services.AddTransient<IDepartmentService, DepartmentService>();
             builder.Services.AddScoped<ISettingsService, SettingsService>();
         }
     }

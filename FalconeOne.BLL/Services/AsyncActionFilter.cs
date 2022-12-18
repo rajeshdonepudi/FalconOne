@@ -8,11 +8,33 @@ using Utilities.DTOs;
 
 namespace FalconeOne.BLL.Services
 {
-    public class AsyncActionFilter : IActionFilter
+    public class AsyncActionFilter : IAsyncActionFilter
     {
         private const string CONTROLLER_KEY = "controller";
         private const string ACTION_KEY = "action";
 
+        #region Private methods
+        private async Task LogToDatabase(ActionExecutingContext context)
+        {
+            var requestInformationService = (IRequestInformationService)context.HttpContext.RequestServices.GetService(typeof(IRequestInformationService));
+
+            await requestInformationService!.SaveRequestInfoAsync(new RequestInformationDTO
+            {
+                TraceIdentifier = context.HttpContext.TraceIdentifier,
+                Controller = context.RouteData.Values[CONTROLLER_KEY].ToString(),
+                Action = context.RouteData.Values[ACTION_KEY].ToString(),
+                ResourceCode = ResourceCodes.USER_CREATE,
+                Method = context.HttpContext.Request.Method,
+                Path = context.HttpContext.Request.Path,
+                IP = GetRequestIP(context.HttpContext, true),
+                Host = context.HttpContext.Request.Host.Host,
+                Scheme = context.HttpContext.Request.Scheme,
+                Protocol = context.HttpContext.Request.Protocol,
+                Port = context.HttpContext.Request.Host.Port.GetValueOrDefault(),
+                UserAgent = GetHeaderValueAs<string>(context.HttpContext, "User-Agent"),
+                RecordedOn = DateTime.UtcNow
+            });
+        }
         private string GetRequestIP(HttpContext context, bool tryUseXForwardHeader = true)
         {
             string ip = string.Empty;
@@ -33,7 +55,6 @@ namespace FalconeOne.BLL.Services
 
             return ip;
         }
-
 
         private T GetServiceFromContext<T>(ActionContext context, Type type)
         {
@@ -66,49 +87,13 @@ namespace FalconeOne.BLL.Services
                 .Select(s => s.Trim())
                 .ToList();
         }
+        #endregion
 
-        public void OnActionExecuting(ActionExecutingContext context)
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var requestInformationService = (IRequestInformationService)context.HttpContext.RequestServices.GetService(typeof(IRequestInformationService));
-
-            requestInformationService.SaveRequestInfoAsync(new RequestInformationDTO
-            {
-                TraceIdentifier = context.HttpContext.TraceIdentifier,
-                Controller = context.RouteData.Values[CONTROLLER_KEY].ToString(),
-                Action = context.RouteData.Values[ACTION_KEY].ToString(),
-                ResourceCode = ResourceCodes.USER_CREATE,
-                Method = context.HttpContext.Request.Method,
-                Path = context.HttpContext.Request.Path,
-                IP = GetRequestIP(context.HttpContext, true),
-                Host = context.HttpContext.Request.Host.Host,
-                Scheme = context.HttpContext.Request.Scheme,
-                Protocol = context.HttpContext.Request.Protocol,
-                Port = context.HttpContext.Request.Host.Port.GetValueOrDefault(),
-                UserAgent = GetHeaderValueAs<string>(context.HttpContext, "User-Agent"),
-                RecordedOn = DateTime.UtcNow
-            });
-        }
-
-        public void OnActionExecuted(ActionExecutedContext context)
-        {
-            var requestInformationService = (IRequestInformationService)context.HttpContext.RequestServices.GetService(typeof(IRequestInformationService));
-
-            requestInformationService.SaveRequestInfoAsync(new RequestInformationDTO
-            {
-                TraceIdentifier = context.HttpContext.TraceIdentifier,
-                Controller = context.RouteData.Values[CONTROLLER_KEY].ToString(),
-                Action = context.RouteData.Values[ACTION_KEY].ToString(),
-                ResourceCode = ResourceCodes.USER_CREATE,
-                Method = context.HttpContext.Request.Method,
-                Path = context.HttpContext.Request.Path,
-                IP = GetRequestIP(context.HttpContext, true),
-                Host = context.HttpContext.Request.Host.Host,
-                Scheme = context.HttpContext.Request.Scheme,
-                Protocol = context.HttpContext.Request.Protocol,
-                Port = context.HttpContext.Request.Host.Port.GetValueOrDefault(),
-                UserAgent = GetHeaderValueAs<string>(context.HttpContext, "User-Agent"),
-                RecordedOn = DateTime.UtcNow
-            });
+            await LogToDatabase(context);
+            await next();
+            await LogToDatabase(context);
         }
     }
 }

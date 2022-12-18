@@ -3,13 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FalconOne.DAL.Entities
 {
-    public class ApplicationSetting : MultiTenantEntity
+    public class TimeLog
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Value { get; set; }
-        public string Description { get; set; }
+        public DateTime In { get; set; }
+        public DateTime Out { get; set; }
+        public Guid? AttendanceLogId { get; set; }
+        public virtual AttendanceLog AttendanceLog { get; set; }
     }
 }

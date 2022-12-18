@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FalconOne.DLL.Entities
+namespace FalconOne.DAL.Entities
 {
-    public class ApplicationClaim
+
+    public class ApplicationClaim : MultiTenantEntity
     {
         public ApplicationClaim()
         {

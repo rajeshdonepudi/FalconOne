@@ -5,11 +5,11 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FalconOne.API", "FalconOne\FalconOne.API.csproj", "{C14AAC30-4EE1-49CA-9F7D-C79DDADAC288}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FalconOne.DLL", "FalconOne.DLL\FalconOne.DLL.csproj", "{F13C8923-C604-4E3E-B8B7-9B55B259146A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FalconOne.DAL", "FalconOne.DLL\FalconOne.DAL.csproj", "{F13C8923-C604-4E3E-B8B7-9B55B259146A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FalconeOne.BLL", "FalconeOne.BLL\FalconeOne.BLL.csproj", "{B8951D3F-3A6A-4EC8-BBDC-422D3C1FC1C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "Utilities\Utilities.csproj", "{5B371FBC-5B7F-43AC-B103-1CF257A8511C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities", "Utilities\Utilities.csproj", "{5B371FBC-5B7F-43AC-B103-1CF257A8511C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

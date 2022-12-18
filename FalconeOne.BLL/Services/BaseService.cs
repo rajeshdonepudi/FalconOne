@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using FalconOne.DLL.Interfaces;
+using FalconOne.DAL.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Utilities.DTOs;
 

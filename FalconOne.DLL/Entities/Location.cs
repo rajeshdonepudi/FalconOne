@@ -3,17 +3,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FalconOne.DAL.Entities
 {
-    public class ApplicationPolicy : MultiTenantEntity
+    public class Location
     {
-        public ApplicationPolicy()
-        {
-            PolicyClaims = new List<ApplicationClaim>();
-        }
-
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public virtual List<ApplicationClaim> PolicyClaims { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
     }
 }

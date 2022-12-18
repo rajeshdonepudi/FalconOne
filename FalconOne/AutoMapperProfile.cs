@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using FalconOne.DLL.Entities;
+using FalconOne.DAL.Entities;
 using Utilities.DTOs;
 
 namespace FalconOne.API
@@ -14,11 +14,14 @@ namespace FalconOne.API
                 .ForMember(dest => dest.Password, source => source.MapFrom(x => x.PasswordHash));
 
             CreateMap<RequestInformationDTO, RequestInformation>().ReverseMap();
-            CreateMap<User, AccountDTO>();
+            CreateMap<User, UserDTO>();
             CreateMap<UserRoleDTO, UserRole>().ReverseMap();
             CreateMap<AuthenticateResponseDTO, User>().ReverseMap();
             CreateMap<CreatePolicyDTO, ApplicationPolicy>().ReverseMap();
             CreateMap<ApplicationSettingDTO, ApplicationSetting>().ReverseMap();
+            //CreateMap<DepartmentDTO, Department>()
+            //    .ForMember(x => x.Employees, x => x.MapFrom(x => x.Users))
+            //    .ForMember(x => x.Posts, x => x.MapFrom(x => x.Posts)).ReverseMap();
         }
     }
 }

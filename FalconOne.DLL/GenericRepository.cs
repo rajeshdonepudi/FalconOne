@@ -1,9 +1,9 @@
-﻿using FalconOne.DLL.Interfaces;
+﻿using FalconOne.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Utilities.Helpers;
 
-namespace FalconOne.DLL
+namespace FalconOne.DAL
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
@@ -14,14 +14,14 @@ namespace FalconOne.DLL
             _falconOneContext = falconOneContext;
         }
 
-        public void Add(T entity)
+        public async Task<T> AddAsync(T entity)
         {
-            _falconOneContext.Set<T>().Add(entity);
+            return (await _falconOneContext.Set<T>().AddAsync(entity)).Entity;
         }
 
-        public void Delete(T entity)
+        public async Task<T> DeleteAsync(T entity)
         {
-            _falconOneContext.Set<T>().Remove(entity);
+            return await Task.FromResult(_falconOneContext.Set<T>().Remove(entity).Entity);
         }
 
         public async Task<T> GetByIdAsync(int id)
@@ -41,14 +41,15 @@ namespace FalconOne.DLL
 
         public async Task<IEnumerable<T>> GetAllAsync(PageParams pageParams)
         {
-            return await _falconOneContext.Set<T>().Skip((pageParams.PageNumber - 1) * pageParams.PageSize)
-                                        .Take(pageParams.PageSize)
-                                        .ToListAsync();
+            return await _falconOneContext.Set<T>()
+                                          .Skip((pageParams.PageNumber - 1) * pageParams.PageSize)
+                                          .Take(pageParams.PageSize)
+                                          .ToListAsync();
         }
 
-        public void Update(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
-            _falconOneContext.Set<T>().Update(entity);
+            return _falconOneContext.Set<T>().Update(entity).Entity;
         }
     }
 }

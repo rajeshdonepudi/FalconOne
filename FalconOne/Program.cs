@@ -4,7 +4,7 @@ using FalconOne.API.AuthenticationConfig;
 using FalconOne.API.AuthorizationConfig;
 using FalconOne.API.DependencyConfig;
 using FalconOne.API.SwaggerConfig;
-using FalconOne.DLL;
+using FalconOne.DAL;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,7 +42,7 @@ builder.Services.AddControllers(c =>
 });
 
 
-builder.Services.AddDbContext<FalconOneContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")), ServiceLifetime.Transient);
+builder.Services.AddDbContext<FalconOneContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 var providerBuilder = builder.Services.BuildServiceProvider();
 

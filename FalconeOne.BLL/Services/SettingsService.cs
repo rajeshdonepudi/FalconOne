@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using FalconOne.DLL.Entities;
-using FalconOne.DLL.Interfaces;
+using FalconOne.DAL.Entities;
+using FalconOne.DAL.Interfaces;
 using System.Net;
 using Utilities.DTOs;
 
@@ -14,22 +14,22 @@ namespace FalconeOne.BLL.Services
         {
         }
 
-        public Task<ApiResponse> AddNewSetting(ApplicationSettingDTO model)
+        public async Task<ApiResponse> AddNewSetting(ApplicationSettingDTO model)
         {
             var setting = _mapper.Map<ApplicationSetting>(model);
 
-            _unitOfWork.ApplicationSettingRepository.Add(setting);
+            await _unitOfWork.ApplicationSettingRepository.AddAsync(setting);
 
-            _unitOfWork.Save();
+            await _unitOfWork.SaveChangesAsync();
 
-            return Task.FromResult(new ApiResponse(HttpStatusCode.Created, MessageHelper.SUCESSFULL));
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.Created, MessageHelper.SUCESSFULL));
         }
 
-        public async Task<ApiResponse> DeletSetting(Guid id)
+        public async Task<ApiResponse> DeleteSetting(Guid id)
         {
             var setting = await _unitOfWork.ApplicationSettingRepository.FindAsync(x => x.Id == id);
 
-            _unitOfWork.ApplicationSettingRepository.Delete(setting);
+            await _unitOfWork.ApplicationSettingRepository.DeleteAsync(setting);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.NoContent, MessageHelper.SUCESSFULL));
         }

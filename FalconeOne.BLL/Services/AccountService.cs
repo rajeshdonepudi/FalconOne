@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using FalconOne.DLL.Entities;
-using FalconOne.DLL.Interfaces;
+using FalconOne.DAL.Entities;
+using FalconOne.DAL.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -100,7 +100,7 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.LOGIN_SUCCESSFULL, authResponse));
         }
 
-        [ProducesResponseType(typeof(AccountDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
         public async Task<ApiResponse> CreateNewUserAsync(RegisterNewUserRequestDTO model)
         {
             var newUser = _mapper.Map<User>(model);
@@ -118,7 +118,7 @@ namespace FalconeOne.BLL.Services
             {
                 return new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG);
             }
-            var account = _mapper.Map<AccountDTO>(user);
+            var account = _mapper.Map<UserDTO>(user);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.Created, MessageHelper.USER_CREATED_SUCCESSFULLY, account));
         }
@@ -166,7 +166,7 @@ namespace FalconeOne.BLL.Services
         }
         public async Task<ApiResponse> GetAllAsync()
         {
-            var result = new List<AccountDTO>();
+            var result = new List<UserDTO>();
 
             var users = await _userManager.Users.ToListAsync();
 
@@ -177,7 +177,7 @@ namespace FalconeOne.BLL.Services
 
             foreach (var user in users)
             {
-                var res = _mapper.Map<AccountDTO>(user);
+                var res = _mapper.Map<UserDTO>(user);
                 result.Add(res);
             }
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result));
@@ -196,7 +196,7 @@ namespace FalconeOne.BLL.Services
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
             }
 
-            var result = _mapper.Map<AccountDTO>(user);
+            var result = _mapper.Map<UserDTO>(user);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result));
         }
