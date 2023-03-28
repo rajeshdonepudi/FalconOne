@@ -26,8 +26,11 @@ namespace FalconeOne.BLL.Services
         {
             await _unitOfWork.UserClaimRepository.AddAsync(new ApplicationClaim
             {
-                Name = model.Name,
-                Type = model.Type
+                Type = model.Type,
+                Value = model.Value,
+                CreatedOn = DateTime.UtcNow,
+                Description = model.Description,
+                ApplicationPolicyId = model.PolicyId is null ? Guid.Empty : Guid.Parse(model.PolicyId)
             });
             await _unitOfWork.SaveChangesAsync();
 
@@ -38,9 +41,9 @@ namespace FalconeOne.BLL.Services
         {
             var role = await _roleManager.FindByIdAsync(model.RoleId);
 
-            var res = await _unitOfWork.UserClaimRepository.FindAsync(x => x.Id == model.ClaimId);
+            var res = await _unitOfWork.UserClaimRepository.QueryAsync(x => x.Id == model.ClaimId);
 
-            await _roleManager.AddClaimAsync(role, new Claim(res.Type, res.Name));
+            await _roleManager.AddClaimAsync(role, new Claim(res.Type, res.Value));
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
         }
@@ -49,9 +52,9 @@ namespace FalconeOne.BLL.Services
         {
             var user = await _userManager.FindByIdAsync(model.UserId);
 
-            var res = await _unitOfWork.UserClaimRepository.FindAsync(x => x.Id == model.ClaimId);
+            var res = await _unitOfWork.UserClaimRepository.QueryAsync(x => x.Id == model.ClaimId);
 
-            await _userManager.AddClaimAsync(user, new Claim(res.Type, res.Name));
+            await _userManager.AddClaimAsync(user, new Claim(res.Type, res.Value));
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
         }
@@ -64,9 +67,9 @@ namespace FalconeOne.BLL.Services
 
             foreach (var claim in model.Claims)
             {
-                var r = await _unitOfWork.UserClaimRepository.FindAsync(x => x.Id == claim);
+                var r = await _unitOfWork.UserClaimRepository.QueryAsync(x => x.Id == claim);
 
-                claims.Add(new Claim(r.Type, r.Name));
+                claims.Add(new Claim(r.Type, r.Value));
             }
 
             await _userManager.AddClaimsAsync(user, claims);
@@ -78,9 +81,18 @@ namespace FalconeOne.BLL.Services
         {
             var result = await _unitOfWork.UserClaimRepository.GetAllAsync();
 
-            var claims = result.Select(x => x.Name).ToList();
+            var claims = result.Select(x => x.Type).ToList();
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, claims));
+        }
+
+        public async Task<ApiResponse> DeleteClaimAsync(Guid guid)
+        {
+            var claim = await _unitOfWork.UserClaimRepository.GetByIdAsync(guid);
+
+            await _unitOfWork.UserClaimRepository.DeleteAsync(claim);
+
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
         }
     }
 

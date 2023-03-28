@@ -33,7 +33,7 @@ namespace FalconeOne.BLL.Services
         {
             var res = await _unitOfWork.RequestInformationRepository.GetAllAsync(pageParams);
 
-            res = res.OrderBy(x => x.RecordedOn);
+            //res = res.OrderBy(x => x.RecordedOn);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, res));
         }

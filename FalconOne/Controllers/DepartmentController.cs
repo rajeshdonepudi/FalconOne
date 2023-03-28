@@ -1,4 +1,6 @@
 ﻿using FalconeOne.BLL.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FalconOne.API.Controllers
@@ -15,6 +17,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpGet("get-all")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Admin")]
         public async Task<IActionResult> GetAll()
         {
             return ReturnResponse(await _departmentService.GetAllDepartments());

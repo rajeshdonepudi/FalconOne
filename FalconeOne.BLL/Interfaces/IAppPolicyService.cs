@@ -7,5 +7,6 @@ namespace FalconeOne.BLL.Interfaces
     {
         Task<ApiResponse> CreatePolicy(CreatePolicyDTO model);
         Task<ApiResponse> GetAllPolicies();
+        Task<ApiResponse> DeletePolicy(Guid id);
     }
 }

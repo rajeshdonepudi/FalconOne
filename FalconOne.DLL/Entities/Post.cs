@@ -9,6 +9,7 @@ namespace FalconOne.DAL.Entities
         {
             Reactions = new HashSet<Reaction>();
             Comments = new HashSet<Comment>();
+            Images = new HashSet<Image>();
         }
 
         [Key]
@@ -17,11 +18,10 @@ namespace FalconOne.DAL.Entities
         public string Content { get; set; }
         public Guid? DepartmentId { get; set; }
         public virtual Department Department { get; set; }
-        public Guid? TenantId { get; set; }
-        public virtual Tenant Tenant { get; set; }
-        public Employee PostedBy { get; set; }
+        public User PostedBy { get; set; }
         public DateTime PostedOn { get; set; }
-        public ICollection<Reaction> Reactions { get; set; }
-        public ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Reaction> Reactions { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Image> Images { get; set; }
     }
 }

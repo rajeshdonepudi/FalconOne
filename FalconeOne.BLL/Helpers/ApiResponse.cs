@@ -27,6 +27,5 @@ namespace FalconeOne.BLL.Helpers
         public HttpStatusCode StatusCode { get; set; }
         public object Response { get; set; }
         public object Errors { get; set; }
-
     }
 }

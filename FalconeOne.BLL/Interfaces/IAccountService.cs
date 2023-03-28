@@ -1,5 +1,6 @@
 ﻿using FalconeOne.BLL.Helpers;
 using Utilities.DTOs;
+using Utilities.Helpers;
 
 namespace FalconeOne.BLL.Interfaces
 {
@@ -15,10 +16,11 @@ namespace FalconeOne.BLL.Interfaces
         Task<ApiResponse> VerifyEmailAsync(VerifyEmailDTO model);
         Task<ApiResponse> ForgotPasswordAsync(ForgotPasswordRequestDTO model);
         Task<ApiResponse> ResetPasswordAsync(ResetPasswordRequestDTO model);
-        Task<ApiResponse> GetAllAsync();
+        Task<ApiResponse> GetAllAsync(PageParams model);
         Task<ApiResponse> GetByIdAsync(string userId);
         Task<AuthenticateResponseDTO> UpdateUserAsync(int id, RegisterNewUserRequestDTO model);
         Task<ApiResponse> DeleteAsync(string userId);
         Task<ApiResponse> AddUserToRoleAsync(AddToRoleDTO model);
+        Task<ApiResponse> UpdateEmailConfirmed(string userId, bool value);
     }
 }

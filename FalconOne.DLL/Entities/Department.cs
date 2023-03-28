@@ -7,16 +7,19 @@ namespace FalconOne.DAL.Entities
     {
         public Department()
         {
-            Employees = new HashSet<Employee>();
+            Users = new HashSet<User>();
+            Posts = new HashSet<Post>();
         }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public ICollection<Employee> Employees { get; set; }
-        public ICollection<Post> Posts { get; set; }
         public Guid LocationId { get; set; }
         public virtual Location Location { get; set; }
+        public Guid? ProfilePictureId { get; set; }
+        public virtual Image ProfilePicture { get; set; }
+        public virtual ICollection<Post> Posts { get; set; }
+        public virtual ICollection<User> Users { get; set; }
     }
 }

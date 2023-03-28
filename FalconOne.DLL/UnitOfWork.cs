@@ -13,7 +13,10 @@ namespace FalconOne.DAL
             IGenericRepository<ApplicationClaim> userClaimRepository,
             IGenericRepository<ApplicationPolicy> appPolicyRepository,
             IGenericRepository<ApplicationSetting> applicationSettingRepository,
-            IGenericRepository<Department> departmentRepository)
+            IGenericRepository<Department> departmentRepository,
+            IGenericRepository<Tenant> tenantRepository,
+            IGenericRepository<Post> postRepository,
+            IGenericRepository<User> userRepository)
         {
             _falconOneContext = falconOneContext;
             RefreshTokenRepository = refreshTokenRepository;
@@ -22,6 +25,9 @@ namespace FalconOne.DAL
             ApplicationPolicyRepository = appPolicyRepository;
             ApplicationSettingRepository = applicationSettingRepository;
             DepartmentRepository = departmentRepository;
+            TenantRepository = tenantRepository;
+            PostRepository = postRepository;
+            UserRepository = userRepository;
         }
 
         public IGenericRepository<RequestInformation> RequestInformationRepository { get; private set; }
@@ -30,6 +36,9 @@ namespace FalconOne.DAL
         public IGenericRepository<ApplicationPolicy> ApplicationPolicyRepository { get; private set; }
         public IGenericRepository<ApplicationSetting> ApplicationSettingRepository { get; private set; }
         public IGenericRepository<Department> DepartmentRepository { get; private set; }
+        public IGenericRepository<Tenant> TenantRepository { get; private set; }
+        public IGenericRepository<Post> PostRepository { get; private set; }
+        public IGenericRepository<User> UserRepository { get; private set; }
 
         public async Task<int> SaveChangesAsync()
         {

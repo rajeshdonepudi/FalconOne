@@ -6,32 +6,42 @@ namespace FalconOne.API.Policies
 {
     public static class PolicyConfig
     {
-        public static void Configure(AuthorizationOptions options, ServiceProvider provider)
+        public static void Configure(AuthorizationOptions authorizationOptions, ServiceProvider provider)
         {
             using (var serviceScope = provider.CreateScope())
             {
                 var services = serviceScope.ServiceProvider;
 
-                //var context = serviceScope.ServiceProvider.GetService<FalconOneContext>();
-
-                //// auto migration
-                //context.Database.Migrate();
-
                 var appPolicyService = services.GetService<IAppPolicyService>();
 
-                var policies = appPolicyService.GetAllPolicies().Result;
+                var policies = appPolicyService!.GetAllPolicies().Result;
 
-                foreach (var policy in policies.Response as IEnumerable<ApplicationPolicy>)
+                foreach (var applicationPolicy in policies.Response as IEnumerable<ApplicationPolicy>)
                 {
-                    if (policy.PolicyClaims.Any())
+                    if (applicationPolicy.PolicyClaims.Any())
                     {
-                        options.AddPolicy(policy.Name, p =>
+                        Console.WriteLine(applicationPolicy.Name);
+                        foreach (var claim in applicationPolicy.PolicyClaims)
                         {
-                            foreach (var claim in policy.PolicyClaims)
+                            Console.WriteLine(claim.Type + "" + claim.Value);
+                        }
+                    }
+                }
+
+                if (policies is not null)
+                {
+                    foreach (var applicationPolicy in policies.Response as IEnumerable<ApplicationPolicy>)
+                    {
+                        if (applicationPolicy.PolicyClaims.Any())
+                        {
+                            authorizationOptions.AddPolicy(applicationPolicy.Name, p =>
                             {
-                                p.RequireClaim(claim.Type, claim.Values.Split(','));
-                            }
-                        });
+                                foreach (var claim in applicationPolicy.PolicyClaims)
+                                {
+                                    p.RequireClaim(claim.Type, claim.Value.Split(','));
+                                }
+                            });
+                        }
                     }
                 }
             }

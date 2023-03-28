@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FalconeOne.BLL.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Utilities.DTOs;
 
 namespace FalconOne.API.Controllers
 {
@@ -6,9 +8,25 @@ namespace FalconOne.API.Controllers
     [ApiController]
     public class PostsController : BaseController
     {
-        public PostsController()
-        {
+        private readonly IPostService _postsService;
 
+        public PostsController(IPostService postsService)
+        {
+            _postsService = postsService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            return ReturnResponse(await _postsService.GetAllPosts());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(NewPostDTO postDTO)
+        {
+            var response = await _postsService.CreateAsync(postDTO);
+
+            return ReturnResponse(response);
         }
     }
 }

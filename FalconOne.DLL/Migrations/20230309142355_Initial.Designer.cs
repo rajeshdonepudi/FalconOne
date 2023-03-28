@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FalconOne.DAL.Migrations
 {
     [DbContext(typeof(FalconOneContext))]
-    [Migration("20221217062941_Initial-Migration")]
-    partial class InitialMigration
+    [Migration("20230309142355_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,12 +36,12 @@ namespace FalconOne.DAL.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("TenantId")
                         .HasColumnType("uniqueidentifier");
@@ -50,7 +50,7 @@ namespace FalconOne.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Values")
+                    b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -66,12 +66,22 @@ namespace FalconOne.DAL.Migrations
                         new
                         {
                             Id = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
+                            ApplicationPolicyId = new Guid("b7538a53-d3b2-4b66-ba40-97619cda8d00"),
+                            CreatedOn = new DateTime(2023, 3, 9, 14, 23, 55, 377, DateTimeKind.Utc).AddTicks(3234),
+                            Description = "Database seeded",
+                            TenantId = new Guid("e637d860-3049-46ee-96d2-7773e666b42c"),
+                            Type = "Admin",
+                            Value = "Everything"
+                        },
+                        new
+                        {
+                            Id = new Guid("c21c771f-7e71-450b-805a-2cf9fce819a2"),
                             ApplicationPolicyId = new Guid("9fa14d9e-0d8e-4b51-85e4-c4bdd5873d14"),
-                            CreatedOn = new DateTime(2022, 12, 17, 6, 29, 41, 273, DateTimeKind.Utc).AddTicks(1650),
-                            Name = "user-claim",
-                            TenantId = new Guid("1891ad85-2856-4f42-8028-1bae4ec5e7ee"),
-                            Type = "http://schemas.xmlsoap.org/ws/2009/09/identity/claims/actor",
-                            Values = "can-login,can-signup,can-reset-password,can-create-account"
+                            CreatedOn = new DateTime(2023, 3, 9, 14, 23, 55, 377, DateTimeKind.Utc).AddTicks(3244),
+                            Description = "Database seeded",
+                            TenantId = new Guid("e637d860-3049-46ee-96d2-7773e666b42c"),
+                            Type = "User",
+                            Value = "BasicThings"
                         });
                 });
 
@@ -104,16 +114,16 @@ namespace FalconOne.DAL.Migrations
                         new
                         {
                             Id = new Guid("9fa14d9e-0d8e-4b51-85e4-c4bdd5873d14"),
-                            CreatedOn = new DateTime(2022, 12, 17, 6, 29, 41, 273, DateTimeKind.Utc).AddTicks(1616),
-                            Name = "user-policy",
-                            TenantId = new Guid("1891ad85-2856-4f42-8028-1bae4ec5e7ee")
+                            CreatedOn = new DateTime(2023, 3, 9, 14, 23, 55, 377, DateTimeKind.Utc).AddTicks(3214),
+                            Name = "User",
+                            TenantId = new Guid("e637d860-3049-46ee-96d2-7773e666b42c")
                         },
                         new
                         {
                             Id = new Guid("b7538a53-d3b2-4b66-ba40-97619cda8d00"),
-                            CreatedOn = new DateTime(2022, 12, 17, 6, 29, 41, 273, DateTimeKind.Utc).AddTicks(1619),
-                            Name = "admin-policy",
-                            TenantId = new Guid("1891ad85-2856-4f42-8028-1bae4ec5e7ee")
+                            CreatedOn = new DateTime(2023, 3, 9, 14, 23, 55, 377, DateTimeKind.Utc).AddTicks(3216),
+                            Name = "Admin",
+                            TenantId = new Guid("e637d860-3049-46ee-96d2-7773e666b42c")
                         });
                 });
 
@@ -151,33 +161,6 @@ namespace FalconOne.DAL.Migrations
                     b.ToTable("ApplicationSettings");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.AttendanceLog", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DayType")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("EmployeeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("LocationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.HasIndex("LocationId");
-
-                    b.ToTable("AttendanceLogs");
-                });
-
             modelBuilder.Entity("FalconOne.DAL.Entities.Comment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -203,16 +186,11 @@ namespace FalconOne.DAL.Migrations
                     b.Property<Guid?>("PostId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CommentedById");
 
                     b.HasIndex("PostId");
-
-                    b.HasIndex("TenantId");
 
                     b.ToTable("Comments");
                 });
@@ -236,12 +214,17 @@ namespace FalconOne.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("ProfilePictureId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("LocationId");
+
+                    b.HasIndex("ProfilePictureId");
 
                     b.HasIndex("TenantId");
 
@@ -250,12 +233,36 @@ namespace FalconOne.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a0224556-0797-45cf-98d7-7afb19282ee3"),
-                            CreatedOn = new DateTime(2022, 12, 17, 6, 29, 41, 271, DateTimeKind.Utc).AddTicks(7618),
-                            LocationId = new Guid("b3915e6e-16b5-4b08-9afd-172f210d1a6b"),
+                            Id = new Guid("1272dccb-9e1f-487a-9eb9-5b2bd2beecb1"),
+                            CreatedOn = new DateTime(2023, 3, 9, 14, 23, 55, 374, DateTimeKind.Utc).AddTicks(9462),
+                            LocationId = new Guid("2827a608-2687-46cd-9eab-f746dbf5aa8c"),
                             Name = "Development",
-                            TenantId = new Guid("1891ad85-2856-4f42-8028-1bae4ec5e7ee")
+                            TenantId = new Guid("e637d860-3049-46ee-96d2-7773e666b42c")
                         });
+                });
+
+            modelBuilder.Entity("FalconOne.DAL.Entities.Image", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<Guid?>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("FalconOne.DAL.Entities.Location", b =>
@@ -283,7 +290,7 @@ namespace FalconOne.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b3915e6e-16b5-4b08-9afd-172f210d1a6b"),
+                            Id = new Guid("2827a608-2687-46cd-9eab-f746dbf5aa8c"),
                             Latitude = "78.4867° E",
                             Longitude = "17.3850° N",
                             Name = "Hyderabad"
@@ -331,22 +338,22 @@ namespace FalconOne.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("f65f2195-607e-4d04-9f54-3174709eafb1"),
+                            Id = new Guid("30279eae-8b0e-45bf-80bf-bb56aeca318f"),
                             ApplicationClaimId = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
-                            CreatedOn = new DateTime(2022, 12, 17, 6, 29, 41, 273, DateTimeKind.Utc).AddTicks(1671),
+                            CreatedOn = new DateTime(2023, 3, 9, 14, 23, 55, 377, DateTimeKind.Utc).AddTicks(3260),
                             Description = "User login",
                             Name = "Login",
-                            TenantId = new Guid("1891ad85-2856-4f42-8028-1bae4ec5e7ee"),
+                            TenantId = new Guid("e637d860-3049-46ee-96d2-7773e666b42c"),
                             URL = "login"
                         },
                         new
                         {
-                            Id = new Guid("8cc768af-be93-4a3a-9526-562c26300c30"),
+                            Id = new Guid("e9af5b2f-3a18-4269-8890-4d66ba895924"),
                             ApplicationClaimId = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
-                            CreatedOn = new DateTime(2022, 12, 17, 6, 29, 41, 273, DateTimeKind.Utc).AddTicks(1673),
+                            CreatedOn = new DateTime(2023, 3, 9, 14, 23, 55, 377, DateTimeKind.Utc).AddTicks(3271),
                             Description = "User signup",
                             Name = "Singup",
-                            TenantId = new Guid("1891ad85-2856-4f42-8028-1bae4ec5e7ee"),
+                            TenantId = new Guid("e637d860-3049-46ee-96d2-7773e666b42c"),
                             URL = "signup"
                         });
                 });
@@ -396,12 +403,6 @@ namespace FalconOne.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
                     b.Property<Guid?>("PostId")
                         .HasColumnType("uniqueidentifier");
 
@@ -414,16 +415,11 @@ namespace FalconOne.DAL.Migrations
                     b.Property<int>("ReactionType")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PostId");
 
                     b.HasIndex("ReactedById");
-
-                    b.HasIndex("TenantId");
 
                     b.ToTable("Reactions");
                 });
@@ -523,21 +519,53 @@ namespace FalconOne.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("ProfilePictureId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LocationId");
+
+                    b.HasIndex("ProfilePictureId");
 
                     b.ToTable("Tenants");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("1891ad85-2856-4f42-8028-1bae4ec5e7ee"),
-                            CreatedOn = new DateTime(2022, 12, 17, 6, 29, 41, 271, DateTimeKind.Utc).AddTicks(7452),
+                            Id = new Guid("e637d860-3049-46ee-96d2-7773e666b42c"),
+                            CreatedOn = new DateTime(2023, 3, 9, 14, 23, 55, 374, DateTimeKind.Utc).AddTicks(9442),
                             Host = "rajeshdnp.com",
-                            LocationId = new Guid("b3915e6e-16b5-4b08-9afd-172f210d1a6b"),
+                            LocationId = new Guid("2827a608-2687-46cd-9eab-f746dbf5aa8c"),
                             Name = "rajesh"
                         });
+                });
+
+            modelBuilder.Entity("FalconOne.DAL.Entities.TimeEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DayType")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AttendanceLogs");
                 });
 
             modelBuilder.Entity("FalconOne.DAL.Entities.TimeLog", b =>
@@ -578,9 +606,8 @@ namespace FalconOne.DAL.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("DepartmentId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -623,8 +650,14 @@ namespace FalconOne.DAL.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<Guid?>("ProfilePictureId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -635,6 +668,8 @@ namespace FalconOne.DAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DepartmentId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -643,9 +678,57 @@ namespace FalconOne.DAL.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("ProfilePictureId");
+
+                    b.HasIndex("TenantId");
+
                     b.ToTable("AspNetUsers", (string)null);
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("6521474a-6e39-4a5e-8628-cd89b4e922bc"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==",
+                            CreatedOn = new DateTime(2023, 3, 9, 14, 23, 55, 374, DateTimeKind.Utc).AddTicks(9533),
+                            DepartmentId = new Guid("1272dccb-9e1f-487a-9eb9-5b2bd2beecb1"),
+                            Email = "b@b.com",
+                            EmailConfirmed = true,
+                            FirstName = "Basic",
+                            LastName = "User",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "b@b.com",
+                            NormalizedUserName = "b",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOY5Ans1yuTXd3u1LSIxBhOjmkV8GEoz37x1Fdxy/we96AhNj3Fb/o/5Ri8yezvXIg==",
+                            PhoneNumber = "8886014996",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "UCQO32XEFNXIAZIR3LTNFDRRX7A2NHLK",
+                            TenantId = new Guid("e637d860-3049-46ee-96d2-7773e666b42c"),
+                            TwoFactorEnabled = false,
+                            UserName = "basicuser01"
+                        },
+                        new
+                        {
+                            Id = new Guid("5090b588-6e3f-464a-994d-9cd2af4a0198"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==",
+                            CreatedOn = new DateTime(2023, 3, 9, 14, 23, 55, 374, DateTimeKind.Utc).AddTicks(9537),
+                            DepartmentId = new Guid("1272dccb-9e1f-487a-9eb9-5b2bd2beecb1"),
+                            Email = "a@a.com",
+                            EmailConfirmed = true,
+                            FirstName = "Admin",
+                            LastName = "User",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "a@a.com",
+                            NormalizedUserName = "a",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMN6BwqtrJ9cqsQzZLUk46GgC9ahGGLNqnjfIjctnK6NJN7FieZ+8oa9aoG3XGVI+g==",
+                            PhoneNumber = "8886014997",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "UCQO32XEFNXIAZIR3LTNFDRRX7A2NHLK",
+                            TenantId = new Guid("e637d860-3049-46ee-96d2-7773e666b42c"),
+                            TwoFactorEnabled = false,
+                            UserName = "adminuser01"
+                        });
                 });
 
             modelBuilder.Entity("FalconOne.DAL.Entities.UserRole", b =>
@@ -657,6 +740,12 @@ namespace FalconOne.DAL.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
@@ -727,15 +816,33 @@ namespace FalconOne.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserClaims", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClaimType = "Admin",
+                            ClaimValue = "Everything",
+                            UserId = new Guid("5090b588-6e3f-464a-994d-9cd2af4a0198")
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ClaimType = "User",
+                            ClaimValue = "BasicThings",
+                            UserId = new Guid("6521474a-6e39-4a5e-8628-cd89b4e922bc")
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -771,10 +878,12 @@ namespace FalconOne.DAL.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -782,46 +891,6 @@ namespace FalconOne.DAL.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("FalconOne.DAL.Entities.Employee", b =>
-                {
-                    b.HasBaseType("FalconOne.DAL.Entities.User");
-
-                    b.Property<Guid?>("DepartmentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("TenantId");
-
-                    b.HasDiscriminator().HasValue("Employee");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("925b2ae8-148a-47cb-95be-36df5c9a4d28"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "4d4161d2-41ae-482e-a26d-2412098def68",
-                            CreatedOn = new DateTime(2022, 12, 17, 6, 29, 41, 271, DateTimeKind.Utc).AddTicks(7742),
-                            Email = "rajesh.dnp01@gmail.com",
-                            EmailConfirmed = true,
-                            FirstName = "Rajesh",
-                            LastName = "Donepudi",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "rajesh.dnp01@gmail.com",
-                            NormalizedUserName = "rajesh.dnp01",
-                            PasswordHash = "AQAAAAEAACcQAAAAENI09uUolO7NFZ13NZE+lyP4K5XGaQf+uxEuioqg9jdHYiy1jC/Jv60p1qExKCBTfA==",
-                            PhoneNumber = "8886014996",
-                            PhoneNumberConfirmed = false,
-                            TwoFactorEnabled = false,
-                            UserName = "rajesh.dnp01",
-                            DepartmentId = new Guid("a0224556-0797-45cf-98d7-7afb19282ee3"),
-                            TenantId = new Guid("1891ad85-2856-4f42-8028-1bae4ec5e7ee")
-                        });
                 });
 
             modelBuilder.Entity("FalconOne.DAL.Entities.ApplicationClaim", b =>
@@ -857,24 +926,9 @@ namespace FalconOne.DAL.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.AttendanceLog", b =>
-                {
-                    b.HasOne("FalconOne.DAL.Entities.Employee", "Employee")
-                        .WithMany("AttendanceLogs")
-                        .HasForeignKey("EmployeeId");
-
-                    b.HasOne("FalconOne.DAL.Entities.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId");
-
-                    b.Navigation("Employee");
-
-                    b.Navigation("Location");
-                });
-
             modelBuilder.Entity("FalconOne.DAL.Entities.Comment", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.Employee", "CommentedBy")
+                    b.HasOne("FalconOne.DAL.Entities.User", "CommentedBy")
                         .WithMany()
                         .HasForeignKey("CommentedById")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -884,15 +938,9 @@ namespace FalconOne.DAL.Migrations
                         .WithMany("Comments")
                         .HasForeignKey("PostId");
 
-                    b.HasOne("FalconOne.DAL.Entities.Tenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId");
-
                     b.Navigation("CommentedBy");
 
                     b.Navigation("Post");
-
-                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("FalconOne.DAL.Entities.Department", b =>
@@ -903,13 +951,28 @@ namespace FalconOne.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FalconOne.DAL.Entities.Tenant", "Tenant")
+                    b.HasOne("FalconOne.DAL.Entities.Image", "ProfilePicture")
                         .WithMany()
+                        .HasForeignKey("ProfilePictureId");
+
+                    b.HasOne("FalconOne.DAL.Entities.Tenant", "Tenant")
+                        .WithMany("Departments")
                         .HasForeignKey("TenantId");
 
                     b.Navigation("Location");
 
+                    b.Navigation("ProfilePicture");
+
                     b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("FalconOne.DAL.Entities.Image", b =>
+                {
+                    b.HasOne("FalconOne.DAL.Entities.Post", "Post")
+                        .WithMany("Images")
+                        .HasForeignKey("PostId");
+
+                    b.Navigation("Post");
                 });
 
             modelBuilder.Entity("FalconOne.DAL.Entities.Navigation", b =>
@@ -935,7 +998,7 @@ namespace FalconOne.DAL.Migrations
                         .WithMany("Posts")
                         .HasForeignKey("DepartmentId");
 
-                    b.HasOne("FalconOne.DAL.Entities.Employee", "PostedBy")
+                    b.HasOne("FalconOne.DAL.Entities.User", "PostedBy")
                         .WithMany()
                         .HasForeignKey("PostedById")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -958,21 +1021,15 @@ namespace FalconOne.DAL.Migrations
                         .WithMany("Reactions")
                         .HasForeignKey("PostId");
 
-                    b.HasOne("FalconOne.DAL.Entities.Employee", "ReactedBy")
+                    b.HasOne("FalconOne.DAL.Entities.User", "ReactedBy")
                         .WithMany()
                         .HasForeignKey("ReactedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FalconOne.DAL.Entities.Tenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId");
-
                     b.Navigation("Post");
 
                     b.Navigation("ReactedBy");
-
-                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("FalconOne.DAL.Entities.RequestInformation", b =>
@@ -992,12 +1049,33 @@ namespace FalconOne.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FalconOne.DAL.Entities.Image", "ProfilePicture")
+                        .WithMany()
+                        .HasForeignKey("ProfilePictureId");
+
                     b.Navigation("Location");
+
+                    b.Navigation("ProfilePicture");
+                });
+
+            modelBuilder.Entity("FalconOne.DAL.Entities.TimeEntry", b =>
+                {
+                    b.HasOne("FalconOne.DAL.Entities.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId");
+
+                    b.HasOne("FalconOne.DAL.Entities.User", "User")
+                        .WithMany("TimeEntries")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FalconOne.DAL.Entities.TimeLog", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.AttendanceLog", "AttendanceLog")
+                    b.HasOne("FalconOne.DAL.Entities.TimeEntry", "AttendanceLog")
                         .WithMany("TimeLogs")
                         .HasForeignKey("AttendanceLogId");
 
@@ -1006,6 +1084,18 @@ namespace FalconOne.DAL.Migrations
 
             modelBuilder.Entity("FalconOne.DAL.Entities.User", b =>
                 {
+                    b.HasOne("FalconOne.DAL.Entities.Department", "Department")
+                        .WithMany("Users")
+                        .HasForeignKey("DepartmentId");
+
+                    b.HasOne("FalconOne.DAL.Entities.Image", "ProfilePicture")
+                        .WithMany()
+                        .HasForeignKey("ProfilePictureId");
+
+                    b.HasOne("FalconOne.DAL.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
                     b.OwnsMany("FalconOne.DAL.Entities.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<int>("Id")
@@ -1053,7 +1143,13 @@ namespace FalconOne.DAL.Migrations
                             b1.Navigation("User");
                         });
 
+                    b.Navigation("Department");
+
+                    b.Navigation("ProfilePicture");
+
                     b.Navigation("RefreshTokens");
+
+                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("FalconOne.DAL.Entities.UserRole", b =>
@@ -1116,21 +1212,6 @@ namespace FalconOne.DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Employee", b =>
-                {
-                    b.HasOne("FalconOne.DAL.Entities.Department", "Department")
-                        .WithMany("Employees")
-                        .HasForeignKey("DepartmentId");
-
-                    b.HasOne("FalconOne.DAL.Entities.Tenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId");
-
-                    b.Navigation("Department");
-
-                    b.Navigation("Tenant");
-                });
-
             modelBuilder.Entity("FalconOne.DAL.Entities.ApplicationClaim", b =>
                 {
                     b.Navigation("Navigations");
@@ -1141,33 +1222,37 @@ namespace FalconOne.DAL.Migrations
                     b.Navigation("PolicyClaims");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.AttendanceLog", b =>
-                {
-                    b.Navigation("TimeLogs");
-                });
-
             modelBuilder.Entity("FalconOne.DAL.Entities.Department", b =>
                 {
-                    b.Navigation("Employees");
-
                     b.Navigation("Posts");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("FalconOne.DAL.Entities.Post", b =>
                 {
                     b.Navigation("Comments");
 
+                    b.Navigation("Images");
+
                     b.Navigation("Reactions");
                 });
 
             modelBuilder.Entity("FalconOne.DAL.Entities.Tenant", b =>
                 {
+                    b.Navigation("Departments");
+
                     b.Navigation("Posts");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Employee", b =>
+            modelBuilder.Entity("FalconOne.DAL.Entities.TimeEntry", b =>
                 {
-                    b.Navigation("AttendanceLogs");
+                    b.Navigation("TimeLogs");
+                });
+
+            modelBuilder.Entity("FalconOne.DAL.Entities.User", b =>
+                {
+                    b.Navigation("TimeEntries");
                 });
 #pragma warning restore 612, 618
         }

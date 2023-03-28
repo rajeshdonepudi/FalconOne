@@ -1,5 +1,6 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Utilities.DTOs;
 
@@ -17,6 +18,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("add-new")]
+        [Authorize(Policy = "SomePolicy")]
         public async Task<IActionResult> AddNewSetting(ApplicationSettingDTO model)
         {
             if (ModelState.IsValid)

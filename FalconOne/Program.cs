@@ -2,10 +2,14 @@ using FalconeOne.BLL.Services;
 using FalconOne.API;
 using FalconOne.API.AuthenticationConfig;
 using FalconOne.API.AuthorizationConfig;
+using FalconOne.API.DatabaseConfig;
 using FalconOne.API.DependencyConfig;
 using FalconOne.API.SwaggerConfig;
 using FalconOne.DAL;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,13 +36,18 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader()
         .AllowCredentials()
         .SetIsOriginAllowed((host) => true)
-        .WithOrigins("http://localhost:3000", "https://localhost:3000");
+        .WithOrigins("http://localhost:3000", "https://falcone-one.web.app", "https://localhost:3000");
     });
 });
 
 builder.Services.AddControllers(c =>
 {
     c.Filters.Add(new AsyncActionFilter());
+    c.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
+    c.OutputFormatters.Add(new SystemTextJsonOutputFormatter(new JsonSerializerOptions(JsonSerializerDefaults.Web)
+    {
+        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+    }));
 });
 
 
@@ -50,11 +59,13 @@ AuthorizationConfig.Configure(builder, providerBuilder);
 
 var app = builder.Build();
 
+DatabaseConfig.Configure(app.Services);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(o => o.DefaultModelsExpandDepth(-1));
 }
 app.UseCors("ReactAppOrigin");
 

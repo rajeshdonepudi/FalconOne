@@ -14,8 +14,8 @@ namespace FalconeOne.BLL.Services
         private readonly IMapper _mapper;
         private readonly RoleManager<UserRole> _roleManager;
 
-        public AppRoleService(IMapper mapper,
-            IUnitOfWork unitOfWork, RoleManager<UserRole> roleManager) : base(mapper, unitOfWork)
+        public AppRoleService(UserManager<User> userManager, IMapper mapper,
+            IUnitOfWork unitOfWork, RoleManager<UserRole> roleManager) : base(userManager, mapper, unitOfWork)
         {
             _mapper = mapper;
             _roleManager = roleManager;
@@ -49,9 +49,10 @@ namespace FalconeOne.BLL.Services
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse> GetAllRolesAsync()
+        public async Task<ApiResponse> GetAllRolesAsync()
         {
-            throw new NotImplementedException();
+            var roles = _roleManager.Roles.ToList();
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, roles));
         }
 
         public Task<ApiResponse> GetRoleAsync(string roleId)

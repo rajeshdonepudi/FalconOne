@@ -10,6 +10,9 @@ namespace FalconOne.DAL.Interfaces
         public IGenericRepository<ApplicationPolicy> ApplicationPolicyRepository { get; }
         public IGenericRepository<ApplicationSetting> ApplicationSettingRepository { get; }
         public IGenericRepository<Department> DepartmentRepository { get; }
+        public IGenericRepository<Tenant> TenantRepository { get; }
+        public IGenericRepository<Post> PostRepository { get; }
+        public IGenericRepository<User> UserRepository { get; }
         Task<int> SaveChangesAsync();
     }
 }

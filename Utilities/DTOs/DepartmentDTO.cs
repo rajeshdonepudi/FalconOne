@@ -2,8 +2,7 @@
 {
     public class DepartmentDTO : BaseDTO
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
-        public ICollection<UserDTO> Users { get; set; }
-        public ICollection<PostDTO> Posts { get; set; }
     }
 }

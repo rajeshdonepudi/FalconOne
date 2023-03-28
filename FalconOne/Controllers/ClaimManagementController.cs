@@ -21,6 +21,7 @@ namespace FalconOne.API.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _appClaimService.CreateClaimAsync(model);
+
                 return ReturnResponse(result);
             }
             else
@@ -33,6 +34,14 @@ namespace FalconOne.API.Controllers
         public async Task<IActionResult> GetAllClaims()
         {
             var response = await _appClaimService.GetAllClaimsAsync();
+
+            return ReturnResponse(response);
+        }
+
+        [HttpDelete("delete-claim")]
+        public async Task<IActionResult> DeleteClaimAsync(Guid claimId)
+        {
+            var response = await _appClaimService.DeleteClaimAsync(claimId);
 
             return ReturnResponse(response);
         }

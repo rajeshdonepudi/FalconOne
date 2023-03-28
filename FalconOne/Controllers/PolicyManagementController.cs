@@ -37,5 +37,13 @@ namespace FalconOne.API.Controllers
 
             return ReturnResponse(response);
         }
+
+        [HttpDelete("delete-policy")]
+        public async Task<IActionResult> DeletePolicy(Guid policyId)
+        {
+            var response = await _appPolicyService.DeletePolicy(policyId);
+
+            return ReturnResponse(response);
+        }
     }
 }

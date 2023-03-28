@@ -2,9 +2,9 @@
 
 namespace FalconOne.DAL.Entities
 {
-    public class AttendanceLog
+    public class TimeEntry
     {
-        public AttendanceLog()
+        public TimeEntry()
         {
             TimeLogs = new HashSet<TimeLog>();
         }
@@ -16,8 +16,8 @@ namespace FalconOne.DAL.Entities
 
         public Guid? LocationId { get; set; }
         public virtual Location Location { get; set; }
-        public Guid? EmployeeId { get; set; }
-        public virtual Employee Employee { get; set; }
+        public Guid? UserId { get; set; }
+        public virtual User User { get; set; }
         public ICollection<TimeLog> TimeLogs { get; set; }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using FalconeOne.BLL.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Utilities.DTOs;
 
@@ -15,6 +17,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("register-new-user")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterNewUserRequestDTO model)
         {
             if (ModelState.IsValid)
@@ -42,15 +45,6 @@ namespace FalconOne.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-        }
-
-        [HttpGet("all-users")]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> GetAllUsers()
-        {
-            var response = await _accountService.GetAllAsync();
-
-            return ReturnResponse(response);
         }
 
         [HttpGet("get-user")]
@@ -107,11 +101,27 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("refresh-token")]
+
         public async Task<IActionResult> RefreshToken(RefreshTokenRequestDTO model)
         {
             if (ModelState.IsValid)
             {
                 var response = await _accountService.GetNewJWTByRefreshTokenAsync(model.RefreshToken);
+
+                return ReturnResponse(response);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
+
+        [HttpPatch("{userId}/email-confirmed/{value}")]
+        public async Task<IActionResult> UpdateEmailConfirmed(string userId, bool value)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _accountService.UpdateEmailConfirmed(userId, value);
 
                 return ReturnResponse(response);
             }

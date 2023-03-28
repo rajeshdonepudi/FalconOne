@@ -1,10 +1,10 @@
 ﻿namespace FalconOne.DAL.Entities
 {
-    public class Comment : MultiTenantEntity
+    public class Comment
     {
         public Guid Id { get; set; }
         public string Content { get; set; }
-        public Employee CommentedBy { get; set; }
+        public User CommentedBy { get; set; }
         public DateTime CommentedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public DateTime CreatedOn { get; set; }

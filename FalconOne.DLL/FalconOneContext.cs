@@ -16,8 +16,9 @@ namespace FalconOne.DAL
         public DbSet<Tenant> Tenants { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<TimeLog> TimeLogs { get; set; }
-        public DbSet<AttendanceLog> AttendanceLogs { get; set; }
+        public DbSet<TimeEntry> AttendanceLogs { get; set; }
         public DbSet<Location> Locations { get; set; }
+        public DbSet<Image> Images { get; set; }
 
         public FalconOneContext()
         {

@@ -16,13 +16,13 @@ namespace FalconeOne.BLL.Services
         #region Private methods
         private async Task LogToDatabase(ActionExecutingContext context)
         {
-            var requestInformationService = (IRequestInformationService)context.HttpContext.RequestServices.GetService(typeof(IRequestInformationService));
+            var requestInformationService = (IRequestInformationService)context.HttpContext.RequestServices.GetService(typeof(IRequestInformationService))!;
 
             await requestInformationService!.SaveRequestInfoAsync(new RequestInformationDTO
             {
                 TraceIdentifier = context.HttpContext.TraceIdentifier,
-                Controller = context.RouteData.Values[CONTROLLER_KEY].ToString(),
-                Action = context.RouteData.Values[ACTION_KEY].ToString(),
+                Controller = context.RouteData.Values[CONTROLLER_KEY].ToString()!,
+                Action = context.RouteData.Values[ACTION_KEY].ToString()!,
                 ResourceCode = ResourceCodes.USER_CREATE,
                 Method = context.HttpContext.Request.Method,
                 Path = context.HttpContext.Request.Path,
@@ -32,7 +32,7 @@ namespace FalconeOne.BLL.Services
                 Protocol = context.HttpContext.Request.Protocol,
                 Port = context.HttpContext.Request.Host.Port.GetValueOrDefault(),
                 UserAgent = GetHeaderValueAs<string>(context.HttpContext, "User-Agent"),
-                RecordedOn = DateTime.UtcNow
+                RecordedOn = DateTime.UtcNow,
             });
         }
         private string GetRequestIP(HttpContext context, bool tryUseXForwardHeader = true)
@@ -40,13 +40,13 @@ namespace FalconeOne.BLL.Services
             string ip = string.Empty;
 
             if (tryUseXForwardHeader)
-                ip = SplitCsv(GetHeaderValueAs<string>(context, "X-Forwarded-For")).FirstOrDefault();
+                ip = SplitCsv(GetHeaderValueAs<string>(context, "X-Forwarded-For")).FirstOrDefault()!;
 
             if (string.IsNullOrEmpty(ip) && context?.Connection?.RemoteIpAddress != null)
                 ip = context.Connection.RemoteIpAddress.MapToIPv4().ToString();
 
             if (string.IsNullOrEmpty(ip))
-                ip = GetHeaderValueAs<string>(context, "REMOTE_ADDR");
+                ip = GetHeaderValueAs<string>(context!, "REMOTE_ADDR");
 
             // _httpContextAccessor.HttpContext?.Request?.Host this is the local host.
 
@@ -58,7 +58,7 @@ namespace FalconeOne.BLL.Services
 
         private T GetServiceFromContext<T>(ActionContext context, Type type)
         {
-            return (T)context.HttpContext.RequestServices.GetService(type);
+            return (T)context.HttpContext.RequestServices.GetService(type)!;
         }
 
         private T GetHeaderValueAs<T>(HttpContext context, string headerName)
@@ -72,7 +72,7 @@ namespace FalconeOne.BLL.Services
                 if (!string.IsNullOrEmpty(rawValues))
                     return (T)Convert.ChangeType(values.ToString(), typeof(T));
             }
-            return default(T);
+            return default(T)!;
         }
 
         private static List<string> SplitCsv(string csvList, bool nullOrWhitespaceInputReturnsNull = false)
