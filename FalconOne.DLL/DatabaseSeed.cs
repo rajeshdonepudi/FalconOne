@@ -196,6 +196,31 @@ namespace FalconOne.DAL
                 });
 
             #endregion
+
+            #region Default theme settings
+            modelBuilder.Entity<ApplicationSetting>().HasData(new ApplicationSetting
+            {
+                Id = Guid.NewGuid(),
+                SettingType = Utilities.Enumerations.SettingTypeEnum.Theme,
+                CreatedOn = DateTime.UtcNow,
+                Description = "This is primary color",
+                Name = "primaryColor",
+                Value = "#144272",
+                TenantId = tenantId
+            });
+
+            modelBuilder.Entity<ApplicationSetting>().HasData(new ApplicationSetting
+            {
+                Id = Guid.NewGuid(),
+                SettingType = Utilities.Enumerations.SettingTypeEnum.Theme,
+                CreatedOn = DateTime.UtcNow,
+                Description = "This is secondary color",
+                Name = "secondaryColor",
+                Value = "#205295",
+                TenantId = tenantId
+            });
+
+            #endregion
         }
     }
 }

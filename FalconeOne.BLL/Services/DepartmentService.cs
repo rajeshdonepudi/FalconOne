@@ -25,6 +25,12 @@ namespace FalconeOne.BLL.Services
 
             var result = _mapper.Map<List<DepartmentDTO>>(departments);
 
+            result.Add(new DepartmentDTO
+            {
+                Id = tenantId,
+                Name = "ORGANIZATION"
+            });
+
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result));
         }
     }

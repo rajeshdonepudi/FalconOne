@@ -6,6 +6,7 @@ using FalconOne.DAL.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
 using Utilities.DTOs;
+using Utilities.Enumerations;
 
 namespace FalconeOne.BLL.Services
 {
@@ -35,6 +36,15 @@ namespace FalconeOne.BLL.Services
             await _unitOfWork.ApplicationSettingRepository.DeleteAsync(setting);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.NoContent, MessageHelper.SUCESSFULL));
+        }
+
+        public async Task<ApiResponse> GetSettings(SettingTypeEnum settingType)
+        {
+            var settings = await _unitOfWork.ApplicationSettingRepository.QueryAllAsync(x => x.SettingType == settingType);
+
+            var result = _mapper.Map<List<ApplicationSettingDTO>>(settings);
+
+            return new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result);
         }
     }
 }

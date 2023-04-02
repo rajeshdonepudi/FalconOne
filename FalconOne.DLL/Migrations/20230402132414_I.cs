@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FalconOne.DAL.Migrations
 {
-    public partial class Initial : Migration
+    public partial class I : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -64,6 +64,7 @@ namespace FalconOne.DAL.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SettingType = table.Column<int>(type: "int", nullable: false),
                     TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -487,35 +488,43 @@ namespace FalconOne.DAL.Migrations
             migrationBuilder.InsertData(
                 table: "Locations",
                 columns: new[] { "Id", "Latitude", "Longitude", "Name" },
-                values: new object[] { new Guid("2827a608-2687-46cd-9eab-f746dbf5aa8c"), "78.4867° E", "17.3850° N", "Hyderabad" });
+                values: new object[] { new Guid("be65d79e-9654-40a1-89a4-32242fcba393"), "78.4867° E", "17.3850° N", "Hyderabad" });
 
             migrationBuilder.InsertData(
                 table: "Tenants",
                 columns: new[] { "Id", "CreatedOn", "Host", "LocationId", "ModifiedOn", "Name", "ProfilePictureId" },
-                values: new object[] { new Guid("e637d860-3049-46ee-96d2-7773e666b42c"), new DateTime(2023, 3, 9, 14, 23, 55, 374, DateTimeKind.Utc).AddTicks(9442), "rajeshdnp.com", new Guid("2827a608-2687-46cd-9eab-f746dbf5aa8c"), null, "rajesh", null });
+                values: new object[] { new Guid("9f9179d0-3d20-4e1f-8d52-029fda1ddc30"), new DateTime(2023, 4, 2, 13, 24, 13, 707, DateTimeKind.Utc).AddTicks(5189), "rajeshdnp.com", new Guid("be65d79e-9654-40a1-89a4-32242fcba393"), null, "rajesh", null });
 
             migrationBuilder.InsertData(
                 table: "ApplicationPolicies",
                 columns: new[] { "Id", "CreatedOn", "ModifiedOn", "Name", "TenantId" },
-                values: new object[] { new Guid("9fa14d9e-0d8e-4b51-85e4-c4bdd5873d14"), new DateTime(2023, 3, 9, 14, 23, 55, 377, DateTimeKind.Utc).AddTicks(3214), null, "User", new Guid("e637d860-3049-46ee-96d2-7773e666b42c") });
+                values: new object[,]
+                {
+                    { new Guid("9fa14d9e-0d8e-4b51-85e4-c4bdd5873d14"), new DateTime(2023, 4, 2, 13, 24, 13, 710, DateTimeKind.Utc).AddTicks(4152), null, "User", new Guid("9f9179d0-3d20-4e1f-8d52-029fda1ddc30") },
+                    { new Guid("b7538a53-d3b2-4b66-ba40-97619cda8d00"), new DateTime(2023, 4, 2, 13, 24, 13, 710, DateTimeKind.Utc).AddTicks(4154), null, "Admin", new Guid("9f9179d0-3d20-4e1f-8d52-029fda1ddc30") }
+                });
 
             migrationBuilder.InsertData(
-                table: "ApplicationPolicies",
-                columns: new[] { "Id", "CreatedOn", "ModifiedOn", "Name", "TenantId" },
-                values: new object[] { new Guid("b7538a53-d3b2-4b66-ba40-97619cda8d00"), new DateTime(2023, 3, 9, 14, 23, 55, 377, DateTimeKind.Utc).AddTicks(3216), null, "Admin", new Guid("e637d860-3049-46ee-96d2-7773e666b42c") });
+                table: "ApplicationSettings",
+                columns: new[] { "Id", "CreatedOn", "Description", "ModifiedOn", "Name", "SettingType", "TenantId", "Value" },
+                values: new object[,]
+                {
+                    { new Guid("42d621e3-b9e7-4bf9-b287-1a3e8fea93de"), new DateTime(2023, 4, 2, 13, 24, 13, 710, DateTimeKind.Utc).AddTicks(4243), "This is primary color", null, "primaryColor", 1, new Guid("9f9179d0-3d20-4e1f-8d52-029fda1ddc30"), "#144272" },
+                    { new Guid("7a0813b6-98a3-4a86-b12a-7dde258c69c7"), new DateTime(2023, 4, 2, 13, 24, 13, 710, DateTimeKind.Utc).AddTicks(4253), "This is secondary color", null, "secondaryColor", 1, new Guid("9f9179d0-3d20-4e1f-8d52-029fda1ddc30"), "#205295" }
+                });
 
             migrationBuilder.InsertData(
                 table: "Departments",
                 columns: new[] { "Id", "CreatedOn", "LocationId", "ModifiedOn", "Name", "ProfilePictureId", "TenantId" },
-                values: new object[] { new Guid("1272dccb-9e1f-487a-9eb9-5b2bd2beecb1"), new DateTime(2023, 3, 9, 14, 23, 55, 374, DateTimeKind.Utc).AddTicks(9462), new Guid("2827a608-2687-46cd-9eab-f746dbf5aa8c"), null, "Development", null, new Guid("e637d860-3049-46ee-96d2-7773e666b42c") });
+                values: new object[] { new Guid("d9da8797-3d72-469c-9945-2242064574b6"), new DateTime(2023, 4, 2, 13, 24, 13, 707, DateTimeKind.Utc).AddTicks(5241), new Guid("be65d79e-9654-40a1-89a4-32242fcba393"), null, "Development", null, new Guid("9f9179d0-3d20-4e1f-8d52-029fda1ddc30") });
 
             migrationBuilder.InsertData(
                 table: "ApplicationClaims",
                 columns: new[] { "Id", "ApplicationPolicyId", "CreatedOn", "Description", "ModifiedOn", "TenantId", "Type", "Value" },
                 values: new object[,]
                 {
-                    { new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"), new Guid("b7538a53-d3b2-4b66-ba40-97619cda8d00"), new DateTime(2023, 3, 9, 14, 23, 55, 377, DateTimeKind.Utc).AddTicks(3234), "Database seeded", null, new Guid("e637d860-3049-46ee-96d2-7773e666b42c"), "Admin", "Everything" },
-                    { new Guid("c21c771f-7e71-450b-805a-2cf9fce819a2"), new Guid("9fa14d9e-0d8e-4b51-85e4-c4bdd5873d14"), new DateTime(2023, 3, 9, 14, 23, 55, 377, DateTimeKind.Utc).AddTicks(3244), "Database seeded", null, new Guid("e637d860-3049-46ee-96d2-7773e666b42c"), "User", "BasicThings" }
+                    { new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"), new Guid("b7538a53-d3b2-4b66-ba40-97619cda8d00"), new DateTime(2023, 4, 2, 13, 24, 13, 710, DateTimeKind.Utc).AddTicks(4177), "Database seeded", null, new Guid("9f9179d0-3d20-4e1f-8d52-029fda1ddc30"), "Admin", "Everything" },
+                    { new Guid("c839c6fd-689a-4852-b247-347a9c401ce0"), new Guid("9fa14d9e-0d8e-4b51-85e4-c4bdd5873d14"), new DateTime(2023, 4, 2, 13, 24, 13, 710, DateTimeKind.Utc).AddTicks(4203), "Database seeded", null, new Guid("9f9179d0-3d20-4e1f-8d52-029fda1ddc30"), "User", "BasicThings" }
                 });
 
             migrationBuilder.InsertData(
@@ -523,8 +532,8 @@ namespace FalconOne.DAL.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedOn", "DepartmentId", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "ModifiedOn", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "ProfilePictureId", "SecurityStamp", "TenantId", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("5090b588-6e3f-464a-994d-9cd2af4a0198"), 0, "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==", new DateTime(2023, 3, 9, 14, 23, 55, 374, DateTimeKind.Utc).AddTicks(9537), new Guid("1272dccb-9e1f-487a-9eb9-5b2bd2beecb1"), "a@a.com", true, "Admin", "User", false, null, null, "a@a.com", "a", "AQAAAAEAACcQAAAAEMN6BwqtrJ9cqsQzZLUk46GgC9ahGGLNqnjfIjctnK6NJN7FieZ+8oa9aoG3XGVI+g==", "8886014997", false, null, "UCQO32XEFNXIAZIR3LTNFDRRX7A2NHLK", new Guid("e637d860-3049-46ee-96d2-7773e666b42c"), false, "adminuser01" },
-                    { new Guid("6521474a-6e39-4a5e-8628-cd89b4e922bc"), 0, "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==", new DateTime(2023, 3, 9, 14, 23, 55, 374, DateTimeKind.Utc).AddTicks(9533), new Guid("1272dccb-9e1f-487a-9eb9-5b2bd2beecb1"), "b@b.com", true, "Basic", "User", false, null, null, "b@b.com", "b", "AQAAAAEAACcQAAAAEOY5Ans1yuTXd3u1LSIxBhOjmkV8GEoz37x1Fdxy/we96AhNj3Fb/o/5Ri8yezvXIg==", "8886014996", false, null, "UCQO32XEFNXIAZIR3LTNFDRRX7A2NHLK", new Guid("e637d860-3049-46ee-96d2-7773e666b42c"), false, "basicuser01" }
+                    { new Guid("5090b588-6e3f-464a-994d-9cd2af4a0198"), 0, "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==", new DateTime(2023, 4, 2, 13, 24, 13, 707, DateTimeKind.Utc).AddTicks(5353), new Guid("d9da8797-3d72-469c-9945-2242064574b6"), "a@a.com", true, "Admin", "User", false, null, null, "a@a.com", "a", "AQAAAAEAACcQAAAAEO1cu29DHc1bpfNCAiOIt/aYqdHkLb210xehTI9I+mEon3lECzNwcTPyQ2RNQd1sVQ==", "8886014997", false, null, "UCQO32XEFNXIAZIR3LTNFDRRX7A2NHLK", new Guid("9f9179d0-3d20-4e1f-8d52-029fda1ddc30"), false, "adminuser01" },
+                    { new Guid("6521474a-6e39-4a5e-8628-cd89b4e922bc"), 0, "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==", new DateTime(2023, 4, 2, 13, 24, 13, 707, DateTimeKind.Utc).AddTicks(5348), new Guid("d9da8797-3d72-469c-9945-2242064574b6"), "b@b.com", true, "Basic", "User", false, null, null, "b@b.com", "b", "AQAAAAEAACcQAAAAEJv0FQ61dsWzLHIApo9lga6jLqzPo+f3Rt5t/N4YLKRXJqdpOi2QaopWQvyeN9Josw==", "8886014996", false, null, "UCQO32XEFNXIAZIR3LTNFDRRX7A2NHLK", new Guid("9f9179d0-3d20-4e1f-8d52-029fda1ddc30"), false, "basicuser01" }
                 });
 
             migrationBuilder.InsertData(
@@ -541,8 +550,8 @@ namespace FalconOne.DAL.Migrations
                 columns: new[] { "Id", "ApplicationClaimId", "CreatedOn", "Description", "ModifiedOn", "Name", "TenantId", "URL" },
                 values: new object[,]
                 {
-                    { new Guid("30279eae-8b0e-45bf-80bf-bb56aeca318f"), new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"), new DateTime(2023, 3, 9, 14, 23, 55, 377, DateTimeKind.Utc).AddTicks(3260), "User login", null, "Login", new Guid("e637d860-3049-46ee-96d2-7773e666b42c"), "login" },
-                    { new Guid("e9af5b2f-3a18-4269-8890-4d66ba895924"), new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"), new DateTime(2023, 3, 9, 14, 23, 55, 377, DateTimeKind.Utc).AddTicks(3271), "User signup", null, "Singup", new Guid("e637d860-3049-46ee-96d2-7773e666b42c"), "signup" }
+                    { new Guid("71d98bc7-2d24-4547-a35d-e9c90cc4b2ee"), new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"), new DateTime(2023, 4, 2, 13, 24, 13, 710, DateTimeKind.Utc).AddTicks(4224), "User signup", null, "Singup", new Guid("9f9179d0-3d20-4e1f-8d52-029fda1ddc30"), "signup" },
+                    { new Guid("b1009b6e-eac5-4a39-aba9-693133f28839"), new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"), new DateTime(2023, 4, 2, 13, 24, 13, 710, DateTimeKind.Utc).AddTicks(4222), "User login", null, "Login", new Guid("9f9179d0-3d20-4e1f-8d52-029fda1ddc30"), "login" }
                 });
 
             migrationBuilder.CreateIndex(

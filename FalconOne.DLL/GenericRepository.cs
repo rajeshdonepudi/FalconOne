@@ -95,9 +95,15 @@ namespace FalconOne.DAL
             var val = _httpContextAccessor.HttpContext.Request.Headers["TenantHostHeader"];
 
             Guid tenantId;
+
             Guid.TryParse(val, out tenantId);
 
             return tenantId;
+        }
+
+        public async Task<IEnumerable<T>> QueryAllAsync(Expression<Func<T, bool>> expression)
+        {
+            return await _falconOneContext.Set<T>().Where(expression).ToListAsync();
         }
         #endregion
     }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Utilities.Enumerations;
 
 namespace Utilities.DTOs
 {
@@ -10,5 +11,6 @@ namespace Utilities.DTOs
         public string Value { get; set; }
         [Required]
         public string Description { get; set; }
+        public SettingTypeEnum SettingType { get; set; }
     }
 }

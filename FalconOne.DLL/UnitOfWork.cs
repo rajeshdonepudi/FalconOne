@@ -43,6 +43,7 @@ namespace FalconOne.DAL
         public async Task<int> SaveChangesAsync()
         {
             Console.ForegroundColor = ConsoleColor.Green;
+
             var added = _falconOneContext.ChangeTracker.Entries().Where(x => x.State == Microsoft.EntityFrameworkCore.EntityState.Added).Count();
             var updated = _falconOneContext.ChangeTracker.Entries().Where(x => x.State == Microsoft.EntityFrameworkCore.EntityState.Modified).Count();
             var deleted = _falconOneContext.ChangeTracker.Entries().Where(x => x.State == Microsoft.EntityFrameworkCore.EntityState.Detached).Count();

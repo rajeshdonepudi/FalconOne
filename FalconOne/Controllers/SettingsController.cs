@@ -3,6 +3,7 @@ using FalconeOne.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Utilities.DTOs;
+using Utilities.Enumerations;
 
 namespace FalconOne.API.Controllers
 {
@@ -15,6 +16,12 @@ namespace FalconOne.API.Controllers
         public SettingsController(ISettingsService settingsService)
         {
             _settingsService = settingsService;
+        }
+
+        [HttpGet("type/{settingType}")]
+        public async Task<IActionResult> GetSettings(SettingTypeEnum settingType)
+        {
+            return Ok(await _settingsService.GetSettings(settingType));
         }
 
         [HttpPost("add-new")]
