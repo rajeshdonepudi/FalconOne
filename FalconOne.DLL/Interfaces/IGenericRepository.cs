@@ -11,6 +11,7 @@ namespace FalconOne.DAL.Interfaces
         Task<T> FindAsync(Guid id);
         Task<T> DeleteAsync(T entity);
         Task<T> UpdateAsync(T entity);
+        Task UpdateRangeAsync(List<T> entities);
         Task<T> QueryAsync(Expression<Func<T, bool>> expression);
         Task<IEnumerable<T>> QueryAllAsync(Expression<Func<T, bool>> expression);
         Task<PagedList<T>> GetAllAsync(PageParams pageParams);

@@ -39,6 +39,12 @@ namespace FalconOne.API.Controllers
             }
         }
 
+        [HttpPatch]
+        public async Task<IActionResult> UpdateSettings(List<ApplicationSettingDTO> settings)
+        {
+            return ReturnResponse(await _settingsService.UpdateSettings(settings));
+        }
+
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteSetting(string guid)
         {

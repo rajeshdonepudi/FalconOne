@@ -60,14 +60,6 @@ namespace FalconOne.DAL
             return await _falconOneContext.Set<T>().ToListAsync();
         }
 
-        //public async Task<IEnumerable<T>> GetAllAsync(PageParams pageParams)
-        //{
-        //    return await _falconOneContext.Set<T>()
-        //                                  .Skip((pageParams.PageNumber - 1) * pageParams.PageSize)
-        //                                  .Take(pageParams.PageSize)
-        //                                  .ToListAsync();
-        //}
-
         public async Task<T> UpdateAsync(T entity)
         {
             if (entity is ITrackableEntity)
@@ -104,6 +96,18 @@ namespace FalconOne.DAL
         public async Task<IEnumerable<T>> QueryAllAsync(Expression<Func<T, bool>> expression)
         {
             return await _falconOneContext.Set<T>().Where(expression).ToListAsync();
+        }
+
+        public async Task UpdateRangeAsync(List<T> entities)
+        {
+            foreach (var entity in entities)
+            {
+                if (entity is ITrackableEntity)
+                {
+                    (entity as ITrackableEntity).ModifiedOn = DateTime.UtcNow;
+                }
+            }
+            _falconOneContext.Set<T>().UpdateRange(entities);
         }
         #endregion
     }
