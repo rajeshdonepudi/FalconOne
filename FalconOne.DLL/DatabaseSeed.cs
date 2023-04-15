@@ -34,8 +34,8 @@ namespace FalconOne.DAL
             #region Create tenant
             var tenant = new Tenant
             {
-                Name = "rajesh",
-                Host = "rajeshdnp.com",
+                Name = "development",
+                Host = "localhost",
                 CreatedOn = DateTime.UtcNow,
                 Id = tenantId,
                 LocationId = locationId

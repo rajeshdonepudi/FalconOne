@@ -47,7 +47,7 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> GetAllPolicies()
         {
-            var result = await _unitOfWork.ApplicationPolicyRepository.GetQuery().Include(x => x.PolicyClaims).ToListAsync();
+            var result = await _unitOfWork.ApplicationPolicyRepository.GetQueryable().Include(x => x.PolicyClaims).ToListAsync();
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result));
         }
@@ -55,7 +55,7 @@ namespace FalconeOne.BLL.Services
         #region Private
         private async Task DeleteAssociatedClaims(Guid policyId)
         {
-            var claims = await _unitOfWork.UserClaimRepository.GetQuery().Where(x => x.ApplicationPolicyId == policyId).ToListAsync();
+            var claims = await _unitOfWork.UserClaimRepository.GetQueryable().Where(x => x.ApplicationPolicyId == policyId).ToListAsync();
 
             foreach (var claim in claims)
             {

@@ -15,5 +15,6 @@
         public int Port { get; set; }
         public string Scheme { get; set; }
         public DateTime RecordedOn { get; set; }
+        public Guid? TenantId { get; set; }
     }
 }

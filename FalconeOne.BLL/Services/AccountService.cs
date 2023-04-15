@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using Utilities.DTOs;
+using Utilities.ExtensionMethods;
 using Utilities.Helpers;
 
 namespace FalconeOne.BLL.Services
@@ -28,6 +28,7 @@ namespace FalconeOne.BLL.Services
         private readonly IOptions<IdentityOptions> _optionsAccessor;
         private readonly ITokenService _tokenService;
         private readonly IAppConfigService _appConfigService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         /// <summary>
         /// The data protection purpose used for the reset password related methods.
@@ -53,7 +54,7 @@ namespace FalconeOne.BLL.Services
             RoleManager<UserRole> roleManager,
             IOptions<IdentityOptions> optionsAccessor,
             ITokenService tokenService,
-            IAppConfigService appConfigService) : base(userManager, mapper, unitOfWork)
+            IAppConfigService appConfigService, IHttpContextAccessor httpContextAccessor) : base(userManager, mapper, unitOfWork)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -63,6 +64,7 @@ namespace FalconeOne.BLL.Services
             _optionsAccessor = optionsAccessor;
             _tokenService = tokenService;
             _appConfigService = appConfigService;
+            _httpContextAccessor = httpContextAccessor;
         }
         #endregion
 
@@ -188,15 +190,15 @@ namespace FalconeOne.BLL.Services
                 result.Add(res);
             }
 
-            var pageList = new
+            var pagedList = new PagedListDTO
             {
                 TotalCount = users.TotalCount,
-                PageSize = users.PageSize,
                 PageIndex = users.PageIndex,
+                PageSize = users.PageSize,
                 Records = result
             };
 
-           return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, pageList));
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, pagedList));
         }
 
         public async Task<ApiResponse> GetByIdAsync(string userId)
@@ -371,7 +373,7 @@ namespace FalconeOne.BLL.Services
         }
         private async Task<RefreshToken> GenerateRefreshToken()
         {
-            var refreshToken = await GetToken();
+            var refreshToken = await GetRefreshToken();
 
             var refreshTokens = await _userManager.Users.AsNoTracking().SelectMany(x => x.RefreshTokens).ToListAsync();
 
@@ -387,14 +389,14 @@ namespace FalconeOne.BLL.Services
             }
             return await Task.FromResult(refreshToken);
         }
-        private async Task<RefreshToken> GetToken()
+        private async Task<RefreshToken> GetRefreshToken()
         {
             return await Task.FromResult(new RefreshToken
             {
                 Token = Convert.ToHexString(GetRandomBytes(64)),
                 Expires = DateTime.UtcNow.AddDays(double.Parse(await _appConfigService.GetValue("JWT:RefreshTokenValidity"))),
                 Created = DateTime.UtcNow,
-                CreatedByIp = ""
+                CreatedByIp = _httpContextAccessor.HttpContext.GetRequestIP(true)
             });
         }
         private byte[] GetRandomBytes(int length)

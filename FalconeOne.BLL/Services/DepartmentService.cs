@@ -21,7 +21,7 @@ namespace FalconeOne.BLL.Services
         {
             var tenantId = await GetCurrentTenantId();
 
-            var departments = await _unitOfWork.DepartmentRepository.GetQuery().Where(x => x.TenantId == tenantId).ToListAsync();
+            var departments = await _unitOfWork.DepartmentRepository.GetQueryable().Where(x => x.TenantId == tenantId).ToListAsync();
 
             var result = _mapper.Map<List<DepartmentDTO>>(departments);
 

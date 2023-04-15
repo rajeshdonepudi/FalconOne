@@ -20,16 +20,6 @@ namespace FalconOne.DAL
 
         public async Task<T> AddAsync(T entity)
         {
-            if (entity is ITrackableEntity)
-            {
-                (entity as ITrackableEntity).CreatedOn = DateTime.UtcNow;
-            }
-
-            if (entity is IMultiTenantEntity)
-            {
-                (entity as IMultiTenantEntity).TenantId = !GetTenantId().Equals(Guid.Empty) ? GetTenantId() : null;
-            }
-
             var query = await _falconOneContext.Set<T>().AddAsync(entity);
 
             return query.Entity;
@@ -69,7 +59,7 @@ namespace FalconOne.DAL
             return _falconOneContext.Set<T>().Update(entity).Entity;
         }
 
-        public IQueryable<T> GetQuery()
+        public IQueryable<T> GetQueryable()
         {
             return _falconOneContext.Set<T>().AsQueryable();
         }
@@ -82,16 +72,6 @@ namespace FalconOne.DAL
         }
 
         #region Private methods
-        private Guid GetTenantId()
-        {
-            var val = _httpContextAccessor.HttpContext.Request.Headers["TenantHostHeader"];
-
-            Guid tenantId;
-
-            Guid.TryParse(val, out tenantId);
-
-            return tenantId;
-        }
 
         public async Task<IEnumerable<T>> QueryAllAsync(Expression<Func<T, bool>> expression)
         {

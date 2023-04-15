@@ -1,5 +1,6 @@
 ﻿using FalconeOne.BLL.Interfaces;
 using FalconeOne.BLL.Services;
+using FalconOne.API.Filters;
 using FalconOne.DAL;
 using FalconOne.DAL.Interfaces;
 
@@ -22,6 +23,7 @@ namespace FalconOne.API.DependencyConfig
             builder.Services.AddTransient<IPostService, PostService>();
             builder.Services.AddTransient<IDepartmentService, DepartmentService>();
             builder.Services.AddScoped<ISettingsService, SettingsService>();
+            builder.Services.AddScoped<ITenantService, TenantService>();
         }
     }
 }

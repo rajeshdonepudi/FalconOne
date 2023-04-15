@@ -1,10 +1,12 @@
 ﻿using FalconeOne.BLL.Helpers;
-using FalconeOne.BLL.Services;
+using FalconOne.API.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 namespace FalconOne.API.Controllers
 {
     [ServiceFilter(typeof(AsyncActionFilter))]
+    [Authorize]
     public class BaseController : ControllerBase
     {
         public BaseController() : base()
