@@ -72,7 +72,6 @@ namespace FalconOne.DAL
         }
 
         #region Private methods
-
         public async Task<IEnumerable<T>> QueryAllAsync(Expression<Func<T, bool>> expression)
         {
             return await _falconOneContext.Set<T>().Where(expression).ToListAsync();
