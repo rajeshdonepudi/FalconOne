@@ -1,6 +1,10 @@
 ﻿using FalconeOne.BLL.Interfaces;
+using FalconOne.API.Attributes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Utilities.Constants;
 using Utilities.DTOs;
+using Utilities.Helpers;
 
 namespace FalconOne.API.Controllers
 {
@@ -44,6 +48,16 @@ namespace FalconOne.API.Controllers
             {
                 return BadRequest();
             }
+        }
+
+        [HttpPost("all-users")]
+        [AllowAnonymous]
+        [UserAction(ResourceCodes.GET_USER)]
+        public async Task<IActionResult> GetAllUsers(PageParams model)
+        {
+            var response = await _accountService.GetAllAsync(model);
+
+            return ReturnResponse(response);
         }
     }
 }

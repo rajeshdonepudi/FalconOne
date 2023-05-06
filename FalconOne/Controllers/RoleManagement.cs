@@ -46,5 +46,11 @@ namespace FalconOne.API.Controllers
                 return BadRequest(ModelState);
             }
         }
+
+        [HttpGet("roles")]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _appRoleService.GetAllRolesAsync());
+        }
     }
 }

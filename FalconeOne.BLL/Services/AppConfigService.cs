@@ -1,6 +1,5 @@
 ﻿using FalconeOne.BLL.Interfaces;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FalconeOne.BLL.Services
 {

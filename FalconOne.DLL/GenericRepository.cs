@@ -1,36 +1,48 @@
-﻿using FalconOne.DLL.Interfaces;
+﻿using FalconOne.DAL.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Utilities.Helpers;
 
-namespace FalconOne.DLL
+namespace FalconOne.DAL
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly FalconOneContext _falconOneContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public GenericRepository(FalconOneContext falconOneContext)
+        public GenericRepository(FalconOneContext falconOneContext,
+            IHttpContextAccessor httpContextAccessor)
         {
             _falconOneContext = falconOneContext;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public void Add(T entity)
+        public async Task<T> AddAsync(T entity)
         {
-            _falconOneContext.Set<T>().Add(entity);
+            var query = await _falconOneContext.Set<T>().AddAsync(entity);
+
+            return query.Entity;
         }
 
-        public void Delete(T entity)
+        public async Task<T> DeleteAsync(T entity)
         {
-            _falconOneContext.Set<T>().Remove(entity);
+            return await Task.FromResult(_falconOneContext.Set<T>().Remove(entity).Entity);
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(Guid id)
         {
             return await _falconOneContext.Set<T>().FindAsync(id);
         }
 
-        public async Task<T> FindAsync(Expression<Func<T, bool>> expression)
+        public async Task<T> QueryAsync(Expression<Func<T, bool>> expression)
         {
             return await _falconOneContext.Set<T>().Where(expression).FirstOrDefaultAsync();
+        }
+
+        public async Task<T> FindAsync(Guid id)
+        {
+            return await _falconOneContext.Set<T>().FindAsync(id);
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
@@ -38,9 +50,44 @@ namespace FalconOne.DLL
             return await _falconOneContext.Set<T>().ToListAsync();
         }
 
-        public void Update(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
-            _falconOneContext.Set<T>().Update(entity);
+            if (entity is ITrackableEntity)
+            {
+                (entity as ITrackableEntity).ModifiedOn = DateTime.UtcNow;
+            }
+            return _falconOneContext.Set<T>().Update(entity).Entity;
         }
+
+        public IQueryable<T> GetQueryable()
+        {
+            return _falconOneContext.Set<T>().AsQueryable();
+        }
+
+        public async Task<PagedList<T>> GetAllAsync(PageParams pageParams)
+        {
+            var query = _falconOneContext.Set<T>().AsQueryable();
+
+            return await Task.FromResult(new PagedList<T>(query, pageParams.PageIndex, pageParams.PageSize));
+        }
+
+        #region Private methods
+        public async Task<IEnumerable<T>> QueryAllAsync(Expression<Func<T, bool>> expression)
+        {
+            return await _falconOneContext.Set<T>().Where(expression).ToListAsync();
+        }
+
+        public async Task UpdateRangeAsync(List<T> entities)
+        {
+            foreach (var entity in entities)
+            {
+                if (entity is ITrackableEntity)
+                {
+                    (entity as ITrackableEntity).ModifiedOn = DateTime.UtcNow;
+                }
+            }
+            _falconOneContext.Set<T>().UpdateRange(entities);
+        }
+        #endregion
     }
 }

@@ -1,8 +1,8 @@
 ﻿using FalconeOne.BLL.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using FalconOne.API.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
+using Utilities.Constants;
 using Utilities.DTOs;
 
 namespace FalconOne.API.Controllers
@@ -12,22 +12,21 @@ namespace FalconOne.API.Controllers
     public class AccountController : BaseController
     {
         private readonly IAccountService _accountService;
-        private readonly IAppRoleService _appRoleService;
-
-        public AccountController(IAccountService accountService, IAppRoleService appRoleService)
+        public AccountController(IAccountService accountService)
         {
             _accountService = accountService;
-            _appRoleService = appRoleService;
         }
 
         [HttpPost("register-new-user")]
+        [AllowAnonymous]
+        [UserAction(ResourceCodes.USER_CREATE)]
         public async Task<IActionResult> Register(RegisterNewUserRequestDTO model)
         {
             if (ModelState.IsValid)
             {
                 var response = await _accountService.CreateNewUserAsync(model);
 
-                return Ok(response);
+                return ReturnResponse(response);
             }
             else
             {
@@ -36,25 +35,24 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
+        [UserAction(ResourceCodes.LOGIN)]
         public async Task<IActionResult> Login(AuthenticateRequestDTO model)
         {
-            var response = await _accountService.AuthenticateUserAsync(model);
+            if (ModelState.IsValid)
+            {
+                var response = await _accountService.AuthenticateUserAsync(model);
 
-            //AddResponseHeader("RefreshToken", response.Data.RefreshToken);
-            //var result = JsonConvert.SerializeObject(response);
-            return ReturnResponse(response);
-        }
-
-        [HttpGet("all-users")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> GetAllUsers()
-        {
-            var response = await _accountService.GetAllAsync();
-
-            return ReturnResponse(response);
+                return ReturnResponse(response);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpGet("get-user")]
+        [UserAction(ResourceCodes.GET_USER)]
         public async Task<IActionResult> GetByUserId(string userId)
         {
             var response = await _accountService.GetByIdAsync(userId);
@@ -63,6 +61,8 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("forgot-password")]
+        [UserAction(ResourceCodes.FORGOT_PASSWORD)]
+        [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordRequestDTO model)
         {
             if (ModelState.IsValid)
@@ -78,6 +78,8 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("reset-password")]
+        [UserAction(ResourceCodes.RESET_PASSWORD)]
+        [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequestDTO model)
         {
             if (ModelState.IsValid)
@@ -93,6 +95,8 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("revoke-refresh-token")]
+        [UserAction(ResourceCodes.REVOKE_REFRESH_TOKEN)]
+        [AllowAnonymous]
         public async Task<IActionResult> RevokeRefreshToken(RevokeRefreshTokenRequestDTO model)
         {
             if (ModelState.IsValid)
@@ -108,11 +112,30 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("refresh-token")]
+        [UserAction(ResourceCodes.REFRESH_TOKEN)]
+        [AllowAnonymous]
         public async Task<IActionResult> RefreshToken(RefreshTokenRequestDTO model)
         {
             if (ModelState.IsValid)
             {
                 var response = await _accountService.GetNewJWTByRefreshTokenAsync(model.RefreshToken);
+
+                return ReturnResponse(response);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
+
+        [HttpPatch("{userId}/email-confirmed/{value}")]
+        [AllowAnonymous]
+        [UserAction(ResourceCodes.AAC_UPDATE_EMAIL_CONFIRMED)]
+        public async Task<IActionResult> UpdateEmailConfirmed(string userId, bool value)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _accountService.UpdateEmailConfirmed(userId, value);
 
                 return ReturnResponse(response);
             }

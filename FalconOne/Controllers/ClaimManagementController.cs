@@ -21,12 +21,29 @@ namespace FalconOne.API.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _appClaimService.CreateClaimAsync(model);
+
                 return ReturnResponse(result);
             }
             else
             {
                 return BadRequest(ModelState);
             }
+        }
+
+        [HttpGet("get-all-claims")]
+        public async Task<IActionResult> GetAllClaims()
+        {
+            var response = await _appClaimService.GetAllClaimsAsync();
+
+            return ReturnResponse(response);
+        }
+
+        [HttpDelete("delete-claim")]
+        public async Task<IActionResult> DeleteClaimAsync(Guid claimId)
+        {
+            var response = await _appClaimService.DeleteClaimAsync(claimId);
+
+            return ReturnResponse(response);
         }
     }
 }
