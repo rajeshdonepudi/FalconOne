@@ -68,7 +68,7 @@ namespace FalconOne.DAL
         {
             var query = _falconOneContext.Set<T>().AsQueryable();
 
-            return new PagedList<T>(query, pageParams.PageIndex, pageParams.PageSize);
+            return await Task.FromResult(new PagedList<T>(query, pageParams.PageIndex, pageParams.PageSize));
         }
 
         #region Private methods

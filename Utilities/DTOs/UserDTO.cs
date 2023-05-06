@@ -14,6 +14,5 @@
         public bool LockoutEnabled { get; set; }
         public DateTime CreatedOn { get; set; }
         public Guid? TenantId { get; set; }
-
     }
 }

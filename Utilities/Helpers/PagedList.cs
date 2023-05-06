@@ -2,7 +2,7 @@
 {
     public class PagedList<T> : List<T>
     {
-        public PagedList(IQueryable<T> source, int index = 0, int pageSize = 10)
+        public PagedList(IQueryable<T> source, int index = 1, int pageSize = 10)
         {
             TotalCount = source.Count();
             PageSize = pageSize;
