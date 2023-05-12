@@ -12,6 +12,7 @@ namespace FalconOne.API.Controllers
 
         public RequestInformationController(IRequestInformationService requestInformationService)
         {
+
             _requestInformationService = requestInformationService;
         }
 

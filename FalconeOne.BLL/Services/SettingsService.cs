@@ -57,5 +57,21 @@ namespace FalconeOne.BLL.Services
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.Accepted, MessageHelper.SUCESSFULL));
         }
+
+        public async Task<ApiResponse> UpdateSettingsByName(List<ApplicationSettingDTO> settings)
+        {
+            foreach (var setting in settings)
+            {
+                var settingToUpdate = await _unitOfWork.ApplicationSettingRepository.QueryAsync(x => x.Name == setting.Name);
+
+                if(settingToUpdate != null)
+                {
+                    settingToUpdate.Value = setting.Value;
+                    await _unitOfWork.ApplicationSettingRepository.UpdateAsync(settingToUpdate);
+                    await _unitOfWork.SaveChangesAsync();
+                }
+            }
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.Accepted, MessageHelper.SUCESSFULL));
+        }
     }
 }

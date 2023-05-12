@@ -1,7 +1,9 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
+using FalconOne.API.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Utilities.Constants;
 using Utilities.DTOs;
 using Utilities.Enumerations;
 
@@ -19,6 +21,8 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpGet("type/{settingType}")]
+        [AllowAnonymous]
+        [UserAction(resourceCode: ResourceCodes.GET_SETTING_BY_TYPE)]
         public async Task<IActionResult> GetSettings(SettingTypeEnum settingType)
         {
             return Ok(await _settingsService.GetSettings(settingType));
@@ -40,9 +44,11 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPatch]
+        [AllowAnonymous]
+        [UserAction(resourceCode: ResourceCodes.UPDATE_SETTINGS)]
         public async Task<IActionResult> UpdateSettings(List<ApplicationSettingDTO> settings)
         {
-            return ReturnResponse(await _settingsService.UpdateSettings(settings));
+            return ReturnResponse(await _settingsService.UpdateSettingsByName(settings));
         }
 
         [HttpDelete("delete")]

@@ -220,6 +220,16 @@ namespace FalconOne.DAL
                 TenantId = tenantId
             });
 
+            modelBuilder.Entity<ApplicationSetting>().HasData(new ApplicationSetting
+            {
+                Id = Guid.NewGuid(),
+                SettingType = Utilities.Enumerations.SettingTypeEnum.Theme,
+                CreatedOn = DateTime.UtcNow,
+                Description = "This is site theme",
+                Name = "theme",
+                Value = "light",
+                TenantId = tenantId
+            });
             #endregion
         }
     }
