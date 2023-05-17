@@ -13,5 +13,10 @@
         public const string REFRESH_TOKEN = "REFRESH_TOKEN";
         public const string AAC_UPDATE_EMAIL_CONFIRMED = "AAC_UPDATE_EMAIL_CONFIRMED";
         #endregion
+
+        #region Settings
+        public const string GET_SETTING_BY_TYPE = "GET_SETTING_BY_TYPE";
+        public const string UPDATE_SETTINGS = "UPDATE_SETTINGS";
+        #endregion
     }
 }

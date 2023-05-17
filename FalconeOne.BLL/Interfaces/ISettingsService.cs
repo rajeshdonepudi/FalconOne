@@ -10,5 +10,6 @@ namespace FalconeOne.BLL.Interfaces
         Task<ApiResponse> AddNewSetting(ApplicationSettingDTO model);
         Task<ApiResponse> DeleteSetting(Guid id);
         Task<ApiResponse> UpdateSettings(List<ApplicationSettingDTO> settings);
+        Task<ApiResponse> UpdateSettingsByName(List<ApplicationSettingDTO> settings);
     }
 }
