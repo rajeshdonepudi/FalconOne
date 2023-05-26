@@ -1,5 +1,5 @@
 ﻿using FalconeOne.BLL.Interfaces;
-using FalconOne.DAL.Entities;
+using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

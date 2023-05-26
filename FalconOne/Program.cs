@@ -1,4 +1,3 @@
-using FalconOne.API;
 using FalconOne.API.AuthenticationConfig;
 using FalconOne.API.AuthorizationConfig;
 using FalconOne.API.DatabaseConfig;
@@ -22,8 +21,6 @@ SwaggerConfig.Configure(builder);
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddHttpContextAccessor();
 

@@ -1,6 +1,6 @@
 ﻿using FalconeOne.BLL.Interfaces;
+using FalconOne.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Utilities.DTOs;
 
 namespace FalconOne.API.Controllers
 {

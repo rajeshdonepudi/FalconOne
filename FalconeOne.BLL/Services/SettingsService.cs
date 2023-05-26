@@ -1,24 +1,24 @@
-﻿using AutoMapper;
-using FalconeOne.BLL.Helpers;
+﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using FalconOne.DAL.Entities;
 using FalconOne.DAL.Interfaces;
+using FalconOne.Enumerations.Settings;
+using FalconOne.Models.DTOs;
+using FalconOne.Models.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
-using Utilities.DTOs;
-using Utilities.Enumerations;
 
 namespace FalconeOne.BLL.Services
 {
     public class SettingsService : BaseService, ISettingsService
     {
-        public SettingsService(UserManager<User> userManager, IMapper mapper, IUnitOfWork unitOfWork) : base(userManager, mapper, unitOfWork)
+        public SettingsService(UserManager<User> userManager, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor ) : base(userManager, unitOfWork, httpContextAccessor)
         {
         }
 
         public async Task<ApiResponse> AddNewSetting(ApplicationSettingDTO model)
         {
-            var setting = _mapper.Map<ApplicationSetting>(model);
+            var setting = new ApplicationSetting();
 
             setting.CreatedOn = DateTime.UtcNow;
 
@@ -42,14 +42,14 @@ namespace FalconeOne.BLL.Services
         {
             var settings = await _unitOfWork.ApplicationSettingRepository.QueryAllAsync(x => x.SettingType == settingType);
 
-            var result = _mapper.Map<List<ApplicationSettingDTO>>(settings);
+            var result = new List<ApplicationSettingDTO>();
 
             return new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result);
         }
 
         public async Task<ApiResponse> UpdateSettings(List<ApplicationSettingDTO> settings)
         {
-            var result = _mapper.Map<List<ApplicationSetting>>(settings);
+            var result = new List<ApplicationSetting>();
 
             await _unitOfWork.ApplicationSettingRepository.UpdateRangeAsync(result);
 
@@ -64,7 +64,7 @@ namespace FalconeOne.BLL.Services
             {
                 var settingToUpdate = await _unitOfWork.ApplicationSettingRepository.QueryAsync(x => x.Name == setting.Name);
 
-                if(settingToUpdate != null)
+                if (settingToUpdate != null)
                 {
                     settingToUpdate.Value = setting.Value;
                     await _unitOfWork.ApplicationSettingRepository.UpdateAsync(settingToUpdate);

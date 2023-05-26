@@ -1,4 +1,4 @@
-﻿namespace Utilities.Helpers
+﻿namespace FalconOne.Helpers.Helpers
 {
     public class PageParams
     {

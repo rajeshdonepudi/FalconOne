@@ -1,23 +1,21 @@
-﻿using AutoMapper;
-using FalconeOne.BLL.Helpers;
+﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using FalconOne.DAL.Entities;
 using FalconOne.DAL.Interfaces;
+using FalconOne.Models.DTOs;
+using FalconOne.Models.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
-using Utilities.DTOs;
 
 namespace FalconeOne.BLL.Services
 {
     public class AppRoleService : BaseService, IAppRoleService
     {
-        private readonly IMapper _mapper;
         private readonly RoleManager<UserRole> _roleManager;
 
-        public AppRoleService(UserManager<User> userManager, IMapper mapper,
-            IUnitOfWork unitOfWork, RoleManager<UserRole> roleManager) : base(userManager, mapper, unitOfWork)
+        public AppRoleService(UserManager<User> userManager,
+            IUnitOfWork unitOfWork, RoleManager<UserRole> roleManager, IHttpContextAccessor httpContextAccessor) : base(userManager, unitOfWork, httpContextAccessor)
         {
-            _mapper = mapper;
             _roleManager = roleManager;
         }
         public async Task<ApiResponse> CreateRoleAsync(UserRoleDTO userRole)
@@ -27,7 +25,11 @@ namespace FalconeOne.BLL.Services
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REQUEST));
             }
 
-            var role = _mapper.Map<UserRole>(userRole);
+            var role = new UserRole
+            {
+                Name = userRole.Name,
+                CreatedOn = DateTime.UtcNow
+            };
 
             if (role is null)
             {

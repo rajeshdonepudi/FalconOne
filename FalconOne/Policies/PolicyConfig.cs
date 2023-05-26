@@ -1,5 +1,5 @@
 ﻿using FalconeOne.BLL.Interfaces;
-using FalconOne.DAL.Entities;
+using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FalconOne.API.Policies

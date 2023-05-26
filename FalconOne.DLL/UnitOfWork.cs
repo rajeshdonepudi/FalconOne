@@ -1,5 +1,5 @@
-﻿using FalconOne.DAL.Entities;
-using FalconOne.DAL.Interfaces;
+﻿using FalconOne.DAL.Interfaces;
+using FalconOne.Models.Entities;
 
 namespace FalconOne.DAL
 {

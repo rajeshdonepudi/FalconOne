@@ -1,28 +1,29 @@
-﻿using AutoMapper;
-using FalconeOne.BLL.Helpers;
+﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using FalconOne.DAL.Entities;
 using FalconOne.DAL.Interfaces;
+using FalconOne.Models.DTOs;
+using FalconOne.Models.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
-using Utilities.DTOs;
 
 namespace FalconeOne.BLL.Services
 {
     public class AppPolicyService : BaseService, IAppPolicyService
     {
-        private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public AppPolicyService(UserManager<User> userManager, IMapper mapper, IUnitOfWork unitOfWork) : base(userManager, mapper, unitOfWork)
+        public AppPolicyService(UserManager<User> userManager, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(userManager, unitOfWork, httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
         }
         public async Task<ApiResponse> CreatePolicy(CreatePolicyDTO model)
         {
-            var policy = _mapper.Map<ApplicationPolicy>(model);
+            var policy = new ApplicationPolicy
+            {
+                Name = model.Name,
+            };
 
             await _unitOfWork.ApplicationPolicyRepository.AddAsync(policy);
 

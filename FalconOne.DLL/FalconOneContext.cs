@@ -1,4 +1,4 @@
-﻿using FalconOne.DAL.Entities;
+﻿using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

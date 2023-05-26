@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="6.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.10">
@@ -20,7 +19,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FalconeOne.BLL\FalconeOne.BLL.csproj" />
-    <ProjectReference Include="..\Utilities\Utilities.csproj" />
+    <ProjectReference Include="..\FalconOne.Enumerations\FalconOne.Enumerations.csproj" />
+    <ProjectReference Include="..\FalconOne.ExtensionMethods\FalconOne.Extensions.csproj" />
+    <ProjectReference Include="..\FalconOne.Middleware\FalconOne.Middleware.csproj" />
+    <ProjectReference Include="..\FalconOne.Models\FalconOne.Models.csproj" />
+    <ProjectReference Include="..\FalconOne.ResourceCodes\FalconOne.ResourceCodes.csproj" />
+    <ProjectReference Include="..\Utilities\FalconOne.Helpers.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using FalconeOne.BLL.Helpers;
-using Utilities.DTOs;
-using Utilities.Helpers;
+using FalconOne.Helpers.Helpers;
+using FalconOne.Models.DTOs;
 
 namespace FalconeOne.BLL.Interfaces
 {

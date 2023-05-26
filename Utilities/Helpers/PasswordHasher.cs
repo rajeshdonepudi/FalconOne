@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Utilities.Helpers
+namespace FalconOne.Helpers.Helpers
 {
     public static class PasswordHasher
     {

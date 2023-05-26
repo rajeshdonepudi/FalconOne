@@ -1,11 +1,11 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using FalconOne.DAL.Entities;
 using FalconOne.DAL.Interfaces;
+using FalconOne.Models.DTOs;
+using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
 using System.Security.Claims;
-using Utilities.DTOs;
 
 namespace FalconeOne.BLL.Services
 {

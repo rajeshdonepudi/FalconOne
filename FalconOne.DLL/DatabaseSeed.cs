@@ -1,7 +1,7 @@
-﻿using FalconOne.DAL.Entities;
+﻿using FalconOne.Helpers.Helpers;
+using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Utilities.Helpers;
 
 namespace FalconOne.DAL
 {
@@ -201,7 +201,7 @@ namespace FalconOne.DAL
             modelBuilder.Entity<ApplicationSetting>().HasData(new ApplicationSetting
             {
                 Id = Guid.NewGuid(),
-                SettingType = Utilities.Enumerations.SettingTypeEnum.Theme,
+                SettingType = Enumerations.Settings.SettingTypeEnum.Theme,
                 CreatedOn = DateTime.UtcNow,
                 Description = "This is primary color",
                 Name = "primaryColor",
@@ -212,7 +212,7 @@ namespace FalconOne.DAL
             modelBuilder.Entity<ApplicationSetting>().HasData(new ApplicationSetting
             {
                 Id = Guid.NewGuid(),
-                SettingType = Utilities.Enumerations.SettingTypeEnum.Theme,
+                SettingType = FalconOne.Enumerations.Settings.SettingTypeEnum.Theme,
                 CreatedOn = DateTime.UtcNow,
                 Description = "This is secondary color",
                 Name = "secondaryColor",
@@ -223,7 +223,7 @@ namespace FalconOne.DAL
             modelBuilder.Entity<ApplicationSetting>().HasData(new ApplicationSetting
             {
                 Id = Guid.NewGuid(),
-                SettingType = Utilities.Enumerations.SettingTypeEnum.Theme,
+                SettingType = FalconOne.Enumerations.Settings.SettingTypeEnum.Theme,
                 CreatedOn = DateTime.UtcNow,
                 Description = "This is site theme",
                 Name = "theme",

@@ -1,6 +1,6 @@
 ﻿using FalconeOne.BLL.Interfaces;
+using FalconOne.Helpers.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using Utilities.Helpers;
 
 namespace FalconOne.API.Controllers
 {
@@ -12,7 +12,6 @@ namespace FalconOne.API.Controllers
 
         public RequestInformationController(IRequestInformationService requestInformationService)
         {
-
             _requestInformationService = requestInformationService;
         }
 

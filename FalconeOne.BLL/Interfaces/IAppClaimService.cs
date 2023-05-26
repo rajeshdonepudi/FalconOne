@@ -1,5 +1,5 @@
 ﻿using FalconeOne.BLL.Helpers;
-using Utilities.DTOs;
+using FalconOne.Models.DTOs;
 
 namespace FalconeOne.BLL.Interfaces
 {

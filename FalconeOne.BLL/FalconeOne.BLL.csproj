@@ -8,13 +8,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FalconOne.DLL\FalconOne.DAL.csproj" />
-    <ProjectReference Include="..\Utilities\Utilities.csproj" />
+    <ProjectReference Include="..\FalconOne.Enumerations\FalconOne.Enumerations.csproj" />
+    <ProjectReference Include="..\FalconOne.ExtensionMethods\FalconOne.Extensions.csproj" />
+    <ProjectReference Include="..\FalconOne.Middleware\FalconOne.Middleware.csproj" />
+    <ProjectReference Include="..\FalconOne.Models\FalconOne.Models.csproj" />
+    <ProjectReference Include="..\FalconOne.ResourceCodes\FalconOne.ResourceCodes.csproj" />
+    <ProjectReference Include="..\Utilities\FalconOne.Helpers.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="51Degrees.mobi-core" Version="3.2.21.1" />
-    <PackageReference Include="AutoMapper" Version="12.0.0" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.0" />

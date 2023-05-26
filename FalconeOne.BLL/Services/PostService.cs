@@ -1,35 +1,28 @@
-﻿using AutoMapper;
-using FalconeOne.BLL.Helpers;
+﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using FalconOne.DAL.Entities;
 using FalconOne.DAL.Interfaces;
+using FalconOne.Models.DTOs;
+using FalconOne.Models.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
-using Utilities.DTOs;
 
 namespace FalconeOne.BLL.Services
 {
     public class PostService : BaseService, IPostService
     {
-        private readonly UserManager<User> _userManager;
-        private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;
-
-        public PostService(UserManager<User> userManager,
-           IMapper mapper,
-           IUnitOfWork unitOfWork) : base(userManager, mapper, unitOfWork)
+        public PostService(UserManager<User> userManager, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
+            : base(userManager, unitOfWork, httpContextAccessor)
         {
-            _mapper = mapper;
-            _unitOfWork = unitOfWork;
-            _userManager = userManager;
         }
 
         public async Task<ApiResponse> CreateAsync(NewPostDTO newPost)
         {
             var user = await _userManager.FindByIdAsync(newPost.PostedBy.ToString());
 
-            Tenant tenant = null;
-            Department department = null;
+            var tenant = new Tenant();
+
+            var department = new Department();
 
             if (newPost.TenantId != null && newPost.DepartmentId is null)
             {
@@ -46,8 +39,8 @@ namespace FalconeOne.BLL.Services
                 Content = newPost.Content,
                 CreatedOn = DateTime.UtcNow,
                 PostedOn = newPost.PostedOn,
-                Department = department,
-                Tenant = tenant,
+                DepartmentId = department?.Id,
+                TenantId = tenant?.Id,
                 PostedBy = user
             });
 
@@ -58,9 +51,26 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> GetAllPosts()
         {
-            var entitites = await _unitOfWork.PostRepository.GetAllAsync();
+            var posts = await _unitOfWork.PostRepository.GetAllAsync();
 
-            var result = _mapper.Map<List<PostDTO>>(entitites);
+            var result = new List<PostDTO>();
+
+            foreach (var post in posts)
+            {
+                result.Add(new PostDTO
+                {
+                    Content = post.Content,
+                    DepartmentId = post.DepartmentId,
+                    PostedBy = new UserDTO
+                    {
+                        FirstName = post.PostedBy.FirstName,
+                        LastName = post.PostedBy.LastName,
+                        Id = post.PostedBy.Id
+                    },
+                    PostedOn = post.PostedOn,
+                    TenantId = post.TenantId
+                });
+            }
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result));
         }

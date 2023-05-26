@@ -1,9 +1,9 @@
 ﻿using FalconeOne.BLL.Interfaces;
 using FalconOne.API.Attributes;
+using FalconOne.Models.DTOs;
+using FalconOne.ResourceCodes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Utilities.Constants;
-using Utilities.DTOs;
 
 namespace FalconOne.API.Controllers
 {
@@ -14,13 +14,13 @@ namespace FalconOne.API.Controllers
         private readonly IAccountService _accountService;
         public AccountController(IAccountService accountService)
         {
-        
+
             _accountService = accountService;
         }
 
         [HttpPost("register-new-user")]
         [AllowAnonymous]
-        [UserAction(ResourceCodes.USER_CREATE)]
+        [UserAction(AppResourceCodes.Account.REGISTER_NEW_USER)]
         public async Task<IActionResult> Register(RegisterNewUserRequestDTO model)
         {
             if (ModelState.IsValid)
@@ -37,7 +37,7 @@ namespace FalconOne.API.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        [UserAction(ResourceCodes.LOGIN)]
+        [UserAction(AppResourceCodes.Account.LOGIN)]
         public async Task<IActionResult> Login(AuthenticateRequestDTO model)
         {
             if (ModelState.IsValid)
@@ -53,7 +53,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpGet("get-user")]
-        [UserAction(ResourceCodes.GET_USER)]
+        [UserAction(AppResourceCodes.Account.GET_USER)]
         public async Task<IActionResult> GetByUserId(string userId)
         {
             var response = await _accountService.GetByIdAsync(userId);
@@ -62,7 +62,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("forgot-password")]
-        [UserAction(ResourceCodes.FORGOT_PASSWORD)]
+        [UserAction(AppResourceCodes.Account.FORGOT_PASSWORD)]
         [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordRequestDTO model)
         {
@@ -79,7 +79,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("reset-password")]
-        [UserAction(ResourceCodes.RESET_PASSWORD)]
+        [UserAction(AppResourceCodes.Account.RESET_PASSWORD)]
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequestDTO model)
         {
@@ -96,7 +96,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("revoke-refresh-token")]
-        [UserAction(ResourceCodes.REVOKE_REFRESH_TOKEN)]
+        [UserAction(AppResourceCodes.Account.REVOKE_REFRESH_TOKEN)]
         [AllowAnonymous]
         public async Task<IActionResult> RevokeRefreshToken(RevokeRefreshTokenRequestDTO model)
         {
@@ -113,7 +113,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("refresh-token")]
-        [UserAction(ResourceCodes.REFRESH_TOKEN)]
+        [UserAction(AppResourceCodes.Account.REFRESH_TOKEN)]
         [AllowAnonymous]
         public async Task<IActionResult> RefreshToken(RefreshTokenRequestDTO model)
         {
@@ -131,7 +131,6 @@ namespace FalconOne.API.Controllers
 
         [HttpPatch("{userId}/email-confirmed/{value}")]
         [AllowAnonymous]
-        [UserAction(ResourceCodes.AAC_UPDATE_EMAIL_CONFIRMED)]
         public async Task<IActionResult> UpdateEmailConfirmed(string userId, bool value)
         {
             if (ModelState.IsValid)

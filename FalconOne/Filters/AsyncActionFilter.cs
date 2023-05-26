@@ -1,9 +1,9 @@
 ﻿using FalconeOne.BLL.Interfaces;
 using FalconOne.API.Attributes;
+using FalconOne.Extensions.Http;
+using FalconOne.Models.DTOs;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Reflection;
-using Utilities.DTOs;
-using Utilities.ExtensionMethods;
 
 namespace FalconOne.API.Filters
 {

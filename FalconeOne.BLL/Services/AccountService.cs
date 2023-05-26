@@ -1,8 +1,10 @@
-﻿using AutoMapper;
-using FalconeOne.BLL.Helpers;
+﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using FalconOne.DAL.Entities;
 using FalconOne.DAL.Interfaces;
+using FalconOne.Extensions.Http;
+using FalconOne.Helpers.Helpers;
+using FalconOne.Models.DTOs;
+using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,24 +13,17 @@ using Microsoft.Extensions.Options;
 using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using Utilities.DTOs;
-using Utilities.ExtensionMethods;
-using Utilities.Helpers;
 
 namespace FalconeOne.BLL.Services
 {
     public class AccountService : BaseService, IAccountService
     {
         #region Fields
-        private readonly UserManager<User> _userManager;
-        private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<UserRole> _roleManager;
         private readonly IOptions<IdentityOptions> _optionsAccessor;
         private readonly ITokenService _tokenService;
         private readonly IAppConfigService _appConfigService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         /// <summary>
         /// The data protection purpose used for the reset password related methods.
@@ -48,23 +43,18 @@ namespace FalconeOne.BLL.Services
 
         #region Constructor
         public AccountService(UserManager<User> userManager,
-            IMapper mapper,
             IUnitOfWork unitOfWork,
             SignInManager<User> signInManager,
             RoleManager<UserRole> roleManager,
             IOptions<IdentityOptions> optionsAccessor,
             ITokenService tokenService,
-            IAppConfigService appConfigService, IHttpContextAccessor httpContextAccessor) : base(userManager, mapper, unitOfWork)
+            IAppConfigService appConfigService, IHttpContextAccessor httpContextAccessor) : base(userManager, unitOfWork, httpContextAccessor)
         {
-            _mapper = mapper;
-            _unitOfWork = unitOfWork;
             _signInManager = signInManager;
-            _userManager = userManager;
             _roleManager = roleManager;
             _optionsAccessor = optionsAccessor;
             _tokenService = tokenService;
             _appConfigService = appConfigService;
-            _httpContextAccessor = httpContextAccessor;
         }
         #endregion
 
@@ -98,7 +88,16 @@ namespace FalconeOne.BLL.Services
 
             await _unitOfWork.SaveChangesAsync();
 
-            var authResponse = _mapper.Map<AuthenticateResponseDTO>(user);
+            var authResponse = new AuthenticateResponseDTO
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Id = user.Id,
+                JWTToken = jwtToken,
+                RefreshToken = refreshToken?.Token,
+                TenantId = user.TenantId.GetValueOrDefault()
+            };
 
             authResponse.JWTToken = jwtToken;
 
@@ -110,7 +109,7 @@ namespace FalconeOne.BLL.Services
         [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
         public async Task<ApiResponse> CreateNewUserAsync(RegisterNewUserRequestDTO model)
         {
-            var newUser = _mapper.Map<User>(model);
+            var newUser = new User { };
 
             newUser.CreatedOn = DateTime.UtcNow;
 
@@ -127,7 +126,7 @@ namespace FalconeOne.BLL.Services
             {
                 return new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG);
             }
-            var account = _mapper.Map<UserDTO>(user);
+            var account = new UserDTO { };
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.Created, MessageHelper.USER_CREATED_SUCCESSFULLY, account));
         }
@@ -186,7 +185,7 @@ namespace FalconeOne.BLL.Services
 
             foreach (var user in users)
             {
-                var res = _mapper.Map<UserDTO>(user);
+                var res = new UserDTO { };
                 result.Add(res);
             }
 
@@ -215,7 +214,7 @@ namespace FalconeOne.BLL.Services
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
             }
 
-            var result = _mapper.Map<UserDTO>(user);
+            var result = new UserDTO();
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result));
         }

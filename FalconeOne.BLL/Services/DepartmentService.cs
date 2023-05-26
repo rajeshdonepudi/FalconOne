@@ -1,18 +1,18 @@
-﻿using AutoMapper;
-using FalconeOne.BLL.Helpers;
+﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using FalconOne.DAL.Entities;
 using FalconOne.DAL.Interfaces;
+using FalconOne.Models.DTOs;
+using FalconOne.Models.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
-using Utilities.DTOs;
 
 namespace FalconeOne.BLL.Services
 {
     public class DepartmentService : BaseService, IDepartmentService
     {
-        public DepartmentService(UserManager<User> userManager, IMapper mapper, IUnitOfWork unitOfWork) : base(userManager, mapper, unitOfWork)
+        public DepartmentService(UserManager<User> userManager, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(userManager, unitOfWork, httpContextAccessor)
         {
 
         }
@@ -23,7 +23,16 @@ namespace FalconeOne.BLL.Services
 
             var departments = await _unitOfWork.DepartmentRepository.GetQueryable().Where(x => x.TenantId == tenantId).ToListAsync();
 
-            var result = _mapper.Map<List<DepartmentDTO>>(departments);
+            var result = new List<DepartmentDTO>();
+
+            foreach (var department in departments)
+            {
+                result.Add(new DepartmentDTO
+                {
+                    Name = department.Name,
+                    Id = department.Id
+                });
+            }
 
             result.Add(new DepartmentDTO
             {

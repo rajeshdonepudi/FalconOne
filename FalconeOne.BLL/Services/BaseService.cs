@@ -1,25 +1,22 @@
-﻿using AutoMapper;
-using FalconOne.DAL.Entities;
-using FalconOne.DAL.Interfaces;
+﻿using FalconOne.DAL.Interfaces;
+using FalconOne.Models.DTOs;
+using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Utilities.DTOs;
 
 namespace FalconeOne.BLL.Services
 {
     public class BaseService
     {
-        private readonly UserManager<User> _userManager;
-        protected readonly IMapper _mapper;
+        protected readonly UserManager<User> _userManager;
         protected readonly IUnitOfWork _unitOfWork;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        protected readonly IHttpContextAccessor _httpContextAccessor;
 
-        public BaseService(UserManager<User> userManager, IMapper mapper, IUnitOfWork unitOfWork)
+        public BaseService(UserManager<User> userManager, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
-            _mapper = mapper;
             _unitOfWork = unitOfWork;
-            _httpContextAccessor = new HttpContextAccessor();
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<Guid> GetCurrentTenantId()

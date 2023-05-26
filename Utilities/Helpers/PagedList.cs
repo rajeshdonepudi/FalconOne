@@ -1,4 +1,4 @@
-﻿namespace Utilities.Helpers
+﻿namespace FalconOne.Helpers.Helpers
 {
     public class PagedList<T> : List<T>
     {
@@ -37,14 +37,14 @@
         {
             get
             {
-                return (PageIndex > 0);
+                return PageIndex > 0;
             }
         }
         public bool IsNextPage
         {
             get
             {
-                return (PageIndex * PageSize) <= TotalCount;
+                return PageIndex * PageSize <= TotalCount;
             }
         }
     }
