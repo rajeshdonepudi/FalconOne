@@ -34,7 +34,7 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = await _settingsService.AddNewSetting(model);
+                ApiResponse response = await _settingsService.AddNewSetting(model);
                 return ReturnResponse(response);
             }
             else
@@ -54,11 +54,11 @@ namespace FalconOne.API.Controllers
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteSetting(string guid)
         {
-            bool validId = Guid.TryParse(guid, out var settingId);
+            bool validId = Guid.TryParse(guid, out Guid settingId);
 
             if (validId)
             {
-                var response = await _settingsService.DeleteSetting(settingId);
+                ApiResponse response = await _settingsService.DeleteSetting(settingId);
                 return ReturnResponse(response);
             }
             else

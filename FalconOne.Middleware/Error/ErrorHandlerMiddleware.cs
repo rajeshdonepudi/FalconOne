@@ -24,7 +24,7 @@ namespace FalconOne.Middleware.Error
             }
             catch (Exception error)
             {
-                var response = context.Response;
+                HttpResponse response = context.Response;
                 response.ContentType = "application/json";
 
                 switch (error)

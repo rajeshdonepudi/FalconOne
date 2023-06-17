@@ -1,5 +1,8 @@
 ﻿using FalconeOne.BLL.Interfaces;
+using FalconOne.API.Attributes;
 using FalconOne.Models.DTOs;
+using FalconOne.ResourceCodes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FalconOne.API.Controllers
@@ -16,6 +19,9 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
+        [UserAction(AppResourceCodes.Account.REGISTER_NEW_USER)]
+
         public async Task<IActionResult> Get()
         {
             return ReturnResponse(await _postsService.GetAllPosts());
@@ -24,7 +30,7 @@ namespace FalconOne.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(NewPostDTO postDTO)
         {
-            var response = await _postsService.CreateAsync(postDTO);
+            FalconeOne.BLL.Helpers.ApiResponse response = await _postsService.CreateAsync(postDTO);
 
             return ReturnResponse(response);
         }

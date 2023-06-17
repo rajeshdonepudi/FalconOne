@@ -1,6 +1,6 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using FalconOne.DAL.Interfaces;
+using FalconOne.DAL.Contracts;
 using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
 using FalconOne.Models.Entities;
@@ -19,10 +19,11 @@ namespace FalconeOne.BLL.Services
 
         public async Task SaveRequestInfoAsync(RequestInformationDTO model)
         {
-            var requestInformation = new RequestInformation
+            SystemLog requestInformation = new()
             {
                 Method = model.Method,
                 Scheme = model.Scheme,
+                IP = model.IP,
                 Action = model.Action,
                 Controller = model.Controller,
                 CreatedOn = DateTime.UtcNow,
@@ -42,7 +43,7 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> GetAllAsync(PageParams pageParams)
         {
-            var res = await _unitOfWork.RequestInformationRepository.GetAllAsync(pageParams);
+            PagedList<SystemLog> res = await _unitOfWork.RequestInformationRepository.GetAllRequestInfoPaginatedAsync(pageParams);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, res));
         }

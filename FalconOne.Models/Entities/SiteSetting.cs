@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FalconOne.Models.Entities
 {
-    public class ApplicationSetting : MultiTenantEntity
+    public class SiteSetting : MultiTenantEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

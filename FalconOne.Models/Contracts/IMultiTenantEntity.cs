@@ -1,6 +1,6 @@
 ﻿using FalconOne.Models.Entities;
 
-namespace FalconOne.DAL.Interfaces
+namespace FalconOne.Models.Contracts
 {
     public interface IMultiTenantEntity : ITrackableEntity
     {

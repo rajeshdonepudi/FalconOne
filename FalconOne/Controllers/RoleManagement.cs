@@ -22,7 +22,7 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _appRoleService.CreateRoleAsync(role);
+                FalconeOne.BLL.Helpers.ApiResponse result = await _appRoleService.CreateRoleAsync(role);
 
                 return ReturnResponse(result);
             }
@@ -37,7 +37,7 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _appClaimService.AddClaimToRoleAsync(model);
+                FalconeOne.BLL.Helpers.ApiResponse result = await _appClaimService.AddClaimToRoleAsync(model);
 
                 return ReturnResponse(result);
             }

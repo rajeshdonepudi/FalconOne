@@ -1,5 +1,6 @@
 ﻿using FalconeOne.BLL.Interfaces;
 using FalconOne.API.Attributes;
+using FalconOne.API.Contracts;
 using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
 using FalconOne.ResourceCodes;
@@ -26,7 +27,7 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _accountService.AddUserToRoleAsync(model);
+                FalconeOne.BLL.Helpers.ApiResponse result = await _accountService.AddUserToRoleAsync(model);
 
                 return ReturnResponse(result);
             }
@@ -41,7 +42,7 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _appClaimService.AddClaimToUserAsync(model);
+                FalconeOne.BLL.Helpers.ApiResponse result = await _appClaimService.AddClaimToUserAsync(model);
                 return ReturnResponse(result);
             }
             else
@@ -55,7 +56,7 @@ namespace FalconOne.API.Controllers
         [UserAction(AppResourceCodes.Account.GET_USER)]
         public async Task<IActionResult> GetAllUsers(PageParams model)
         {
-            var response = await _accountService.GetAllAsync(model);
+            FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.GetAllAsync(model);
 
             return ReturnResponse(response);
         }

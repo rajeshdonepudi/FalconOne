@@ -1,6 +1,4 @@
-﻿using FalconOne.DAL.Interfaces;
-using FalconOne.Helpers.Helpers;
-using Microsoft.AspNetCore.Http;
+﻿using FalconOne.Models.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -8,86 +6,56 @@ namespace FalconOne.DAL
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly FalconOneContext _falconOneContext;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        protected readonly FalconOneContext _context;
 
-        public GenericRepository(FalconOneContext falconOneContext,
-            IHttpContextAccessor httpContextAccessor)
+        public GenericRepository(FalconOneContext falconOneContext)
         {
-            _falconOneContext = falconOneContext;
-            _httpContextAccessor = httpContextAccessor;
+            _context = falconOneContext;
         }
 
-        public async Task<T> AddAsync(T entity)
+        public async Task AddAsync(T entity)
         {
-            var query = await _falconOneContext.Set<T>().AddAsync(entity);
-
-            return query.Entity;
+            await _context.Set<T>().AddAsync(entity);
         }
 
-        public async Task<T> DeleteAsync(T entity)
+        public async Task AddRangeAsync(List<T> entities)
         {
-            return await Task.FromResult(_falconOneContext.Set<T>().Remove(entity).Entity);
+            await _context.Set<T>().AddRangeAsync(entities);
+        }
+
+        public void Remove(T entity)
+        {
+            _context.Set<T>().Remove(entity);
+        }
+
+        public void RemoveRange(List<T> entities)
+        {
+            _context.Set<T>().RemoveRange(entities);
         }
 
         public async Task<T> GetByIdAsync(Guid id)
         {
-            return await _falconOneContext.Set<T>().FindAsync(id);
+            return await _context.Set<T>().FindAsync(id);
         }
 
-        public async Task<T> QueryAsync(Expression<Func<T, bool>> expression)
+        public async Task<T> FindAsync(Expression<Func<T, bool>> expression)
         {
-            return await _falconOneContext.Set<T>().Where(expression).FirstOrDefaultAsync();
-        }
-
-        public async Task<T> FindAsync(Guid id)
-        {
-            return await _falconOneContext.Set<T>().FindAsync(id);
+            return await _context.Set<T>().Where(expression).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _falconOneContext.Set<T>().ToListAsync();
+            return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<T> UpdateAsync(T entity)
+        public void Update(T entity)
         {
-            if (entity is ITrackableEntity)
-            {
-                (entity as ITrackableEntity).ModifiedOn = DateTime.UtcNow;
-            }
-            return _falconOneContext.Set<T>().Update(entity).Entity;
+            _context.Set<T>().Update(entity);
         }
 
-        public IQueryable<T> GetQueryable()
+        public void UpdateRange(List<T> entities)
         {
-            return _falconOneContext.Set<T>().AsQueryable();
+            _context.Set<T>().UpdateRange(entities);
         }
-
-        public async Task<PagedList<T>> GetAllAsync(PageParams pageParams)
-        {
-            var query = _falconOneContext.Set<T>().AsQueryable();
-
-            return await Task.FromResult(new PagedList<T>(query, pageParams.PageIndex, pageParams.PageSize));
-        }
-
-        #region Private methods
-        public async Task<IEnumerable<T>> QueryAllAsync(Expression<Func<T, bool>> expression)
-        {
-            return await _falconOneContext.Set<T>().Where(expression).ToListAsync();
-        }
-
-        public async Task UpdateRangeAsync(List<T> entities)
-        {
-            foreach (var entity in entities)
-            {
-                if (entity is ITrackableEntity)
-                {
-                    (entity as ITrackableEntity).ModifiedOn = DateTime.UtcNow;
-                }
-            }
-            _falconOneContext.Set<T>().UpdateRange(entities);
-        }
-        #endregion
     }
 }

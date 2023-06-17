@@ -1,5 +1,8 @@
 ﻿using FalconeOne.BLL.Interfaces;
+using FalconOne.API.Attributes;
 using FalconOne.Helpers.Helpers;
+using FalconOne.ResourceCodes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FalconOne.API.Controllers
@@ -16,6 +19,8 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpGet("get-all")]
+        [AllowAnonymous]
+        [UserAction(AppResourceCodes.Account.REGISTER_NEW_USER)]
         public async Task<IActionResult> GetAll([FromQuery] PageParams model)
         {
             return ReturnResponse(await _requestInformationService.GetAllAsync(model));

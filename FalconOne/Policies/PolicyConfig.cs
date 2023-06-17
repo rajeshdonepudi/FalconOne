@@ -8,20 +8,20 @@ namespace FalconOne.API.Policies
     {
         public static void Configure(AuthorizationOptions authorizationOptions, ServiceProvider provider)
         {
-            using (var serviceScope = provider.CreateScope())
+            using (IServiceScope serviceScope = provider.CreateScope())
             {
-                var services = serviceScope.ServiceProvider;
+                IServiceProvider services = serviceScope.ServiceProvider;
 
-                var appPolicyService = services.GetService<IAppPolicyService>();
+                IAppPolicyService? appPolicyService = services.GetService<IAppPolicyService>();
 
-                var policies = appPolicyService!.GetAllPolicies().Result;
+                FalconeOne.BLL.Helpers.ApiResponse? policies = appPolicyService!.GetAllPolicies().Result;
 
-                foreach (var applicationPolicy in policies.Response as IEnumerable<ApplicationPolicy>)
+                foreach (SecurityPolicy applicationPolicy in policies.Response as IEnumerable<SecurityPolicy>)
                 {
                     if (applicationPolicy.PolicyClaims.Any())
                     {
                         Console.WriteLine(applicationPolicy.Name);
-                        foreach (var claim in applicationPolicy.PolicyClaims)
+                        foreach (SecurityClaim claim in applicationPolicy.PolicyClaims)
                         {
                             Console.WriteLine(claim.Type + "" + claim.Value);
                         }
@@ -30,13 +30,13 @@ namespace FalconOne.API.Policies
 
                 if (policies is not null)
                 {
-                    foreach (var applicationPolicy in policies.Response as IEnumerable<ApplicationPolicy>)
+                    foreach (SecurityPolicy applicationPolicy in policies.Response as IEnumerable<SecurityPolicy>)
                     {
                         if (applicationPolicy.PolicyClaims.Any())
                         {
                             authorizationOptions.AddPolicy(applicationPolicy.Name, p =>
                             {
-                                foreach (var claim in applicationPolicy.PolicyClaims)
+                                foreach (SecurityClaim claim in applicationPolicy.PolicyClaims)
                                 {
                                     p.RequireClaim(claim.Type, claim.Value.Split(','));
                                 }

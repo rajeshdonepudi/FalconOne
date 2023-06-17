@@ -1,5 +1,5 @@
-﻿using FalconeOne.BLL.Interfaces;
-using FalconOne.API.Attributes;
+﻿using FalconOne.API.Attributes;
+using FalconOne.API.Contracts;
 using FalconOne.Models.DTOs;
 using FalconOne.ResourceCodes;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +14,6 @@ namespace FalconOne.API.Controllers
         private readonly IAccountService _accountService;
         public AccountController(IAccountService accountService)
         {
-
             _accountService = accountService;
         }
 
@@ -25,7 +24,7 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = await _accountService.CreateNewUserAsync(model);
+                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.CreateNewUserAsync(model);
 
                 return ReturnResponse(response);
             }
@@ -42,7 +41,7 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = await _accountService.AuthenticateUserAsync(model);
+                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.AuthenticateUserAsync(model);
 
                 return ReturnResponse(response);
             }
@@ -56,7 +55,7 @@ namespace FalconOne.API.Controllers
         [UserAction(AppResourceCodes.Account.GET_USER)]
         public async Task<IActionResult> GetByUserId(string userId)
         {
-            var response = await _accountService.GetByIdAsync(userId);
+            FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.GetByIdAsync(userId);
 
             return ReturnResponse(response);
         }
@@ -68,7 +67,7 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = await _accountService.ForgotPasswordAsync(model);
+                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.ForgotPasswordAsync(model);
 
                 return ReturnResponse(response);
             }
@@ -85,7 +84,7 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = await _accountService.ResetPasswordAsync(model);
+                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.ResetPasswordAsync(model);
 
                 return ReturnResponse(response);
             }
@@ -102,7 +101,7 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = await _accountService.RevokeRefreshTokenAsync(model.RefreshToken);
+                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.RevokeRefreshTokenAsync(model.RefreshToken);
 
                 return ReturnResponse(response);
             }
@@ -119,7 +118,7 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = await _accountService.GetNewJWTByRefreshTokenAsync(model.RefreshToken);
+                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.GetNewJWTByRefreshTokenAsync(model.RefreshToken);
 
                 return ReturnResponse(response);
             }
@@ -135,7 +134,7 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = await _accountService.UpdateEmailConfirmed(userId, value);
+                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.UpdateEmailConfirmed(userId, value);
 
                 return ReturnResponse(response);
             }

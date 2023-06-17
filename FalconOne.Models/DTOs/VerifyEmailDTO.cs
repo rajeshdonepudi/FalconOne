@@ -4,7 +4,7 @@
     {
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
-        public int TotalCount { get; set; }
+        public long TotalCount { get; set; }
         public object Records { get; set; }
     }
     public class VerifyEmailDTO

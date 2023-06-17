@@ -1,4 +1,4 @@
-﻿using FalconOne.DAL.Interfaces;
+﻿using FalconOne.Models.Contracts;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

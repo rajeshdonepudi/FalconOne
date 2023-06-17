@@ -22,13 +22,13 @@ namespace FalconeOne.BLL.Services
 
         public async Task<string> GenerateJWTToken<T, T1>(T type, T1 claims)
         {
-            var secret = await _appConfigService.GetValue("JWT:Secret");
+            string secret = await _appConfigService.GetValue("JWT:Secret");
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+            JwtSecurityTokenHandler tokenHandler = new();
 
-            var key = Encoding.ASCII.GetBytes(secret);
+            byte[] key = Encoding.ASCII.GetBytes(secret);
 
-            var tokenDescriptor = new SecurityTokenDescriptor
+            SecurityTokenDescriptor tokenDescriptor = new()
             {
                 Audience = await _appConfigService.GetValue("JWT:Audience"),
                 Issuer = await _appConfigService.GetValue("JWT:Issuer"),
@@ -42,7 +42,7 @@ namespace FalconeOne.BLL.Services
                 tokenDescriptor.Subject = new ClaimsIdentity((IEnumerable<Claim>)claims);
             }
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
         }

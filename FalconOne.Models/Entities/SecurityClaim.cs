@@ -3,10 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FalconOne.Models.Entities
 {
-
-    public class ApplicationClaim : MultiTenantEntity
+    public class SecurityClaim : MultiTenantEntity
     {
-        public ApplicationClaim()
+        public SecurityClaim()
         {
             Navigations = new List<Navigation>();
         }
@@ -18,7 +17,7 @@ namespace FalconOne.Models.Entities
         public string Description { get; set; }
         public string Value { get; set; }
         public Guid? ApplicationPolicyId { get; set; }
-        public virtual ApplicationPolicy ApplicationPolicy { get; set; }
+        public virtual SecurityPolicy ApplicationPolicy { get; set; }
         public virtual List<Navigation> Navigations { get; set; }
     }
 }

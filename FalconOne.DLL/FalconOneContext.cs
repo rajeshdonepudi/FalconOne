@@ -6,10 +6,10 @@ namespace FalconOne.DAL
 {
     public class FalconOneContext : IdentityDbContext<User, UserRole, Guid>
     {
-        public DbSet<RequestInformation> RequestInformations { get; set; }
-        public DbSet<ApplicationClaim> ApplicationClaims { get; set; }
-        public DbSet<ApplicationPolicy> ApplicationPolicies { get; set; }
-        public DbSet<ApplicationSetting> ApplicationSettings { get; set; }
+        public DbSet<SystemLog> SystemLogs { get; set; }
+        public DbSet<SecurityClaim> SecurityClaims { get; set; }
+        public DbSet<SecurityPolicy> SecurityPolicies { get; set; }
+        public DbSet<SiteSetting> SiteSettings { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Reaction> Reactions { get; set; }

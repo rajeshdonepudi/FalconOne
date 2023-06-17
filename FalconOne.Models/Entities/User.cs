@@ -1,4 +1,4 @@
-﻿using FalconOne.DAL.Interfaces;
+﻿using FalconOne.Models.Contracts;
 using Microsoft.AspNetCore.Identity;
 
 namespace FalconOne.Models.Entities

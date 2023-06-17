@@ -11,15 +11,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FalconeOne.BLL", "FalconeOn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FalconOne.Helpers", "Utilities\FalconOne.Helpers.csproj", "{5B371FBC-5B7F-43AC-B103-1CF257A8511C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FalconOne.Models", "FalconOne.Models\FalconOne.Models.csproj", "{33F794EA-A879-4487-9A4E-28E22E3C3ED5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FalconOne.Models", "FalconOne.Models\FalconOne.Models.csproj", "{33F794EA-A879-4487-9A4E-28E22E3C3ED5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FalconOne.ResourceCodes", "FalconOne.ResourceCodes\FalconOne.ResourceCodes.csproj", "{2409C5DE-A619-4631-A7E4-B8C9EC39D23D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FalconOne.ResourceCodes", "FalconOne.ResourceCodes\FalconOne.ResourceCodes.csproj", "{2409C5DE-A619-4631-A7E4-B8C9EC39D23D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FalconOne.Extensions", "FalconOne.ExtensionMethods\FalconOne.Extensions.csproj", "{EC59A262-DAB6-4A5F-8CCF-4B072FA65797}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FalconOne.Extensions", "FalconOne.ExtensionMethods\FalconOne.Extensions.csproj", "{EC59A262-DAB6-4A5F-8CCF-4B072FA65797}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FalconOne.Middleware", "FalconOne.Middleware\FalconOne.Middleware.csproj", "{79EAB32C-F213-4664-ADF5-1769D23FC8B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FalconOne.Middleware", "FalconOne.Middleware\FalconOne.Middleware.csproj", "{79EAB32C-F213-4664-ADF5-1769D23FC8B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FalconOne.Enumerations", "FalconOne.Enumerations\FalconOne.Enumerations.csproj", "{6017AA88-5E5D-40E4-B75A-AFFD478F73A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FalconOne.Enumerations", "FalconOne.Enumerations\FalconOne.Enumerations.csproj", "{6017AA88-5E5D-40E4-B75A-AFFD478F73A4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{3A921E4B-423F-4154-A6DB-8B99F9F9C798}"
 EndProject

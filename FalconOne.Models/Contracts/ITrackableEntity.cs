@@ -1,4 +1,4 @@
-﻿namespace FalconOne.DAL.Interfaces
+﻿namespace FalconOne.Models.Contracts
 {
     public interface ITrackableEntity
     {

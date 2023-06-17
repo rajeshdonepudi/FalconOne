@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 DependencyConfig.Configure(builder);
 
@@ -47,23 +47,25 @@ builder.Services.AddControllers(c =>
     }));
 });
 
+builder.Services.AddHttpClient();
 
 builder.Services.AddDbContext<FalconOneContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
-var providerBuilder = builder.Services.BuildServiceProvider();
+ServiceProvider providerBuilder = builder.Services.BuildServiceProvider();
 
 AuthorizationConfig.Configure(builder, providerBuilder);
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 DatabaseConfig.Configure(app.Services);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(o => o.DefaultModelsExpandDepth(-1));
 }
+
+app.UseSwagger();
+app.UseSwaggerUI(o => o.DefaultModelsExpandDepth(-1));
 app.UseCors("ReactAppOrigin");
 
 app.UseHttpsRedirection();

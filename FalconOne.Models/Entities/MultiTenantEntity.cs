@@ -1,4 +1,4 @@
-﻿using FalconOne.DAL.Interfaces;
+﻿using FalconOne.Models.Contracts;
 
 namespace FalconOne.Models.Entities
 {

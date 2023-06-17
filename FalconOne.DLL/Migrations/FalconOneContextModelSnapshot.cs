@@ -17,184 +17,12 @@ namespace FalconOne.DAL.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.10")
+                .HasAnnotation("ProductVersion", "7.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.ApplicationClaim", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ApplicationPolicyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationPolicyId");
-
-                    b.HasIndex("TenantId");
-
-                    b.ToTable("ApplicationClaims");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
-                            ApplicationPolicyId = new Guid("b7538a53-d3b2-4b66-ba40-97619cda8d00"),
-                            CreatedOn = new DateTime(2023, 5, 12, 17, 7, 45, 775, DateTimeKind.Utc).AddTicks(4605),
-                            Description = "Database seeded",
-                            TenantId = new Guid("dab7ed0b-ff59-40a8-8809-df1703ee87fe"),
-                            Type = "Admin",
-                            Value = "Everything"
-                        },
-                        new
-                        {
-                            Id = new Guid("1724d756-5ff0-426e-afc2-42edfe831563"),
-                            ApplicationPolicyId = new Guid("9fa14d9e-0d8e-4b51-85e4-c4bdd5873d14"),
-                            CreatedOn = new DateTime(2023, 5, 12, 17, 7, 45, 775, DateTimeKind.Utc).AddTicks(4643),
-                            Description = "Database seeded",
-                            TenantId = new Guid("dab7ed0b-ff59-40a8-8809-df1703ee87fe"),
-                            Type = "User",
-                            Value = "BasicThings"
-                        });
-                });
-
-            modelBuilder.Entity("FalconOne.DAL.Entities.ApplicationPolicy", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TenantId");
-
-                    b.ToTable("ApplicationPolicies");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("9fa14d9e-0d8e-4b51-85e4-c4bdd5873d14"),
-                            CreatedOn = new DateTime(2023, 5, 12, 17, 7, 45, 775, DateTimeKind.Utc).AddTicks(4574),
-                            Name = "User",
-                            TenantId = new Guid("dab7ed0b-ff59-40a8-8809-df1703ee87fe")
-                        },
-                        new
-                        {
-                            Id = new Guid("b7538a53-d3b2-4b66-ba40-97619cda8d00"),
-                            CreatedOn = new DateTime(2023, 5, 12, 17, 7, 45, 775, DateTimeKind.Utc).AddTicks(4579),
-                            Name = "Admin",
-                            TenantId = new Guid("dab7ed0b-ff59-40a8-8809-df1703ee87fe")
-                        });
-                });
-
-            modelBuilder.Entity("FalconOne.DAL.Entities.ApplicationSetting", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SettingType")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TenantId");
-
-                    b.ToTable("ApplicationSettings");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("7cf2a6d9-d7d3-4d27-937a-a78797686ade"),
-                            CreatedOn = new DateTime(2023, 5, 12, 17, 7, 45, 775, DateTimeKind.Utc).AddTicks(4836),
-                            Description = "This is primary color",
-                            Name = "primaryColor",
-                            SettingType = 1,
-                            TenantId = new Guid("dab7ed0b-ff59-40a8-8809-df1703ee87fe"),
-                            Value = "#144272"
-                        },
-                        new
-                        {
-                            Id = new Guid("81fcdd91-cc2a-4398-9aaf-04dfcb77f0ba"),
-                            CreatedOn = new DateTime(2023, 5, 12, 17, 7, 45, 775, DateTimeKind.Utc).AddTicks(4851),
-                            Description = "This is secondary color",
-                            Name = "secondaryColor",
-                            SettingType = 1,
-                            TenantId = new Guid("dab7ed0b-ff59-40a8-8809-df1703ee87fe"),
-                            Value = "#205295"
-                        },
-                        new
-                        {
-                            Id = new Guid("36819f29-c241-43c3-9a38-7b7247c8ca49"),
-                            CreatedOn = new DateTime(2023, 5, 12, 17, 7, 45, 775, DateTimeKind.Utc).AddTicks(4864),
-                            Description = "This is site theme",
-                            Name = "theme",
-                            SettingType = 1,
-                            TenantId = new Guid("dab7ed0b-ff59-40a8-8809-df1703ee87fe"),
-                            Value = "light"
-                        });
-                });
-
-            modelBuilder.Entity("FalconOne.DAL.Entities.Comment", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.Comment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -228,7 +56,7 @@ namespace FalconOne.DAL.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Department", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.Department", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -266,15 +94,15 @@ namespace FalconOne.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("064f1d3c-bd07-40c3-84ba-551bef0574b9"),
-                            CreatedOn = new DateTime(2023, 5, 12, 17, 7, 45, 757, DateTimeKind.Utc).AddTicks(3147),
-                            LocationId = new Guid("9d2cb6e8-8c9f-426d-91cc-e56c6567270d"),
+                            Id = new Guid("7353573c-9093-4669-95dc-1a3805f06b7b"),
+                            CreatedOn = new DateTime(2023, 6, 17, 17, 2, 4, 249, DateTimeKind.Utc).AddTicks(1736),
+                            LocationId = new Guid("39e8b9bc-009f-419c-90a6-5ac868595d2b"),
                             Name = "Development",
-                            TenantId = new Guid("dab7ed0b-ff59-40a8-8809-df1703ee87fe")
+                            TenantId = new Guid("63cb27f4-3db0-4979-87cb-15bcdd83d1c4")
                         });
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Image", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.Image", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -298,7 +126,7 @@ namespace FalconOne.DAL.Migrations
                     b.ToTable("Images");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Location", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.Location", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -323,14 +151,14 @@ namespace FalconOne.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("9d2cb6e8-8c9f-426d-91cc-e56c6567270d"),
+                            Id = new Guid("39e8b9bc-009f-419c-90a6-5ac868595d2b"),
                             Latitude = "78.4867° E",
                             Longitude = "17.3850° N",
                             Name = "Hyderabad"
                         });
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Navigation", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.Navigation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -371,27 +199,27 @@ namespace FalconOne.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c60f6154-6262-4dcf-8646-a8f4098af063"),
+                            Id = new Guid("c7881f80-0317-4cec-b0d7-6dc6e38c440f"),
                             ApplicationClaimId = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
-                            CreatedOn = new DateTime(2023, 5, 12, 17, 7, 45, 775, DateTimeKind.Utc).AddTicks(4670),
+                            CreatedOn = new DateTime(2023, 6, 17, 17, 2, 4, 408, DateTimeKind.Utc).AddTicks(1317),
                             Description = "User login",
                             Name = "Login",
-                            TenantId = new Guid("dab7ed0b-ff59-40a8-8809-df1703ee87fe"),
+                            TenantId = new Guid("63cb27f4-3db0-4979-87cb-15bcdd83d1c4"),
                             URL = "login"
                         },
                         new
                         {
-                            Id = new Guid("42f471c0-e102-4d5b-8eb8-49a796c7d8f5"),
+                            Id = new Guid("e7dd0885-a161-459b-9cce-5f160b3ef70d"),
                             ApplicationClaimId = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
-                            CreatedOn = new DateTime(2023, 5, 12, 17, 7, 45, 775, DateTimeKind.Utc).AddTicks(4673),
+                            CreatedOn = new DateTime(2023, 6, 17, 17, 2, 4, 408, DateTimeKind.Utc).AddTicks(1321),
                             Description = "User signup",
                             Name = "Singup",
-                            TenantId = new Guid("dab7ed0b-ff59-40a8-8809-df1703ee87fe"),
+                            TenantId = new Guid("63cb27f4-3db0-4979-87cb-15bcdd83d1c4"),
                             URL = "signup"
                         });
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Post", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.Post", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -428,9 +256,20 @@ namespace FalconOne.DAL.Migrations
                     b.HasIndex("TenantId");
 
                     b.ToTable("Posts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("291722d5-0b46-4593-b053-a768a9a4e753"),
+                            Content = "Hey this is new post on our site.",
+                            CreatedOn = new DateTime(2023, 6, 17, 17, 2, 4, 408, DateTimeKind.Utc).AddTicks(3046),
+                            PostedById = new Guid("5090b588-6e3f-464a-994d-9cd2af4a0198"),
+                            PostedOn = new DateTime(2023, 6, 17, 17, 2, 4, 408, DateTimeKind.Utc).AddTicks(3047),
+                            TenantId = new Guid("63cb27f4-3db0-4979-87cb-15bcdd83d1c4")
+                        });
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Reaction", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.Reaction", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -457,7 +296,179 @@ namespace FalconOne.DAL.Migrations
                     b.ToTable("Reactions");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.RequestInformation", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.SecurityClaim", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ApplicationPolicyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationPolicyId");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("SecurityClaims");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
+                            ApplicationPolicyId = new Guid("b7538a53-d3b2-4b66-ba40-97619cda8d00"),
+                            CreatedOn = new DateTime(2023, 6, 17, 17, 2, 4, 408, DateTimeKind.Utc).AddTicks(1148),
+                            Description = "Database seeded",
+                            TenantId = new Guid("63cb27f4-3db0-4979-87cb-15bcdd83d1c4"),
+                            Type = "Admin",
+                            Value = "Everything"
+                        },
+                        new
+                        {
+                            Id = new Guid("ce6a0a57-6269-419f-b2fc-a3e7090a22a3"),
+                            ApplicationPolicyId = new Guid("9fa14d9e-0d8e-4b51-85e4-c4bdd5873d14"),
+                            CreatedOn = new DateTime(2023, 6, 17, 17, 2, 4, 408, DateTimeKind.Utc).AddTicks(1224),
+                            Description = "Database seeded",
+                            TenantId = new Guid("63cb27f4-3db0-4979-87cb-15bcdd83d1c4"),
+                            Type = "User",
+                            Value = "BasicThings"
+                        });
+                });
+
+            modelBuilder.Entity("FalconOne.Models.Entities.SecurityPolicy", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("SecurityPolicies");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("9fa14d9e-0d8e-4b51-85e4-c4bdd5873d14"),
+                            CreatedOn = new DateTime(2023, 6, 17, 17, 2, 4, 408, DateTimeKind.Utc).AddTicks(1068),
+                            Name = "User",
+                            TenantId = new Guid("63cb27f4-3db0-4979-87cb-15bcdd83d1c4")
+                        },
+                        new
+                        {
+                            Id = new Guid("b7538a53-d3b2-4b66-ba40-97619cda8d00"),
+                            CreatedOn = new DateTime(2023, 6, 17, 17, 2, 4, 408, DateTimeKind.Utc).AddTicks(1075),
+                            Name = "Admin",
+                            TenantId = new Guid("63cb27f4-3db0-4979-87cb-15bcdd83d1c4")
+                        });
+                });
+
+            modelBuilder.Entity("FalconOne.Models.Entities.SiteSetting", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SettingType")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("SiteSettings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("30f02838-c35c-4d1c-8d96-715394a6d94e"),
+                            CreatedOn = new DateTime(2023, 6, 17, 17, 2, 4, 408, DateTimeKind.Utc).AddTicks(1386),
+                            Description = "This is primary color",
+                            Name = "primaryColor",
+                            SettingType = 1,
+                            TenantId = new Guid("63cb27f4-3db0-4979-87cb-15bcdd83d1c4"),
+                            Value = "#144272"
+                        },
+                        new
+                        {
+                            Id = new Guid("3274823c-2901-4f1f-9286-f18022d2d293"),
+                            CreatedOn = new DateTime(2023, 6, 17, 17, 2, 4, 408, DateTimeKind.Utc).AddTicks(1414),
+                            Description = "This is secondary color",
+                            Name = "secondaryColor",
+                            SettingType = 1,
+                            TenantId = new Guid("63cb27f4-3db0-4979-87cb-15bcdd83d1c4"),
+                            Value = "#205295"
+                        },
+                        new
+                        {
+                            Id = new Guid("a2a316b4-ca00-46ae-a334-8a347896b2d7"),
+                            CreatedOn = new DateTime(2023, 6, 17, 17, 2, 4, 408, DateTimeKind.Utc).AddTicks(2776),
+                            Description = "This is site theme",
+                            Name = "theme",
+                            SettingType = 1,
+                            TenantId = new Guid("63cb27f4-3db0-4979-87cb-15bcdd83d1c4"),
+                            Value = "light"
+                        });
+                });
+
+            modelBuilder.Entity("FalconOne.Models.Entities.SystemLog", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -526,10 +537,10 @@ namespace FalconOne.DAL.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("RequestInformations");
+                    b.ToTable("SystemLogs");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Tenant", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.Tenant", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -566,15 +577,15 @@ namespace FalconOne.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("dab7ed0b-ff59-40a8-8809-df1703ee87fe"),
-                            CreatedOn = new DateTime(2023, 5, 12, 17, 7, 45, 757, DateTimeKind.Utc).AddTicks(3106),
+                            Id = new Guid("63cb27f4-3db0-4979-87cb-15bcdd83d1c4"),
+                            CreatedOn = new DateTime(2023, 6, 17, 17, 2, 4, 249, DateTimeKind.Utc).AddTicks(1695),
                             Host = "localhost",
-                            LocationId = new Guid("9d2cb6e8-8c9f-426d-91cc-e56c6567270d"),
+                            LocationId = new Guid("39e8b9bc-009f-419c-90a6-5ac868595d2b"),
                             Name = "development"
                         });
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.TimeEntry", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.TimeEntry", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -601,7 +612,7 @@ namespace FalconOne.DAL.Migrations
                     b.ToTable("AttendanceLogs");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.TimeLog", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.TimeLog", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -623,7 +634,7 @@ namespace FalconOne.DAL.Migrations
                     b.ToTable("TimeLogs");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.User", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -723,8 +734,8 @@ namespace FalconOne.DAL.Migrations
                             Id = new Guid("6521474a-6e39-4a5e-8628-cd89b4e922bc"),
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==",
-                            CreatedOn = new DateTime(2023, 5, 12, 17, 7, 45, 757, DateTimeKind.Utc).AddTicks(3233),
-                            DepartmentId = new Guid("064f1d3c-bd07-40c3-84ba-551bef0574b9"),
+                            CreatedOn = new DateTime(2023, 6, 17, 17, 2, 4, 249, DateTimeKind.Utc).AddTicks(1813),
+                            DepartmentId = new Guid("7353573c-9093-4669-95dc-1a3805f06b7b"),
                             Email = "b@b.com",
                             EmailConfirmed = true,
                             FirstName = "Basic",
@@ -732,11 +743,11 @@ namespace FalconOne.DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "b@b.com",
                             NormalizedUserName = "b",
-                            PasswordHash = "AQAAAAEAACcQAAAAEF51eZUR+thrfLc/JyDcSMLNNnmjgTYFIEWtzySWwNfJkyARgKqCaIGQVMElrxU8vQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENVu065BNLqxv99bA4E670cQxECDIulMap2cOzjIDgs41pKPh9Y2eanKikOHAi+T5w==",
                             PhoneNumber = "8886014996",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "UCQO32XEFNXIAZIR3LTNFDRRX7A2NHLK",
-                            TenantId = new Guid("dab7ed0b-ff59-40a8-8809-df1703ee87fe"),
+                            TenantId = new Guid("63cb27f4-3db0-4979-87cb-15bcdd83d1c4"),
                             TwoFactorEnabled = false,
                             UserName = "basicuser01"
                         },
@@ -745,8 +756,8 @@ namespace FalconOne.DAL.Migrations
                             Id = new Guid("5090b588-6e3f-464a-994d-9cd2af4a0198"),
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==",
-                            CreatedOn = new DateTime(2023, 5, 12, 17, 7, 45, 757, DateTimeKind.Utc).AddTicks(3238),
-                            DepartmentId = new Guid("064f1d3c-bd07-40c3-84ba-551bef0574b9"),
+                            CreatedOn = new DateTime(2023, 6, 17, 17, 2, 4, 249, DateTimeKind.Utc).AddTicks(1820),
+                            DepartmentId = new Guid("7353573c-9093-4669-95dc-1a3805f06b7b"),
                             Email = "a@a.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -754,17 +765,17 @@ namespace FalconOne.DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "a@a.com",
                             NormalizedUserName = "a",
-                            PasswordHash = "AQAAAAEAACcQAAAAEH6XGA+onsB9ByG+Aw8AsAdx+Baxksr2sNFQ2DrRnr3aXKnYlWdK6cp6A96IhRGAgg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEONTTsSwaZcHe5XP6+n46HY55hl4tFENk5FIKTHS4QTvCK75seHvKTvblJI2YjutyQ==",
                             PhoneNumber = "8886014997",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "UCQO32XEFNXIAZIR3LTNFDRRX7A2NHLK",
-                            TenantId = new Guid("dab7ed0b-ff59-40a8-8809-df1703ee87fe"),
+                            TenantId = new Guid("63cb27f4-3db0-4979-87cb-15bcdd83d1c4"),
                             TwoFactorEnabled = false,
                             UserName = "adminuser01"
                         });
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.UserRole", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.UserRole", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -809,7 +820,7 @@ namespace FalconOne.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -833,7 +844,7 @@ namespace FalconOne.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -926,48 +937,15 @@ namespace FalconOne.DAL.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.ApplicationClaim", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.Comment", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.ApplicationPolicy", "ApplicationPolicy")
-                        .WithMany("PolicyClaims")
-                        .HasForeignKey("ApplicationPolicyId");
-
-                    b.HasOne("FalconOne.DAL.Entities.Tenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId");
-
-                    b.Navigation("ApplicationPolicy");
-
-                    b.Navigation("Tenant");
-                });
-
-            modelBuilder.Entity("FalconOne.DAL.Entities.ApplicationPolicy", b =>
-                {
-                    b.HasOne("FalconOne.DAL.Entities.Tenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId");
-
-                    b.Navigation("Tenant");
-                });
-
-            modelBuilder.Entity("FalconOne.DAL.Entities.ApplicationSetting", b =>
-                {
-                    b.HasOne("FalconOne.DAL.Entities.Tenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId");
-
-                    b.Navigation("Tenant");
-                });
-
-            modelBuilder.Entity("FalconOne.DAL.Entities.Comment", b =>
-                {
-                    b.HasOne("FalconOne.DAL.Entities.User", "CommentedBy")
+                    b.HasOne("FalconOne.Models.Entities.User", "CommentedBy")
                         .WithMany()
                         .HasForeignKey("CommentedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FalconOne.DAL.Entities.Post", "Post")
+                    b.HasOne("FalconOne.Models.Entities.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId");
 
@@ -976,19 +954,19 @@ namespace FalconOne.DAL.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Department", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.Department", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.Location", "Location")
+                    b.HasOne("FalconOne.Models.Entities.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FalconOne.DAL.Entities.Image", "ProfilePicture")
+                    b.HasOne("FalconOne.Models.Entities.Image", "ProfilePicture")
                         .WithMany()
                         .HasForeignKey("ProfilePictureId");
 
-                    b.HasOne("FalconOne.DAL.Entities.Tenant", "Tenant")
+                    b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
                         .WithMany("Departments")
                         .HasForeignKey("TenantId");
 
@@ -999,24 +977,24 @@ namespace FalconOne.DAL.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Image", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.Image", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.Post", "Post")
+                    b.HasOne("FalconOne.Models.Entities.Post", "Post")
                         .WithMany("Images")
                         .HasForeignKey("PostId");
 
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Navigation", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.Navigation", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.ApplicationClaim", "ApplicationClaim")
+                    b.HasOne("FalconOne.Models.Entities.SecurityClaim", "ApplicationClaim")
                         .WithMany("Navigations")
                         .HasForeignKey("ApplicationClaimId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FalconOne.DAL.Entities.Tenant", "Tenant")
+                    b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId");
 
@@ -1025,19 +1003,19 @@ namespace FalconOne.DAL.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Post", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.Post", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.Department", "Department")
+                    b.HasOne("FalconOne.Models.Entities.Department", "Department")
                         .WithMany("Posts")
                         .HasForeignKey("DepartmentId");
 
-                    b.HasOne("FalconOne.DAL.Entities.User", "PostedBy")
+                    b.HasOne("FalconOne.Models.Entities.User", "PostedBy")
                         .WithMany()
                         .HasForeignKey("PostedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FalconOne.DAL.Entities.Tenant", "Tenant")
+                    b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
                         .WithMany("Posts")
                         .HasForeignKey("TenantId");
 
@@ -1048,13 +1026,13 @@ namespace FalconOne.DAL.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Reaction", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.Reaction", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.Post", "Post")
+                    b.HasOne("FalconOne.Models.Entities.Post", "Post")
                         .WithMany("Reactions")
                         .HasForeignKey("PostId");
 
-                    b.HasOne("FalconOne.DAL.Entities.User", "ReactedBy")
+                    b.HasOne("FalconOne.Models.Entities.User", "ReactedBy")
                         .WithMany()
                         .HasForeignKey("ReactedById")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1065,24 +1043,57 @@ namespace FalconOne.DAL.Migrations
                     b.Navigation("ReactedBy");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.RequestInformation", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.SecurityClaim", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.Tenant", "Tenant")
+                    b.HasOne("FalconOne.Models.Entities.SecurityPolicy", "ApplicationPolicy")
+                        .WithMany("PolicyClaims")
+                        .HasForeignKey("ApplicationPolicyId");
+
+                    b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.Navigation("ApplicationPolicy");
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("FalconOne.Models.Entities.SecurityPolicy", b =>
+                {
+                    b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId");
 
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Tenant", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.SiteSetting", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.Location", "Location")
+                    b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("FalconOne.Models.Entities.SystemLog", b =>
+                {
+                    b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("FalconOne.Models.Entities.Tenant", b =>
+                {
+                    b.HasOne("FalconOne.Models.Entities.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FalconOne.DAL.Entities.Image", "ProfilePicture")
+                    b.HasOne("FalconOne.Models.Entities.Image", "ProfilePicture")
                         .WithMany()
                         .HasForeignKey("ProfilePictureId");
 
@@ -1091,13 +1102,13 @@ namespace FalconOne.DAL.Migrations
                     b.Navigation("ProfilePicture");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.TimeEntry", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.TimeEntry", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.Location", "Location")
+                    b.HasOne("FalconOne.Models.Entities.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId");
 
-                    b.HasOne("FalconOne.DAL.Entities.User", "User")
+                    b.HasOne("FalconOne.Models.Entities.User", "User")
                         .WithMany("TimeEntries")
                         .HasForeignKey("UserId");
 
@@ -1106,36 +1117,36 @@ namespace FalconOne.DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.TimeLog", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.TimeLog", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.TimeEntry", "AttendanceLog")
+                    b.HasOne("FalconOne.Models.Entities.TimeEntry", "AttendanceLog")
                         .WithMany("TimeLogs")
                         .HasForeignKey("AttendanceLogId");
 
                     b.Navigation("AttendanceLog");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.User", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.User", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.Department", "Department")
+                    b.HasOne("FalconOne.Models.Entities.Department", "Department")
                         .WithMany("Users")
                         .HasForeignKey("DepartmentId");
 
-                    b.HasOne("FalconOne.DAL.Entities.Image", "ProfilePicture")
+                    b.HasOne("FalconOne.Models.Entities.Image", "ProfilePicture")
                         .WithMany()
                         .HasForeignKey("ProfilePictureId");
 
-                    b.HasOne("FalconOne.DAL.Entities.Tenant", "Tenant")
+                    b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId");
 
-                    b.OwnsMany("FalconOne.DAL.Entities.RefreshToken", "RefreshTokens", b1 =>
+                    b.OwnsMany("FalconOne.Models.Entities.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<int>("Id")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("int");
 
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"), 1L, 1);
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
 
                             b1.Property<DateTime>("Created")
                                 .HasColumnType("datetime2");
@@ -1185,9 +1196,9 @@ namespace FalconOne.DAL.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.UserRole", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.UserRole", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.Tenant", "Tenant")
+                    b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId");
 
@@ -1196,7 +1207,7 @@ namespace FalconOne.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.UserRole", null)
+                    b.HasOne("FalconOne.Models.Entities.UserRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1205,7 +1216,7 @@ namespace FalconOne.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.User", null)
+                    b.HasOne("FalconOne.Models.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1214,7 +1225,7 @@ namespace FalconOne.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.User", null)
+                    b.HasOne("FalconOne.Models.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1223,13 +1234,13 @@ namespace FalconOne.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.UserRole", null)
+                    b.HasOne("FalconOne.Models.Entities.UserRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FalconOne.DAL.Entities.User", null)
+                    b.HasOne("FalconOne.Models.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1238,31 +1249,21 @@ namespace FalconOne.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("FalconOne.DAL.Entities.User", null)
+                    b.HasOne("FalconOne.Models.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.ApplicationClaim", b =>
-                {
-                    b.Navigation("Navigations");
-                });
-
-            modelBuilder.Entity("FalconOne.DAL.Entities.ApplicationPolicy", b =>
-                {
-                    b.Navigation("PolicyClaims");
-                });
-
-            modelBuilder.Entity("FalconOne.DAL.Entities.Department", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.Department", b =>
                 {
                     b.Navigation("Posts");
 
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Post", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.Post", b =>
                 {
                     b.Navigation("Comments");
 
@@ -1271,19 +1272,29 @@ namespace FalconOne.DAL.Migrations
                     b.Navigation("Reactions");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.Tenant", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.SecurityClaim", b =>
+                {
+                    b.Navigation("Navigations");
+                });
+
+            modelBuilder.Entity("FalconOne.Models.Entities.SecurityPolicy", b =>
+                {
+                    b.Navigation("PolicyClaims");
+                });
+
+            modelBuilder.Entity("FalconOne.Models.Entities.Tenant", b =>
                 {
                     b.Navigation("Departments");
 
                     b.Navigation("Posts");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.TimeEntry", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.TimeEntry", b =>
                 {
                     b.Navigation("TimeLogs");
                 });
 
-            modelBuilder.Entity("FalconOne.DAL.Entities.User", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.User", b =>
                 {
                     b.Navigation("TimeEntries");
                 });

@@ -19,5 +19,10 @@
             public const string GET_SETTING_BY_TYPE = "GET_SETTING_BY_TYPE";
             public const string UPDATE_SETTINGS = "UPDATE_SETTINGS";
         }
+
+        public static class Fonts
+        {
+            public const string GET_FONT_FAMILIES = "GET_FONT_FAMILIES";
+        }
     }
 }

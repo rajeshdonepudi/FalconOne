@@ -7,9 +7,9 @@ namespace FalconOne.API.DatabaseConfig
     {
         public static void Configure(IServiceProvider serviceProvider)
         {
-            using (var scope = serviceProvider.CreateScope())
+            using (IServiceScope scope = serviceProvider.CreateScope())
             {
-                var context = scope.ServiceProvider.GetService<FalconOneContext>();
+                FalconOneContext? context = scope.ServiceProvider.GetService<FalconOneContext>();
 
                 if (context.Database.GetPendingMigrations().Any())
                 {

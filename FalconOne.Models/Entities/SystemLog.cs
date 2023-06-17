@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FalconOne.Models.Entities
 {
-    public class RequestInformation : MultiTenantEntity
+    public class SystemLog : MultiTenantEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -20,7 +20,7 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = await _appPolicyService.CreatePolicy(model);
+                FalconeOne.BLL.Helpers.ApiResponse response = await _appPolicyService.CreatePolicy(model);
 
                 return ReturnResponse(response);
             }
@@ -33,7 +33,7 @@ namespace FalconOne.API.Controllers
         [HttpGet("get-all-policies")]
         public async Task<IActionResult> GetAllPolicies()
         {
-            var response = await _appPolicyService.GetAllPolicies();
+            FalconeOne.BLL.Helpers.ApiResponse response = await _appPolicyService.GetAllPolicies();
 
             return ReturnResponse(response);
         }
@@ -41,7 +41,7 @@ namespace FalconOne.API.Controllers
         [HttpDelete("delete-policy")]
         public async Task<IActionResult> DeletePolicy(Guid policyId)
         {
-            var response = await _appPolicyService.DeletePolicy(policyId);
+            FalconeOne.BLL.Helpers.ApiResponse response = await _appPolicyService.DeletePolicy(policyId);
 
             return ReturnResponse(response);
         }

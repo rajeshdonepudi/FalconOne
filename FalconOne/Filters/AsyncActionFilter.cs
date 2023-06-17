@@ -15,8 +15,8 @@ namespace FalconOne.API.Filters
         #region Private methods
         private async Task LogToDatabase(ActionExecutingContext context)
         {
-            var requestInformationService = (IRequestInformationService)context.HttpContext.RequestServices.GetService(typeof(IRequestInformationService))!;
-            var tenantService = (ITenantService)context.HttpContext.RequestServices.GetService(typeof(ITenantService))!;
+            IRequestInformationService requestInformationService = (IRequestInformationService)context.HttpContext.RequestServices.GetService(typeof(IRequestInformationService))!;
+            ITenantService tenantService = (ITenantService)context.HttpContext.RequestServices.GetService(typeof(ITenantService))!;
 
             await requestInformationService!.SaveRequestInfoAsync(new RequestInformationDTO
             {
@@ -47,11 +47,11 @@ namespace FalconOne.API.Filters
 
         private string GetActionResourceCode(ActionExecutingContext context)
         {
-            var method = context.Controller.GetType().GetMethod(context.RouteData.Values[ACTION_KEY].ToString());
-            var myAttribute = method.GetCustomAttribute<UserActionAttribute>();
+            MethodInfo? method = context.Controller.GetType().GetMethod(context.RouteData.Values[ACTION_KEY].ToString());
+            UserActionAttribute? myAttribute = method.GetCustomAttribute<UserActionAttribute>();
             if (myAttribute is not null)
             {
-                var code = myAttribute.ResourceCode;
+                string code = myAttribute.ResourceCode;
                 if (!string.IsNullOrEmpty(code))
                 {
                     return code;

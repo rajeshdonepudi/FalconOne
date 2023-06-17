@@ -2,23 +2,15 @@
 {
     public class PagedList<T> : List<T>
     {
-        public PagedList(IQueryable<T> source, int index = 1, int pageSize = 10)
+        public PagedList(List<T> source, long count, int index, int pageSize)
         {
             TotalCount = source.Count();
             PageSize = pageSize;
             PageIndex = index;
-            AddRange(source.Skip(index * pageSize).Take(pageSize).ToList());
+            AddRange(source);
         }
 
-        public PagedList(List<T> source, int index, int pageSize)
-        {
-            TotalCount = source.Count();
-            PageSize = pageSize;
-            PageIndex = index;
-            AddRange(source.Skip(index * pageSize).Take(pageSize).ToList());
-        }
-
-        public int TotalCount
+        public long TotalCount
         {
             get; set;
         }

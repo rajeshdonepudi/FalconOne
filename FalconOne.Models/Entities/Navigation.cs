@@ -12,6 +12,6 @@ namespace FalconOne.Models.Entities
         public string URL { get; set; }
         public string Description { get; set; }
         public Guid ApplicationClaimId { get; set; }
-        public virtual ApplicationClaim ApplicationClaim { get; set; }
+        public virtual SecurityClaim ApplicationClaim { get; set; }
     }
 }

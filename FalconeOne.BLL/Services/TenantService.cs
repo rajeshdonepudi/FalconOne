@@ -1,5 +1,5 @@
 ﻿using FalconeOne.BLL.Interfaces;
-using FalconOne.DAL.Interfaces;
+using FalconOne.DAL.Contracts;
 using FalconOne.Helpers.Helpers;
 using Microsoft.AspNetCore.Http;
 
@@ -19,7 +19,7 @@ namespace FalconeOne.BLL.Services
         }
         public async Task<Guid> GetTenantId()
         {
-            var host = _httpContextAccessor.HttpContext.Request.Host.Host;
+            string host = _httpContextAccessor.HttpContext.Request.Host.Host;
 
             if (!string.IsNullOrEmpty(host))
             {
@@ -29,7 +29,7 @@ namespace FalconeOne.BLL.Services
                 }
                 else
                 {
-                    var tenant = await _unitOfWork.TenantRepository.QueryAsync(x => x.Host == host);
+                    FalconOne.Models.Entities.Tenant? tenant = await _unitOfWork.TenantRepository.FindAsync(x => x.Host == host);
 
                     if (tenant is null)
                     {

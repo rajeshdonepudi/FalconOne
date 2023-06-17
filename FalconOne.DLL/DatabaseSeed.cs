@@ -7,20 +7,20 @@ namespace FalconOne.DAL
 {
     public static class DatabaseSeed
     {
-        static Guid tenantId = Guid.NewGuid();
+        static readonly Guid tenantId = Guid.NewGuid();
 
-        static Guid departmentId = Guid.NewGuid();
+        static readonly Guid departmentId = Guid.NewGuid();
 
-        static Guid locationId = Guid.NewGuid();
+        static readonly Guid locationId = Guid.NewGuid();
 
-        static Guid userId1 = Guid.Parse("5090B588-6E3F-464A-994D-9CD2AF4A0198");
+        static readonly Guid userId1 = Guid.Parse("5090B588-6E3F-464A-994D-9CD2AF4A0198");
 
-        static Guid userId2 = Guid.Parse("6521474A-6E39-4A5E-8628-CD89B4E922BC");
+        static readonly Guid userId2 = Guid.Parse("6521474A-6E39-4A5E-8628-CD89B4E922BC");
 
         public static void Seed(ModelBuilder modelBuilder)
         {
             #region Create location
-            var location = new Location
+            Location location = new()
             {
                 Id = locationId,
                 Name = "Hyderabad",
@@ -32,7 +32,7 @@ namespace FalconOne.DAL
             #endregion
 
             #region Create tenant
-            var tenant = new Tenant
+            Tenant tenant = new()
             {
                 Name = "development",
                 Host = "localhost",
@@ -45,7 +45,7 @@ namespace FalconOne.DAL
             #endregion
 
             #region Create department
-            var department = new Department
+            Department department = new()
             {
                 Id = departmentId,
                 Name = "Development",
@@ -59,7 +59,7 @@ namespace FalconOne.DAL
 
             #region Create users
 
-            var user1 = new User
+            User user1 = new()
             {
                 Id = userId2,
                 FirstName = "Basic",
@@ -78,7 +78,7 @@ namespace FalconOne.DAL
                 TenantId = tenantId,
             };
 
-            var user2 = new User
+            User user2 = new()
             {
                 Id = userId1,
                 FirstName = "Admin",
@@ -126,15 +126,15 @@ namespace FalconOne.DAL
 
             #region Create application policies
 
-            modelBuilder.Entity<ApplicationPolicy>()
-                .HasData(new ApplicationPolicy
+            modelBuilder.Entity<SecurityPolicy>()
+                .HasData(new SecurityPolicy
                 {
                     Id = Guid.Parse("9FA14D9E-0D8E-4B51-85E4-C4BDD5873D14"),
                     Name = "User",
                     CreatedOn = DateTime.UtcNow,
                     TenantId = tenantId
                 },
-                new ApplicationPolicy
+                new SecurityPolicy
                 {
                     Id = Guid.Parse("B7538A53-D3B2-4B66-BA40-97619CDA8D00"),
                     Name = "Admin",
@@ -146,8 +146,8 @@ namespace FalconOne.DAL
 
             #region Create application claims
 
-            modelBuilder.Entity<ApplicationClaim>()
-                .HasData(new ApplicationClaim
+            modelBuilder.Entity<SecurityClaim>()
+                .HasData(new SecurityClaim
                 {
                     Id = Guid.Parse("C1F09DF3-5590-4EE8-9B8C-D0315369A7AF"),
                     Type = "Admin",
@@ -158,8 +158,8 @@ namespace FalconOne.DAL
                     Description = "Database seeded"
                 });
 
-            modelBuilder.Entity<ApplicationClaim>()
-                .HasData(new ApplicationClaim
+            modelBuilder.Entity<SecurityClaim>()
+                .HasData(new SecurityClaim
                 {
                     Id = Guid.NewGuid(),
                     Type = "User",
@@ -198,7 +198,7 @@ namespace FalconOne.DAL
             #endregion
 
             #region Default theme settings
-            modelBuilder.Entity<ApplicationSetting>().HasData(new ApplicationSetting
+            modelBuilder.Entity<SiteSetting>().HasData(new SiteSetting
             {
                 Id = Guid.NewGuid(),
                 SettingType = Enumerations.Settings.SettingTypeEnum.Theme,
@@ -209,7 +209,7 @@ namespace FalconOne.DAL
                 TenantId = tenantId
             });
 
-            modelBuilder.Entity<ApplicationSetting>().HasData(new ApplicationSetting
+            modelBuilder.Entity<SiteSetting>().HasData(new SiteSetting
             {
                 Id = Guid.NewGuid(),
                 SettingType = FalconOne.Enumerations.Settings.SettingTypeEnum.Theme,
@@ -220,7 +220,7 @@ namespace FalconOne.DAL
                 TenantId = tenantId
             });
 
-            modelBuilder.Entity<ApplicationSetting>().HasData(new ApplicationSetting
+            modelBuilder.Entity<SiteSetting>().HasData(new SiteSetting
             {
                 Id = Guid.NewGuid(),
                 SettingType = FalconOne.Enumerations.Settings.SettingTypeEnum.Theme,
@@ -230,6 +230,19 @@ namespace FalconOne.DAL
                 Value = "light",
                 TenantId = tenantId
             });
+            #endregion
+
+            #region Posts
+            modelBuilder.Entity<Post>()
+                .HasData(new Post
+                {
+                    Id = Guid.NewGuid(),
+                    Content = "Hey this is new post on our site.",
+                    CreatedOn = DateTime.UtcNow,
+                    TenantId = tenantId,
+                    PostedById = userId1,
+                    PostedOn = DateTime.UtcNow
+                });
             #endregion
         }
     }

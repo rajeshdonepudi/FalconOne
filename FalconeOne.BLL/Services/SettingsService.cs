@@ -1,24 +1,25 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using FalconOne.DAL.Interfaces;
+using FalconOne.DAL.Contracts;
 using FalconOne.Enumerations.Settings;
 using FalconOne.Models.DTOs;
 using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using System.Net;
 
 namespace FalconeOne.BLL.Services
 {
     public class SettingsService : BaseService, ISettingsService
     {
-        public SettingsService(UserManager<User> userManager, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor ) : base(userManager, unitOfWork, httpContextAccessor)
+        public SettingsService(UserManager<User> userManager, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(userManager, unitOfWork, httpContextAccessor, configuration)
         {
         }
 
         public async Task<ApiResponse> AddNewSetting(ApplicationSettingDTO model)
         {
-            var setting = new ApplicationSetting();
+            SiteSetting setting = new();
 
             setting.CreatedOn = DateTime.UtcNow;
 
@@ -31,27 +32,39 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> DeleteSetting(Guid id)
         {
-            var setting = await _unitOfWork.ApplicationSettingRepository.QueryAsync(x => x.Id == id);
+            SiteSetting setting = await _unitOfWork.ApplicationSettingRepository.FindAsync(x => x.Id == id);
 
-            await _unitOfWork.ApplicationSettingRepository.DeleteAsync(setting);
+            _unitOfWork.ApplicationSettingRepository.Remove(setting);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.NoContent, MessageHelper.SUCESSFULL));
         }
 
         public async Task<ApiResponse> GetSettings(SettingTypeEnum settingType)
         {
-            var settings = await _unitOfWork.ApplicationSettingRepository.QueryAllAsync(x => x.SettingType == settingType);
+            IEnumerable<SiteSetting> settings = await _unitOfWork.ApplicationSettingRepository.GetApplicationSettingsByTypeAsync(settingType);
 
-            var result = new List<ApplicationSettingDTO>();
+            List<ApplicationSettingDTO> result = new();
+
+            foreach (SiteSetting setting in settings)
+            {
+                result.Add(new ApplicationSettingDTO
+                {
+                    SettingType = setting.SettingType,
+                    Description = setting.Description,
+                    Id = setting.Id,
+                    Name = setting.Name,
+                    Value = setting.Value,
+                });
+            }
 
             return new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result);
         }
 
         public async Task<ApiResponse> UpdateSettings(List<ApplicationSettingDTO> settings)
         {
-            var result = new List<ApplicationSetting>();
+            List<SiteSetting> result = new();
 
-            await _unitOfWork.ApplicationSettingRepository.UpdateRangeAsync(result);
+            _unitOfWork.ApplicationSettingRepository.UpdateRange(result);
 
             await _unitOfWork.SaveChangesAsync();
 
@@ -60,14 +73,14 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> UpdateSettingsByName(List<ApplicationSettingDTO> settings)
         {
-            foreach (var setting in settings)
+            foreach (ApplicationSettingDTO setting in settings)
             {
-                var settingToUpdate = await _unitOfWork.ApplicationSettingRepository.QueryAsync(x => x.Name == setting.Name);
+                SiteSetting settingToUpdate = await _unitOfWork.ApplicationSettingRepository.FindAsync(x => x.Name == setting.Name);
 
                 if (settingToUpdate != null)
                 {
                     settingToUpdate.Value = setting.Value;
-                    await _unitOfWork.ApplicationSettingRepository.UpdateAsync(settingToUpdate);
+                    _unitOfWork.ApplicationSettingRepository.Update(settingToUpdate);
                     await _unitOfWork.SaveChangesAsync();
                 }
             }

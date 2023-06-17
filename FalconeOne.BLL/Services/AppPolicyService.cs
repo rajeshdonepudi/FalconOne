@@ -1,11 +1,11 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using FalconOne.DAL.Interfaces;
+using FalconOne.DAL.Contracts;
 using FalconOne.Models.DTOs;
 using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.Net;
 
 namespace FalconeOne.BLL.Services
@@ -14,13 +14,13 @@ namespace FalconeOne.BLL.Services
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public AppPolicyService(UserManager<User> userManager, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(userManager, unitOfWork, httpContextAccessor)
+        public AppPolicyService(UserManager<User> userManager, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(userManager, unitOfWork, httpContextAccessor, configuration)
         {
             _unitOfWork = unitOfWork;
         }
         public async Task<ApiResponse> CreatePolicy(CreatePolicyDTO model)
         {
-            var policy = new ApplicationPolicy
+            SecurityPolicy policy = new()
             {
                 Name = model.Name,
             };
@@ -34,12 +34,12 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> DeletePolicy(Guid id)
         {
-            var policy = await _unitOfWork.ApplicationPolicyRepository.QueryAsync(x => x.Id == id);
+            SecurityPolicy policy = await _unitOfWork.ApplicationPolicyRepository.FindAsync(x => x.Id == id);
 
             /*** Delete claims first */
             await DeleteAssociatedClaims(id);
 
-            await _unitOfWork.ApplicationPolicyRepository.DeleteAsync(policy);
+            _unitOfWork.ApplicationPolicyRepository.Remove(policy);
 
             await _unitOfWork.SaveChangesAsync();
 
@@ -48,7 +48,7 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> GetAllPolicies()
         {
-            var result = await _unitOfWork.ApplicationPolicyRepository.GetQueryable().Include(x => x.PolicyClaims).ToListAsync();
+            IEnumerable<SecurityPolicy> result = await _unitOfWork.ApplicationPolicyRepository.GetAllSecurityPoliciesWithClaimsAsync();
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result));
         }
@@ -56,11 +56,11 @@ namespace FalconeOne.BLL.Services
         #region Private
         private async Task DeleteAssociatedClaims(Guid policyId)
         {
-            var claims = await _unitOfWork.UserClaimRepository.GetQueryable().Where(x => x.ApplicationPolicyId == policyId).ToListAsync();
+            IEnumerable<SecurityClaim> claims = await _unitOfWork.UserClaimsRepository.GetSecurityClaimsByPolicyId(policyId);
 
-            foreach (var claim in claims)
+            foreach (SecurityClaim? claim in claims)
             {
-                await _unitOfWork.UserClaimRepository.DeleteAsync(claim);
+                _unitOfWork.UserClaimsRepository.Remove(claim);
             }
         }
         #endregion

@@ -1,20 +1,17 @@
-﻿using FalconOne.Helpers.Helpers;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
-namespace FalconOne.DAL.Interfaces
+namespace FalconOne.Models.Contracts
 {
     public interface IGenericRepository<T> where T : class
     {
-        Task<T> GetByIdAsync(Guid id);
+        Task AddAsync(T entity);
+        Task AddRangeAsync(List<T> entities);
+        Task<T> FindAsync(Expression<Func<T, bool>> expression);
         Task<IEnumerable<T>> GetAllAsync();
-        Task<T> AddAsync(T entity);
-        Task<T> FindAsync(Guid id);
-        Task<T> DeleteAsync(T entity);
-        Task<T> UpdateAsync(T entity);
-        Task UpdateRangeAsync(List<T> entities);
-        Task<T> QueryAsync(Expression<Func<T, bool>> expression);
-        Task<IEnumerable<T>> QueryAllAsync(Expression<Func<T, bool>> expression);
-        Task<PagedList<T>> GetAllAsync(PageParams pageParams);
-        IQueryable<T> GetQueryable();
+        Task<T> GetByIdAsync(Guid id);
+        void Remove(T entity);
+        void RemoveRange(List<T> entities);
+        void Update(T entity);
+        void UpdateRange(List<T> entities);
     }
 }

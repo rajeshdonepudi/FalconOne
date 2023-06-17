@@ -1,8 +1,9 @@
-﻿using FalconOne.DAL.Interfaces;
+﻿using FalconOne.DAL.Contracts;
 using FalconOne.Models.DTOs;
 using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 
 namespace FalconeOne.BLL.Services
 {
@@ -11,12 +12,17 @@ namespace FalconeOne.BLL.Services
         protected readonly UserManager<User> _userManager;
         protected readonly IUnitOfWork _unitOfWork;
         protected readonly IHttpContextAccessor _httpContextAccessor;
+        protected readonly IConfiguration _configuration;
 
-        public BaseService(UserManager<User> userManager, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
+        public BaseService(UserManager<User> userManager,
+            IUnitOfWork unitOfWork,
+            IHttpContextAccessor httpContextAccessor,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
+            _configuration = configuration;
         }
 
         public async Task<Guid> GetCurrentTenantId()
@@ -24,20 +30,20 @@ namespace FalconeOne.BLL.Services
 
             if (_httpContextAccessor.HttpContext.User.Identities.Any())
             {
-                var tenant = _httpContextAccessor?.HttpContext?.User?.Identities?
+                System.Security.Claims.Claim? tenant = _httpContextAccessor?.HttpContext?.User?.Identities?
                                                     .SelectMany(x => x.Claims)
                                                     .FirstOrDefault(x => x.Type == "TenantId");
 
-                var user = _httpContextAccessor?.HttpContext?.User?.Identities?
+                System.Security.Claims.Claim? user = _httpContextAccessor?.HttpContext?.User?.Identities?
                                                     .SelectMany(x => x.Claims)
                                                     .FirstOrDefault(x => x.Type == "UserId");
 
                 if (!string.IsNullOrEmpty(tenant.Value) && !string.IsNullOrEmpty(user.Value))
                 {
-                    Guid.TryParse(tenant.Value, out var tenantId);
-                    Guid.TryParse(user.Value, out var userId);
+                    Guid.TryParse(tenant.Value, out Guid tenantId);
+                    Guid.TryParse(user.Value, out Guid userId);
 
-                    var result = await IsValidTenant(tenantId, userId);
+                    bool result = await IsValidTenant(tenantId, userId);
 
                     if (result)
                     {
@@ -56,13 +62,13 @@ namespace FalconeOne.BLL.Services
 
         private async Task<bool> IsValidTenant(Guid tenantId, Guid userId)
         {
-            var tenant = await _unitOfWork.TenantRepository.FindAsync(tenantId);
+            Tenant? tenant = await _unitOfWork.TenantRepository.GetByIdAsync(tenantId);
 
-            var user = await _userManager.FindByIdAsync(userId.ToString());
+            User? user = await _userManager.FindByIdAsync(userId.ToString());
 
             if (user is not null && tenant is not null)
             {
-                var result = (user).TenantId == tenant.Id;
+                bool result = user.TenantId == tenant.Id;
 
                 if (!result)
                 {

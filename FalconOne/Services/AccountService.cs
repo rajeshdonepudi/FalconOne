@@ -1,20 +1,20 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using FalconOne.DAL.Interfaces;
+using FalconeOne.BLL.Services;
+using FalconOne.API.Contracts;
+using FalconOne.DAL.Contracts;
 using FalconOne.Extensions.Http;
 using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
 using FalconOne.Models.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
-namespace FalconeOne.BLL.Services
+namespace FalconOne.API.Services
 {
     public class AccountService : BaseService, IAccountService
     {
@@ -23,6 +23,7 @@ namespace FalconeOne.BLL.Services
         private readonly RoleManager<UserRole> _roleManager;
         private readonly IOptions<IdentityOptions> _optionsAccessor;
         private readonly ITokenService _tokenService;
+        private readonly ITenantService _tenantService;
         private readonly IAppConfigService _appConfigService;
 
         /// <summary>
@@ -48,12 +49,14 @@ namespace FalconeOne.BLL.Services
             RoleManager<UserRole> roleManager,
             IOptions<IdentityOptions> optionsAccessor,
             ITokenService tokenService,
-            IAppConfigService appConfigService, IHttpContextAccessor httpContextAccessor) : base(userManager, unitOfWork, httpContextAccessor)
+            ITenantService tenantService,
+            IAppConfigService appConfigService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(userManager, unitOfWork, httpContextAccessor, configuration)
         {
             _signInManager = signInManager;
             _roleManager = roleManager;
             _optionsAccessor = optionsAccessor;
             _tokenService = tokenService;
+            _tenantService = tenantService;
             _appConfigService = appConfigService;
         }
         #endregion
@@ -62,23 +65,23 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> AuthenticateUserAsync(AuthenticateRequestDTO model)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            User? user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user is null)
             {
                 return new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND);
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, true);
+            SignInResult result = await _signInManager.PasswordSignInAsync(user, model.Password, false, true);
 
             if (!result.Succeeded)
             {
                 return new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.LOGIN_FAILED, model);
             }
 
-            var jwtToken = await GenerateJWTToken(user);
+            string jwtToken = await GenerateJWTToken(user);
 
-            var refreshToken = await GenerateRefreshToken();
+            RefreshToken? refreshToken = await GenerateRefreshToken();
 
             await RemoveExpiredRefreshTokens(user);
 
@@ -88,7 +91,7 @@ namespace FalconeOne.BLL.Services
 
             await _unitOfWork.SaveChangesAsync();
 
-            var authResponse = new AuthenticateResponseDTO
+            AuthenticateResponseDTO authResponse = new()
             {
                 Email = user.Email,
                 FirstName = user.FirstName,
@@ -106,27 +109,26 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.LOGIN_SUCCESSFULL, authResponse));
         }
 
-        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
         public async Task<ApiResponse> CreateNewUserAsync(RegisterNewUserRequestDTO model)
         {
-            var newUser = new User { };
+            User newUser = new() { };
 
             newUser.CreatedOn = DateTime.UtcNow;
 
-            var result = await _userManager.CreateAsync(newUser, model.ConfirmPassword);
+            IdentityResult result = await _userManager.CreateAsync(newUser, model.ConfirmPassword);
 
             if (!result.Succeeded)
             {
                 return new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.FAILED_TO_CREATE_USER, model, result.Errors);
             }
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            User? user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user is null)
             {
                 return new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG);
             }
-            var account = new UserDTO { };
+            UserDTO account = new() { };
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.Created, MessageHelper.USER_CREATED_SUCCESSFULLY, account));
         }
@@ -138,14 +140,14 @@ namespace FalconeOne.BLL.Services
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_USER_ID));
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            User? user = await _userManager.FindByIdAsync(userId);
 
             if (user is null)
             {
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
             }
 
-            var result = await _userManager.DeleteAsync(user);
+            IdentityResult result = await _userManager.DeleteAsync(user);
 
             if (!result.Succeeded)
             {
@@ -156,40 +158,40 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> ForgotPasswordAsync(ForgotPasswordRequestDTO model)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            User? user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user is null) return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
 
-            var result = await _userManager.IsEmailConfirmedAsync(user);
+            bool result = await _userManager.IsEmailConfirmedAsync(user);
 
             if (!result)
             {
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.PLEASE_CONFIRM_EMAIL, result));
             }
 
-            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.FORGOT_PASSWORD_SUCCESS, resetToken));
-
         }
+
         public async Task<ApiResponse> GetAllAsync(PageParams model)
         {
-            var result = new List<UserDTO>();
+            List<UserDTO> result = new();
 
-            var users = await _unitOfWork.UserRepository.GetAllAsync(model);
+            PagedList<User> users = await _unitOfWork.UserRepository.GetAllUsersByTenantIdPaginatedAsync(await _tenantService.GetTenantId(), model);
 
             if (!users.Any())
             {
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.NO_USERS_FOUND));
             }
 
-            foreach (var user in users)
+            foreach (User user in users)
             {
-                var res = new UserDTO { };
+                UserDTO res = new() { };
                 result.Add(res);
             }
 
-            var pagedList = new PagedListDTO
+            PagedListDTO pagedList = new()
             {
                 TotalCount = users.TotalCount,
                 PageIndex = users.PageIndex,
@@ -207,53 +209,54 @@ namespace FalconeOne.BLL.Services
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_USER_ID));
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            User? user = await _userManager.FindByIdAsync(userId);
 
             if (user is null)
             {
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
             }
 
-            var result = new UserDTO();
+            UserDTO result = new();
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result));
         }
+
         public async Task<ApiResponse> GetNewJWTByRefreshTokenAsync(string refreshToken)
         {
-            var account = await _userManager.Users.Include(x => x.RefreshTokens).FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
+            User? account = await _userManager.Users.Include(x => x.RefreshTokens).FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
 
             if (account is null)
             {
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.INVALID_REFRESH_TOKEN));
             }
 
-            var token = account.RefreshTokens.FirstOrDefault(x => x.Token == refreshToken);
+            RefreshToken? token = account.RefreshTokens.FirstOrDefault(x => x.Token == refreshToken);
 
             if (token!.IsRevoked)
             {
                 await RevokeDescendantRefreshTokens(token, account, "", MessageHelper.REUSE_OF_REVOKED_ANCESTOR_TOKEN);
 
-                var updateResult = await _userManager.UpdateAsync(account);
+                IdentityResult updateResult = await _userManager.UpdateAsync(account);
 
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG));
             }
 
-            var newRefreshToken = await RotateRefreshToken(token, "");
+            RefreshToken newRefreshToken = await RotateRefreshToken(token, "");
 
             account.RefreshTokens.Add(newRefreshToken);
 
             await RemoveExpiredRefreshTokens(account);
 
-            var result = await _userManager.UpdateAsync(account);
+            IdentityResult result = await _userManager.UpdateAsync(account);
 
             if (!result.Succeeded)
             {
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG));
             }
 
-            var jwtToken = await GenerateJWTToken(account);
+            string jwtToken = await GenerateJWTToken(account);
 
-            var response = new AuthenticateResponseDTO
+            AuthenticateResponseDTO response = new()
             {
                 JWTToken = jwtToken,
                 RefreshToken = newRefreshToken.Token
@@ -263,14 +266,14 @@ namespace FalconeOne.BLL.Services
         }
         public async Task<ApiResponse> ResetPasswordAsync(ResetPasswordRequestDTO model)
         {
-            var user = await _userManager.FindByIdAsync(model.UserId);
+            User? user = await _userManager.FindByIdAsync(model.UserId);
 
             if (user is null)
             {
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
             }
 
-            var result = await _userManager.ResetPasswordAsync(user, model.ResetToken, model.ConfirmNewPassword);
+            IdentityResult result = await _userManager.ResetPasswordAsync(user, model.ResetToken, model.ConfirmNewPassword);
 
             if (!result.Succeeded)
             {
@@ -281,9 +284,9 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> RevokeRefreshTokenAsync(string refreshToken)
         {
-            var account = await _userManager.Users.FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
+            User? account = await _userManager.Users.FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
 
-            var token = account.RefreshTokens.FirstOrDefault(x => x.Token == refreshToken);
+            RefreshToken? token = account.RefreshTokens.FirstOrDefault(x => x.Token == refreshToken);
 
             if (account is null)
             {
@@ -309,13 +312,13 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> VerifyEmailAsync(VerifyEmailDTO model)
         {
-            var user = await _userManager.FindByIdAsync(model.UserId);
+            User? user = await _userManager.FindByIdAsync(model.UserId);
 
             if (user is null)
             {
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
             }
-            var result = await _userManager.ConfirmEmailAsync(user, model.EmailConfirmationToken);
+            IdentityResult result = await _userManager.ConfirmEmailAsync(user, model.EmailConfirmationToken);
 
             if (!result.Succeeded)
             {
@@ -331,21 +334,21 @@ namespace FalconeOne.BLL.Services
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REQUEST));
             }
 
-            var user = await _userManager.FindByIdAsync(addToRoleDTO.UserId);
+            User? user = await _userManager.FindByIdAsync(addToRoleDTO.UserId);
 
             if (user is null)
             {
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
             }
 
-            var role = await _roleManager.FindByIdAsync(addToRoleDTO.RoleId);
+            UserRole? role = await _roleManager.FindByIdAsync(addToRoleDTO.RoleId);
 
             if (role is null)
             {
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.ROLE_NOT_FOUND));
             }
 
-            var result = await _userManager.AddToRoleAsync(user, role.Name);
+            IdentityResult result = await _userManager.AddToRoleAsync(user, role.Name);
 
             if (!result.Succeeded)
             {
@@ -360,21 +363,21 @@ namespace FalconeOne.BLL.Services
         #region Private methods
         private async Task<string> GenerateJWTToken(User user)
         {
-            var claims = await _userManager.GetClaimsAsync(user);
+            IList<Claim> claims = await _userManager.GetClaimsAsync(user);
 
             claims.Add(new Claim("TenantId", user.TenantId.ToString()));
 
             claims.Add(new Claim("UserId", user.Id.ToString()));
 
-            var token = await _tokenService.GenerateJWTToken<User, IList<Claim>>(user, claims);
+            string token = await _tokenService.GenerateJWTToken(user, claims);
 
             return await Task.FromResult(token);
         }
         private async Task<RefreshToken> GenerateRefreshToken()
         {
-            var refreshToken = await GetRefreshToken();
+            RefreshToken refreshToken = await GetRefreshToken();
 
-            var refreshTokens = await _userManager.Users.AsNoTracking().SelectMany(x => x.RefreshTokens).ToListAsync();
+            List<RefreshToken> refreshTokens = await _userManager.Users.AsNoTracking().SelectMany(x => x.RefreshTokens).ToListAsync();
 
             if (refreshTokens.Any())
             {
@@ -382,7 +385,7 @@ namespace FalconeOne.BLL.Services
 
                 if (!isUniqueToken)
                 {
-                    var newToken = await GenerateRefreshToken();
+                    RefreshToken newToken = await GenerateRefreshToken();
                     return await Task.FromResult(newToken);
                 }
             }
@@ -406,7 +409,7 @@ namespace FalconeOne.BLL.Services
         {
             double expiry = double.Parse(await _appConfigService.GetValue("JWT:RefreshTokenValidity"));
 
-            var lastRefreshToken = user.RefreshTokens.LastOrDefault();
+            RefreshToken? lastRefreshToken = user.RefreshTokens.LastOrDefault();
 
             int res = user.RefreshTokens.RemoveAll(x => x.Id != lastRefreshToken!.Id && !x.IsActive && x.Created.AddMinutes(expiry) <= DateTime.UtcNow);
 
@@ -416,7 +419,7 @@ namespace FalconeOne.BLL.Services
         {
             if (!string.IsNullOrEmpty(refreshToken.ReplacedByToken))
             {
-                var childRefreshToken = user.RefreshTokens.SingleOrDefault(t => t.Token == refreshToken.ReplacedByToken);
+                RefreshToken? childRefreshToken = user.RefreshTokens.SingleOrDefault(t => t.Token == refreshToken.ReplacedByToken);
 
                 if (childRefreshToken is not null)
                 {
@@ -440,14 +443,14 @@ namespace FalconeOne.BLL.Services
         }
         private async Task<RefreshToken> RotateRefreshToken(RefreshToken refreshToken, string ipAddress)
         {
-            var newRefreshToken = await GenerateRefreshToken();
+            RefreshToken newRefreshToken = await GenerateRefreshToken();
             UpdateRefreshTokenSettings(refreshToken, ipAddress, MessageHelper.REPLACED_WITH_NEW_TOKEN, newRefreshToken.Token!);
             return newRefreshToken;
         }
 
         public async Task<ApiResponse> UpdateEmailConfirmed(string userId, bool value)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            User? user = await _userManager.FindByIdAsync(userId);
 
             if (user is null)
             {

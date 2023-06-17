@@ -28,6 +28,6 @@
         public static string INVALID_REQUEST = "Invalid request.";
         public static string FAILED_TO_UPDATE_USER = "Failed to update user.";
         public static string ROLE_NOT_FOUND = "Role not found.";
-        internal static string EMAIL_CONFIRM_FAILED = "Email confirmation failed.";
+        public static string EMAIL_CONFIRM_FAILED = "Email confirmation failed.";
     }
 }
