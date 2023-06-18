@@ -14,7 +14,7 @@ namespace FalconOne.DAL
             _falconOneContext = falconOneContext;
 
             RefreshTokenRepository = new GenericRepository<RefreshToken>(_falconOneContext);
-            RequestInformationRepository = new RequestInformationRepository(_falconOneContext);
+            RequestInformationRepository = new SystemLogsRepository(_falconOneContext);
             UserClaimsRepository = new SecurityClaimsRepository(_falconOneContext);
             ApplicationPolicyRepository = new SecurityPolicyRepository(_falconOneContext);
             ApplicationSettingRepository = new ApplicationSettingRepository(_falconOneContext);

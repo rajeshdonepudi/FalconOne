@@ -22,7 +22,7 @@ namespace FalconOne.API.Controllers
 
         [HttpGet("type/{settingType}")]
         [AllowAnonymous]
-        [UserAction(AppResourceCodes.Settings.GET_SETTING_BY_TYPE)]
+        [ResourceIdentifier(AppResourceCodes.Settings.GET_SETTING_BY_TYPE)]
         public async Task<IActionResult> GetSettings(SettingTypeEnum settingType)
         {
             return Ok(await _settingsService.GetSettings(settingType));
@@ -45,7 +45,7 @@ namespace FalconOne.API.Controllers
 
         [HttpPatch]
         [AllowAnonymous]
-        [UserAction(AppResourceCodes.Settings.UPDATE_SETTINGS)]
+        [ResourceIdentifier(AppResourceCodes.Settings.UPDATE_SETTINGS)]
         public async Task<IActionResult> UpdateSettings(List<ApplicationSettingDTO> settings)
         {
             return ReturnResponse(await _settingsService.UpdateSettingsByName(settings));

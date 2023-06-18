@@ -20,7 +20,7 @@ namespace FalconOne.API.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [UserAction(AppResourceCodes.Account.REGISTER_NEW_USER)]
+        [ResourceIdentifier(AppResourceCodes.Account.REGISTER_NEW_USER)]
 
         public async Task<IActionResult> Get()
         {

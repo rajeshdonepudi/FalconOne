@@ -53,7 +53,7 @@ namespace FalconOne.API.Controllers
 
         [HttpPost("all-users")]
         [AllowAnonymous]
-        [UserAction(AppResourceCodes.Account.GET_USER)]
+        [ResourceIdentifier(AppResourceCodes.Account.GET_USER)]
         public async Task<IActionResult> GetAllUsers(PageParams model)
         {
             FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.GetAllAsync(model);

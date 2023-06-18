@@ -13,7 +13,7 @@ namespace FalconOne.API.DependencyConfig
     {
         public static void Configure(WebApplicationBuilder builder)
         {
-            builder.Services.AddTransient<IRequestInformationService, RequestInformationService>();
+            builder.Services.AddTransient<IRequestInformationService, SystemLogsService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();

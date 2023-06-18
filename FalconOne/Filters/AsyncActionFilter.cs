@@ -48,7 +48,7 @@ namespace FalconOne.API.Filters
         private string GetActionResourceCode(ActionExecutingContext context)
         {
             MethodInfo? method = context.Controller.GetType().GetMethod(context.RouteData.Values[ACTION_KEY].ToString());
-            UserActionAttribute? myAttribute = method.GetCustomAttribute<UserActionAttribute>();
+            ResourceIdentifierAttribute? myAttribute = method.GetCustomAttribute<ResourceIdentifierAttribute>();
             if (myAttribute is not null)
             {
                 string code = myAttribute.ResourceCode;

@@ -19,7 +19,7 @@ namespace FalconOne.API.Controllers
 
         [HttpPost("register-new-user")]
         [AllowAnonymous]
-        [UserAction(AppResourceCodes.Account.REGISTER_NEW_USER)]
+        [ResourceIdentifier(AppResourceCodes.Account.REGISTER_NEW_USER)]
         public async Task<IActionResult> Register(RegisterNewUserRequestDTO model)
         {
             if (ModelState.IsValid)
@@ -36,7 +36,7 @@ namespace FalconOne.API.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        [UserAction(AppResourceCodes.Account.LOGIN)]
+        [ResourceIdentifier(AppResourceCodes.Account.LOGIN)]
         public async Task<IActionResult> Login(AuthenticateRequestDTO model)
         {
             if (ModelState.IsValid)
@@ -52,7 +52,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpGet("get-user")]
-        [UserAction(AppResourceCodes.Account.GET_USER)]
+        [ResourceIdentifier(AppResourceCodes.Account.GET_USER)]
         public async Task<IActionResult> GetByUserId(string userId)
         {
             FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.GetByIdAsync(userId);
@@ -61,7 +61,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("forgot-password")]
-        [UserAction(AppResourceCodes.Account.FORGOT_PASSWORD)]
+        [ResourceIdentifier(AppResourceCodes.Account.FORGOT_PASSWORD)]
         [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordRequestDTO model)
         {
@@ -78,7 +78,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("reset-password")]
-        [UserAction(AppResourceCodes.Account.RESET_PASSWORD)]
+        [ResourceIdentifier(AppResourceCodes.Account.RESET_PASSWORD)]
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequestDTO model)
         {
@@ -95,7 +95,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("revoke-refresh-token")]
-        [UserAction(AppResourceCodes.Account.REVOKE_REFRESH_TOKEN)]
+        [ResourceIdentifier(AppResourceCodes.Account.REVOKE_REFRESH_TOKEN)]
         [AllowAnonymous]
         public async Task<IActionResult> RevokeRefreshToken(RevokeRefreshTokenRequestDTO model)
         {
@@ -112,7 +112,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("refresh-token")]
-        [UserAction(AppResourceCodes.Account.REFRESH_TOKEN)]
+        [ResourceIdentifier(AppResourceCodes.Account.REFRESH_TOKEN)]
         [AllowAnonymous]
         public async Task<IActionResult> RefreshToken(RefreshTokenRequestDTO model)
         {

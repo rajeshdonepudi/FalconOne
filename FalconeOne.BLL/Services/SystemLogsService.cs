@@ -8,11 +8,11 @@ using System.Net;
 
 namespace FalconeOne.BLL.Services
 {
-    public class RequestInformationService : IRequestInformationService
+    public class SystemLogsService : IRequestInformationService
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public RequestInformationService(IUnitOfWork unitOfWork)
+        public SystemLogsService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

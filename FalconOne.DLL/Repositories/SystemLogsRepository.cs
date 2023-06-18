@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FalconOne.DAL.Repositories
 {
-    public class RequestInformationRepository : GenericRepository<SystemLog>, IRequestInformationRepository
+    public class SystemLogsRepository : GenericRepository<SystemLog>, IRequestInformationRepository
     {
-        public RequestInformationRepository(FalconOneContext falconOneContext) : base(falconOneContext) { }
+        public SystemLogsRepository(FalconOneContext falconOneContext) : base(falconOneContext) { }
 
         public async Task<PagedList<SystemLog>> GetAllRequestInfoPaginatedAsync(PageParams pageParams)
         {
