@@ -12,9 +12,12 @@ namespace FalconeOne.BLL.Services
 {
     public class PostService : BaseService, IPostService
     {
-        public PostService(UserManager<User> userManager, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        public PostService(UserManager<User> userManager,
+            IUnitOfWork unitOfWork,
+            IHttpContextAccessor httpContextAccessor,
+            IConfiguration configuration, ITenantService tenantService)
 
-            : base(userManager, unitOfWork, httpContextAccessor, configuration)
+            : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
         {
         }
 

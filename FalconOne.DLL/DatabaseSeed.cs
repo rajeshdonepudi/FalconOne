@@ -7,9 +7,11 @@ namespace FalconOne.DAL
 {
     public static class DatabaseSeed
     {
-        static readonly Guid tenantId = Guid.NewGuid();
+        static readonly Guid tenantId1 = Guid.NewGuid();
+        static readonly Guid tenantId2 = Guid.NewGuid();
 
-        static readonly Guid departmentId = Guid.NewGuid();
+        static readonly Guid departmentId1 = Guid.NewGuid();
+        static readonly Guid departmentId2 = Guid.NewGuid();
 
         static readonly Guid locationId = Guid.NewGuid();
 
@@ -31,30 +33,27 @@ namespace FalconOne.DAL
             modelBuilder.Entity<Location>().HasData(location);
             #endregion
 
-            #region Create tenant
-            Tenant tenant = new()
-            {
-                Name = "development",
-                Host = "localhost",
-                CreatedOn = DateTime.UtcNow,
-                Id = tenantId,
-                LocationId = locationId
-            };
-
-            modelBuilder.Entity<Tenant>().HasData(tenant);
-            #endregion
-
             #region Create department
             Department department = new()
             {
-                Id = departmentId,
+                Id = departmentId1,
                 Name = "Development",
                 CreatedOn = DateTime.UtcNow,
-                TenantId = tenantId,
+                TenantId = tenantId1,
+                LocationId = locationId
+            };
+
+            Department department2 = new()
+            {
+                Id = departmentId2,
+                Name = ".NET",
+                CreatedOn = DateTime.UtcNow,
+                TenantId = tenantId2,
                 LocationId = locationId
             };
 
             modelBuilder.Entity<Department>().HasData(department);
+            modelBuilder.Entity<Department>().HasData(department2);
             #endregion
 
             #region Create users
@@ -70,12 +69,11 @@ namespace FalconOne.DAL
                 UserName = "basicuser01",
                 NormalizedEmail = "b@b.com".Normalize(),
                 NormalizedUserName = "b".Normalize(),
-                DepartmentId = departmentId,
+                DepartmentId = departmentId1,
                 CreatedOn = DateTime.UtcNow,
                 SecurityStamp = "UCQO32XEFNXIAZIR3LTNFDRRX7A2NHLK",
                 PasswordHash = "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==",
                 ConcurrencyStamp = "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==",
-                TenantId = tenantId,
             };
 
             User user2 = new()
@@ -84,13 +82,12 @@ namespace FalconOne.DAL
                 FirstName = "Admin",
                 LastName = "User",
                 CreatedOn = DateTime.UtcNow,
-                TenantId = tenantId,
                 EmailConfirmed = true,
                 Email = "a@a.com",
                 UserName = "adminuser01",
                 NormalizedEmail = "a@a.com".Normalize(),
                 NormalizedUserName = "a".Normalize(),
-                DepartmentId = departmentId,
+                DepartmentId = departmentId1,
                 SecurityStamp = "UCQO32XEFNXIAZIR3LTNFDRRX7A2NHLK",
                 PasswordHash = "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==",
                 ConcurrencyStamp = "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==",
@@ -103,6 +100,52 @@ namespace FalconOne.DAL
             modelBuilder.Entity<User>().HasData(user1);
             modelBuilder.Entity<User>().HasData(user2);
 
+            #endregion
+
+            #region Create tenant1
+            Tenant tenant1 = new()
+            {
+                Name = "development",
+                Host = "localhost",
+                CreatedOn = DateTime.UtcNow,
+                Id = tenantId1,
+                LocationId = locationId,
+            };
+
+            Tenant tenant2 = new()
+            {
+                Name = "FalconOne",
+                Host = "api.falconone.com",
+                CreatedOn = DateTime.UtcNow,
+                Id = tenantId2,
+                LocationId = locationId,
+            };
+
+            modelBuilder.Entity<TenantUser>().HasNoKey().HasData(
+                new TenantUser
+                {
+                    TenantId = tenantId1,
+                    UserId = userId1
+                },
+                new TenantUser
+                {
+                    TenantId = tenantId1,
+                    UserId = userId2
+                },
+                new TenantUser
+                {
+                    TenantId = tenantId2,
+                    UserId = userId1
+                },
+                new TenantUser
+                {
+                    TenantId = tenantId2,
+                    UserId = userId2
+                }
+            );
+
+            modelBuilder.Entity<Tenant>().HasData(tenant1);
+            modelBuilder.Entity<Tenant>().HasData(tenant2);
             #endregion
 
             #region UserClaims
@@ -132,14 +175,14 @@ namespace FalconOne.DAL
                     Id = Guid.Parse("9FA14D9E-0D8E-4B51-85E4-C4BDD5873D14"),
                     Name = "User",
                     CreatedOn = DateTime.UtcNow,
-                    TenantId = tenantId
+                    TenantId = tenantId1
                 },
                 new SecurityPolicy
                 {
                     Id = Guid.Parse("B7538A53-D3B2-4B66-BA40-97619CDA8D00"),
                     Name = "Admin",
                     CreatedOn = DateTime.UtcNow,
-                    TenantId = tenantId
+                    TenantId = tenantId1
                 });
 
             #endregion
@@ -154,7 +197,7 @@ namespace FalconOne.DAL
                     Value = "Everything",
                     ApplicationPolicyId = Guid.Parse("B7538A53-D3B2-4B66-BA40-97619CDA8D00"),
                     CreatedOn = DateTime.UtcNow,
-                    TenantId = tenantId,
+                    TenantId = tenantId1,
                     Description = "Database seeded"
                 });
 
@@ -166,7 +209,7 @@ namespace FalconOne.DAL
                     Value = "BasicThings",
                     ApplicationPolicyId = Guid.Parse("9FA14D9E-0D8E-4B51-85E4-C4BDD5873D14"),
                     CreatedOn = DateTime.UtcNow,
-                    TenantId = tenantId,
+                    TenantId = tenantId1,
                     Description = "Database seeded"
                 });
             #endregion
@@ -182,7 +225,7 @@ namespace FalconOne.DAL
                     Description = "User login",
                     ApplicationClaimId = Guid.Parse("C1F09DF3-5590-4EE8-9B8C-D0315369A7AF"),
                     CreatedOn = DateTime.UtcNow,
-                    TenantId = tenantId
+                    TenantId = tenantId1
                 },
                 new Navigation
                 {
@@ -192,7 +235,7 @@ namespace FalconOne.DAL
                     Description = "User signup",
                     ApplicationClaimId = Guid.Parse("C1F09DF3-5590-4EE8-9B8C-D0315369A7AF"),
                     CreatedOn = DateTime.UtcNow,
-                    TenantId = tenantId
+                    TenantId = tenantId1
                 });
 
             #endregion
@@ -206,7 +249,7 @@ namespace FalconOne.DAL
                 Description = "This is primary color",
                 Name = "primaryColor",
                 Value = "#144272",
-                TenantId = tenantId
+                TenantId = tenantId1
             });
 
             modelBuilder.Entity<SiteSetting>().HasData(new SiteSetting
@@ -217,7 +260,7 @@ namespace FalconOne.DAL
                 Description = "This is secondary color",
                 Name = "secondaryColor",
                 Value = "#205295",
-                TenantId = tenantId
+                TenantId = tenantId1
             });
 
             modelBuilder.Entity<SiteSetting>().HasData(new SiteSetting
@@ -228,7 +271,7 @@ namespace FalconOne.DAL
                 Description = "This is site theme",
                 Name = "theme",
                 Value = "light",
-                TenantId = tenantId
+                TenantId = tenantId1
             });
             #endregion
 
@@ -239,7 +282,7 @@ namespace FalconOne.DAL
                     Id = Guid.NewGuid(),
                     Content = "Hey this is new post on our site.",
                     CreatedOn = DateTime.UtcNow,
-                    TenantId = tenantId,
+                    TenantId = tenantId1,
                     PostedById = userId1,
                     PostedOn = DateTime.UtcNow
                 });

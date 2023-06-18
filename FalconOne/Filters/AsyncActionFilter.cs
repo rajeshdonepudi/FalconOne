@@ -15,7 +15,7 @@ namespace FalconOne.API.Filters
         #region Private methods
         private async Task LogToDatabase(ActionExecutingContext context)
         {
-            IRequestInformationService requestInformationService = (IRequestInformationService)context.HttpContext.RequestServices.GetService(typeof(IRequestInformationService))!;
+            ISystemLogsService requestInformationService = (ISystemLogsService)context.HttpContext.RequestServices.GetService(typeof(ISystemLogsService))!;
             ITenantService tenantService = (ITenantService)context.HttpContext.RequestServices.GetService(typeof(ITenantService))!;
 
             await requestInformationService!.SaveRequestInfoAsync(new RequestInformationDTO
@@ -56,7 +56,7 @@ namespace FalconOne.API.Filters
                 {
                     return code;
                 }
-                throw new Exception("Resource code not specified for the resource.");
+                throw new Exception("Resource identifier not specified for the requested resource.");
             }
             throw new Exception("Unable to determine resource.");
         }

@@ -4,7 +4,7 @@ using FalconOne.Models.DTOs;
 
 namespace FalconeOne.BLL.Interfaces
 {
-    public interface IRequestInformationService
+    public interface ISystemLogsService
     {
         Task SaveRequestInfoAsync(RequestInformationDTO model);
 

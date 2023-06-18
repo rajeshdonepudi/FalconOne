@@ -11,7 +11,7 @@ namespace FalconOne.DAL.Repositories
 
         public async Task<PagedList<User>> GetAllUsersByTenantIdPaginatedAsync(Guid tenantId, PageParams pageParams)
         {
-            List<User> records = await _context.Users.Where(x => x.TenantId == tenantId)
+            List<User> records = await _context.Users.Where(x => x.Tenants.Any(x => x.TenantId == tenantId))
                                                      .Skip((pageParams.PageIndex - 1) * pageParams.PageSize)
                                                      .Take(pageParams.PageSize)
                                                      .ToListAsync();

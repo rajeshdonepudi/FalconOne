@@ -7,7 +7,7 @@
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string JWTToken { get; set; }
-        public Guid TenantId { get; set; }
+        public List<Guid> Tenants { get; set; }
         public string RefreshToken { get; set; }
     }
 }

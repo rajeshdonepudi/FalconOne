@@ -11,9 +11,19 @@ using System.Net;
 
 namespace FalconeOne.BLL.Services
 {
-    public class SettingsService : BaseService, ISettingsService
+    public class SiteSettingsService : BaseService, ISiteSettingsService
     {
-        public SettingsService(UserManager<User> userManager, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(userManager, unitOfWork, httpContextAccessor, configuration)
+
+        public SiteSettingsService(UserManager<User> userManager,
+            IUnitOfWork unitOfWork, 
+            IHttpContextAccessor httpContextAccessor,
+            IConfiguration configuration,
+            ITenantService tenantService) : 
+            base(userManager,
+                unitOfWork,
+                httpContextAccessor,
+                configuration,
+                tenantService)
         {
         }
 
@@ -41,7 +51,7 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> GetSettings(SettingTypeEnum settingType)
         {
-            IEnumerable<SiteSetting> settings = await _unitOfWork.ApplicationSettingRepository.GetApplicationSettingsByTypeAsync(settingType);
+            IEnumerable<SiteSetting> settings = await _unitOfWork.ApplicationSettingRepository.GetTenantSiteSettingsByTypeAsync(settingType, await _tenantService.GetTenantId());
 
             List<ApplicationSettingDTO> result = new();
 
@@ -75,7 +85,7 @@ namespace FalconeOne.BLL.Services
         {
             foreach (ApplicationSettingDTO setting in settings)
             {
-                SiteSetting settingToUpdate = await _unitOfWork.ApplicationSettingRepository.FindAsync(x => x.Name == setting.Name);
+                SiteSetting settingToUpdate = await _unitOfWork.ApplicationSettingRepository.GetTenantSiteSettingByNameAsync(setting.Name, await _tenantService.GetTenantId());
 
                 if (settingToUpdate != null)
                 {

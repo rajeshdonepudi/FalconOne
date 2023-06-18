@@ -13,9 +13,9 @@ namespace FalconOne.API.Controllers
     [ApiController]
     public class SettingsController : BaseController
     {
-        private readonly ISettingsService _settingsService;
+        private readonly ISiteSettingsService _settingsService;
 
-        public SettingsController(ISettingsService settingsService)
+        public SettingsController(ISiteSettingsService settingsService)
         {
             _settingsService = settingsService;
         }

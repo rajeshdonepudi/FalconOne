@@ -12,7 +12,11 @@ namespace FalconeOne.BLL.Services
 {
     public class DepartmentService : BaseService, IDepartmentService
     {
-        public DepartmentService(UserManager<User> userManager, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(userManager, unitOfWork, httpContextAccessor, configuration)
+        public DepartmentService(UserManager<User> userManager,
+            IUnitOfWork unitOfWork,
+            IHttpContextAccessor httpContextAccessor,
+            IConfiguration configuration,
+            ITenantService tenantService) : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
         {
 
         }
@@ -27,11 +31,7 @@ namespace FalconeOne.BLL.Services
 
             foreach (Department? department in departments)
             {
-                result.Add(new DepartmentDTO
-                {
-                    Name = department.Name,
-                    Id = department.Id
-                });
+                result.Add(new DepartmentDTO(department));
             }
 
             result.Add(new DepartmentDTO

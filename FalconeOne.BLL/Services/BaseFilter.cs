@@ -4,8 +4,8 @@ namespace FalconeOne.BLL.Services
 {
     public class BaseFilter
     {
-        private readonly IRequestInformationService _requestInformationService;
-        public BaseFilter(IRequestInformationService requestInformationService)
+        private readonly ISystemLogsService _requestInformationService;
+        public BaseFilter(ISystemLogsService requestInformationService)
         {
             _requestInformationService = requestInformationService;
         }

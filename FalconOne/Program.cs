@@ -33,7 +33,7 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader()
         .AllowCredentials()
         .SetIsOriginAllowed((host) => true)
-        .WithOrigins("http://localhost:3000", "https://falcone-one.web.app", "https://localhost:3000");
+        .WithOrigins("http://localhost:3000", "http://localhost:5173", "https://localhost:5173", "https://falcone-one.web.app", "https://localhost:3000");
     });
 });
 
@@ -62,6 +62,7 @@ DatabaseConfig.Configure(app.Services);
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseSwagger();

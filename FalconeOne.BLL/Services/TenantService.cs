@@ -19,7 +19,10 @@ namespace FalconeOne.BLL.Services
         }
         public async Task<Guid> GetTenantId()
         {
-            string host = _httpContextAccessor.HttpContext.Request.Host.Host;
+            string referer = _httpContextAccessor.HttpContext.Request.Headers["Referer"].ToString();
+
+            var uri = new Uri(referer);
+            var host = uri.Host;
 
             if (!string.IsNullOrEmpty(host))
             {
@@ -29,13 +32,29 @@ namespace FalconeOne.BLL.Services
                 }
                 else
                 {
-                    FalconOne.Models.Entities.Tenant? tenant = await _unitOfWork.TenantRepository.FindAsync(x => x.Host == host);
-
-                    if (tenant is null)
+                    try
                     {
-                        throw new AppException("Unable to determine the tenant information.");
+                        foreach (var item in await _unitOfWork.TenantRepository.GetAllAsync())
+                        {
+                            await Console.Out.WriteLineAsync(item.Host);
+                        }
+
+                        var s = await _unitOfWork.TenantRepository.FindAsync(x => x.Host.Equals(host));
+
+                        FalconOne.Models.Entities.Tenant? tenant = await _unitOfWork.TenantRepository.FindAsync(x => x.Host.Trim().ToLower() == host.Trim().ToLower());
+                        if (tenant is null)
+                        {
+                            throw new AppException("Unable to determine the tenant information.");
+                        }
+                        return tenant.Id;
                     }
-                    return tenant.Id;
+                    catch (Exception e)
+                    {
+
+                        throw;
+                    }
+
+                    
                 }
             }
             throw new AppException("Invalid request.");

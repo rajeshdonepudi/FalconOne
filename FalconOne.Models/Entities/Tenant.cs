@@ -10,6 +10,7 @@ namespace FalconOne.Models.Entities
         {
             Posts = new HashSet<Post>();
             Departments = new HashSet<Department>();
+            Users = new HashSet<TenantUser>();
         }
 
         [Key]
@@ -24,5 +25,6 @@ namespace FalconOne.Models.Entities
         public virtual ICollection<Post> Posts { get; set; }
         public virtual ICollection<Department> Departments { get; set; }
         public Image? ProfilePicture { get; set; }
+        public virtual ICollection<TenantUser> Users { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using FalconOne.Models.DTOs;
 
 namespace FalconeOne.BLL.Interfaces
 {
-    public interface ISettingsService
+    public interface ISiteSettingsService
     {
         Task<ApiResponse> GetSettings(SettingTypeEnum settingType);
         Task<ApiResponse> AddNewSetting(ApplicationSettingDTO model);

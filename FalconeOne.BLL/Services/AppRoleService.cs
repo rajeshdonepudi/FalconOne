@@ -15,7 +15,10 @@ namespace FalconeOne.BLL.Services
         private readonly RoleManager<UserRole> _roleManager;
 
         public AppRoleService(UserManager<User> userManager,
-            IUnitOfWork unitOfWork, RoleManager<UserRole> roleManager, IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(userManager, unitOfWork, httpContextAccessor, configuration)
+            IUnitOfWork unitOfWork,
+            RoleManager<UserRole> roleManager,
+            IHttpContextAccessor httpContextAccessor,
+            IConfiguration configuration, ITenantService tenantService) : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
         {
             _roleManager = roleManager;
         }

@@ -50,7 +50,9 @@ namespace FalconOne.API.Services
             IOptions<IdentityOptions> optionsAccessor,
             ITokenService tokenService,
             ITenantService tenantService,
-            IAppConfigService appConfigService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(userManager, unitOfWork, httpContextAccessor, configuration)
+            IAppConfigService appConfigService,
+            IHttpContextAccessor httpContextAccessor,
+            IConfiguration configuration) : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
         {
             _signInManager = signInManager;
             _roleManager = roleManager;
@@ -99,7 +101,7 @@ namespace FalconOne.API.Services
                 Id = user.Id,
                 JWTToken = jwtToken,
                 RefreshToken = refreshToken?.Token,
-                TenantId = user.TenantId.GetValueOrDefault()
+                Tenants = user.Tenants.Select(x => x.TenantId).ToList()
             };
 
             authResponse.JWTToken = jwtToken;
@@ -365,7 +367,7 @@ namespace FalconOne.API.Services
         {
             IList<Claim> claims = await _userManager.GetClaimsAsync(user);
 
-            claims.Add(new Claim("TenantId", user.TenantId.ToString()));
+            claims.Add(new Claim("Tenants", string.Join(',', user.Tenants.Select(x => x.TenantId).ToList())));
 
             claims.Add(new Claim("UserId", user.Id.ToString()));
 

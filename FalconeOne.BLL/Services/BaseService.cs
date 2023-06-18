@@ -1,4 +1,5 @@
-﻿using FalconOne.DAL.Contracts;
+﻿using FalconeOne.BLL.Interfaces;
+using FalconOne.DAL.Contracts;
 using FalconOne.Models.DTOs;
 using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
@@ -13,16 +14,18 @@ namespace FalconeOne.BLL.Services
         protected readonly IUnitOfWork _unitOfWork;
         protected readonly IHttpContextAccessor _httpContextAccessor;
         protected readonly IConfiguration _configuration;
+        protected readonly ITenantService _tenantService;
 
         public BaseService(UserManager<User> userManager,
             IUnitOfWork unitOfWork,
             IHttpContextAccessor httpContextAccessor,
-            IConfiguration configuration)
+            IConfiguration configuration,ITenantService tenantService)
         {
             _userManager = userManager;
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
+            _tenantService = tenantService;
         }
 
         public async Task<Guid> GetCurrentTenantId()
@@ -68,7 +71,7 @@ namespace FalconeOne.BLL.Services
 
             if (user is not null && tenant is not null)
             {
-                bool result = user.TenantId == tenant.Id;
+                bool result = user.Tenants.Any(x => x.TenantId == tenant.Id);
 
                 if (!result)
                 {

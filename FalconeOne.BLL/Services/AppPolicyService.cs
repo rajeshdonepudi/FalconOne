@@ -14,7 +14,10 @@ namespace FalconeOne.BLL.Services
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public AppPolicyService(UserManager<User> userManager, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(userManager, unitOfWork, httpContextAccessor, configuration)
+        public AppPolicyService(UserManager<User> userManager,
+            IUnitOfWork unitOfWork,
+            IHttpContextAccessor httpContextAccessor,
+            IConfiguration configuration,ITenantService tenantService) : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
         {
             _unitOfWork = unitOfWork;
         }

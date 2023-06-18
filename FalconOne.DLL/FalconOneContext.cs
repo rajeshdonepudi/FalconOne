@@ -1,6 +1,7 @@
 ﻿using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using FalconOne.Models.EntityConfiguration;
 
 namespace FalconOne.DAL
 {
@@ -33,7 +34,13 @@ namespace FalconOne.DAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             DatabaseSeed.Seed(modelBuilder);
+            ApplyEntityConfigurations(modelBuilder);
             base.OnModelCreating(modelBuilder);
+        }
+
+        private void ApplyEntityConfigurations(ModelBuilder builder)
+        {
+            builder.ApplyConfiguration(new TenantUserConfiguration());
         }
     }
 }

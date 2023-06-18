@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FalconOne.Enumerations\FalconOne.Enumerations.csproj" />
+    <ProjectReference Include="..\FalconOne.ExtensionMethods\FalconOne.Extensions.csproj" />
     <ProjectReference Include="..\FalconOne.Models\FalconOne.Models.csproj" />
     <ProjectReference Include="..\Utilities\FalconOne.Helpers.csproj" />
   </ItemGroup>

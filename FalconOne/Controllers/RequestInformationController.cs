@@ -11,9 +11,9 @@ namespace FalconOne.API.Controllers
     [ApiController]
     public class RequestInformationController : BaseController
     {
-        private readonly IRequestInformationService _requestInformationService;
+        private readonly ISystemLogsService _requestInformationService;
 
-        public RequestInformationController(IRequestInformationService requestInformationService)
+        public RequestInformationController(ISystemLogsService requestInformationService)
         {
             _requestInformationService = requestInformationService;
         }

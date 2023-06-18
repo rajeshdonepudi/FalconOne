@@ -8,7 +8,7 @@ namespace FalconOne.DAL.Contracts
         IRequestInformationRepository RequestInformationRepository { get; }
         IGenericRepository<RefreshToken> RefreshTokenRepository { get; }
         ISecurityClaimsRepository UserClaimsRepository { get; }
-        IApplicationSettingRepository ApplicationSettingRepository { get; }
+        ISiteSettingRepository ApplicationSettingRepository { get; }
         ISecurityPolicyRepository ApplicationPolicyRepository { get; }
         IDepartmentRepository DepartmentRepository { get; }
         IGenericRepository<Tenant> TenantRepository { get; }

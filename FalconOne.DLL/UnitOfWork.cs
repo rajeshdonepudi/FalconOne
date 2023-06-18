@@ -17,7 +17,7 @@ namespace FalconOne.DAL
             RequestInformationRepository = new SystemLogsRepository(_falconOneContext);
             UserClaimsRepository = new SecurityClaimsRepository(_falconOneContext);
             ApplicationPolicyRepository = new SecurityPolicyRepository(_falconOneContext);
-            ApplicationSettingRepository = new ApplicationSettingRepository(_falconOneContext);
+            ApplicationSettingRepository = new SiteSettingRepository(_falconOneContext);
             DepartmentRepository = new DepartmentRepository(_falconOneContext);
             TenantRepository = new GenericRepository<Tenant>(_falconOneContext);
             PostRepository = new GenericRepository<Post>(_falconOneContext);
@@ -27,7 +27,7 @@ namespace FalconOne.DAL
         public IRequestInformationRepository RequestInformationRepository { get; private set; }
         public IGenericRepository<RefreshToken> RefreshTokenRepository { get; private set; }
         public ISecurityClaimsRepository UserClaimsRepository { get; private set; }
-        public IApplicationSettingRepository ApplicationSettingRepository { get; private set; }
+        public ISiteSettingRepository ApplicationSettingRepository { get; private set; }
         public IDepartmentRepository DepartmentRepository { get; private set; }
         public ISecurityPolicyRepository ApplicationPolicyRepository { get; private set; }
         public IGenericRepository<Tenant> TenantRepository { get; private set; }
