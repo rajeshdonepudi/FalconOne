@@ -2,7 +2,7 @@
 using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
 
-namespace FalconOne.API.Contracts
+namespace FalconeOne.BLL.Interfaces
 {
     /// <summary>
     /// Interface to fully manage user accounts.

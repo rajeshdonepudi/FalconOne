@@ -13,7 +13,6 @@ namespace FalconeOne.BLL.Services
 {
     public class SiteSettingsService : BaseService, ISiteSettingsService
     {
-
         public SiteSettingsService(UserManager<User> userManager,
             IUnitOfWork unitOfWork, 
             IHttpContextAccessor httpContextAccessor,

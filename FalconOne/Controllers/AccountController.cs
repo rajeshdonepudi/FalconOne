@@ -1,5 +1,5 @@
-﻿using FalconOne.API.Attributes;
-using FalconOne.API.Contracts;
+﻿using FalconeOne.BLL.Interfaces;
+using FalconOne.API.Attributes;
 using FalconOne.Models.DTOs;
 using FalconOne.ResourceCodes;
 using Microsoft.AspNetCore.Authorization;

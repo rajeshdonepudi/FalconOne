@@ -273,6 +273,39 @@ namespace FalconOne.DAL
                 Value = "light",
                 TenantId = tenantId1
             });
+
+            modelBuilder.Entity<SiteSetting>().HasData(new SiteSetting
+            {
+                Id = Guid.NewGuid(),
+                SettingType = Enumerations.Settings.SettingTypeEnum.Theme,
+                CreatedOn = DateTime.UtcNow,
+                Description = "This is primary color",
+                Name = "primaryColor",
+                Value = "#144272",
+                TenantId = tenantId2
+            });
+
+            modelBuilder.Entity<SiteSetting>().HasData(new SiteSetting
+            {
+                Id = Guid.NewGuid(),
+                SettingType = FalconOne.Enumerations.Settings.SettingTypeEnum.Theme,
+                CreatedOn = DateTime.UtcNow,
+                Description = "This is secondary color",
+                Name = "secondaryColor",
+                Value = "#205295",
+                TenantId = tenantId2
+            });
+
+            modelBuilder.Entity<SiteSetting>().HasData(new SiteSetting
+            {
+                Id = Guid.NewGuid(),
+                SettingType = FalconOne.Enumerations.Settings.SettingTypeEnum.Theme,
+                CreatedOn = DateTime.UtcNow,
+                Description = "This is site theme",
+                Name = "theme",
+                Value = "light",
+                TenantId = tenantId2
+            });
             #endregion
 
             #region Posts

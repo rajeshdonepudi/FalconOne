@@ -1,8 +1,6 @@
 ﻿using FalconeOne.BLL.Interfaces;
 using FalconeOne.BLL.Services;
-using FalconOne.API.Contracts;
 using FalconOne.API.Filters;
-using FalconOne.API.Services;
 using FalconOne.DAL;
 using FalconOne.DAL.Contracts;
 using FalconOne.Models.Contracts;

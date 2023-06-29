@@ -26,9 +26,11 @@ namespace FalconeOne.BLL.Services
 
             if (!string.IsNullOrEmpty(host))
             {
-                if (host == "localhost")
+                var useLocalTenantId = Convert.ToBoolean(await _appConfigService.GetValue("useLocalTenantId"));
+
+                if (useLocalTenantId)
                 {
-                    return Guid.Parse(await _appConfigService.GetValue("DefaultTenantId"));
+                    return Guid.Parse(await _appConfigService.GetValue("localTenantId"));
                 }
                 else
                 {

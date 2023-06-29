@@ -14,9 +14,9 @@ namespace FalconOne.DAL.Repositories
             long total = await _context.SystemLogs.LongCountAsync();
 
             List<SystemLog> records = await _context.SystemLogs
-                                        .Skip((pageParams.PageIndex - 1) * pageParams.PageSize)
-                                        .Take(pageParams.PageSize)
-                                        .ToListAsync();
+                                                    .Skip((pageParams.PageIndex - 1) * pageParams.PageSize)
+                                                    .Take(pageParams.PageSize)
+                                                    .ToListAsync();
 
             return new PagedList<SystemLog>(records, total, pageParams.PageIndex, pageParams.PageSize);
         }

@@ -1,7 +1,28 @@
-﻿namespace FalconOne.Models.DTOs
+﻿using FalconOne.Models.Entities;
+
+namespace FalconOne.Models.DTOs
 {
     public class UserDTO
     {
+        public UserDTO()
+        {
+                
+        }
+        public UserDTO(User user)
+        {
+            Id = user.Id;
+            FirstName = user.FirstName;
+            LastName = user.LastName;
+            UserName = user.UserName;
+            Email = user.Email;
+            PhoneNumber = user.PhoneNumber;
+            EmailConfirmed = user.EmailConfirmed;
+            PhoneNumberConfirmed = user.PhoneNumberConfirmed;
+            TwoFactorEnabled = user.TwoFactorEnabled;
+            LockoutEnabled = user.LockoutEnabled;
+            CreatedOn = user.CreatedOn;
+            Tenants = user.Tenants.Any() ? user.Tenants.Select(x => x.UserId).ToList() : new List<Guid> { };
+        }
         public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -13,6 +34,6 @@
         public bool TwoFactorEnabled { get; set; }
         public bool LockoutEnabled { get; set; }
         public DateTime CreatedOn { get; set; }
-        public Guid? TenantId { get; set; }
+        public List<Guid> Tenants { get; set; }
     }
 }

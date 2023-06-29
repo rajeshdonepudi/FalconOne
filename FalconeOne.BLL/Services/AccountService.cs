@@ -1,20 +1,20 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
-using FalconeOne.BLL.Services;
-using FalconOne.API.Contracts;
 using FalconOne.DAL.Contracts;
 using FalconOne.Extensions.Http;
 using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
 using FalconOne.Models.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
-namespace FalconOne.API.Services
+namespace FalconeOne.BLL.Services
 {
     public class AccountService : BaseService, IAccountService
     {
@@ -189,7 +189,7 @@ namespace FalconOne.API.Services
 
             foreach (User user in users)
             {
-                UserDTO res = new() { };
+                UserDTO res = new(user);
                 result.Add(res);
             }
 
