@@ -27,14 +27,14 @@ namespace FalconeOne.BLL.Services
 
             IEnumerable<Department> departments = await _unitOfWork.DepartmentRepository.GetDepartmentsByTenantId(tenantId);
 
-            List<DepartmentDTO> result = new();
+            List<DepartmentDto> result = new();
 
             foreach (Department? department in departments)
             {
-                result.Add(new DepartmentDTO(department));
+                result.Add(new DepartmentDto(department));
             }
 
-            result.Add(new DepartmentDTO
+            result.Add(new DepartmentDto
             {
                 Id = tenantId,
                 Name = "ORGANIZATION"

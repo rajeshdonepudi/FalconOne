@@ -2,7 +2,7 @@
 
 namespace FalconOne.Models.DTOs
 {
-    public class RevokeRefreshTokenRequestDTO
+    public class RevokeRefreshTokenRequestDto
     {
         [Required]
         public string RefreshToken { get; set; }

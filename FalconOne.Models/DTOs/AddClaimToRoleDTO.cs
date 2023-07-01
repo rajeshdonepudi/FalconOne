@@ -2,7 +2,7 @@
 
 namespace FalconOne.Models.DTOs
 {
-    public class AddClaimToRoleDTO
+    public class AddClaimToRoleDto
     {
         [Required]
         public string RoleId { get; set; }

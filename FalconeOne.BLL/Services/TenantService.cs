@@ -52,11 +52,8 @@ namespace FalconeOne.BLL.Services
                     }
                     catch (Exception e)
                     {
-
                         throw;
                     }
-
-                    
                 }
             }
             throw new AppException("Invalid request.");

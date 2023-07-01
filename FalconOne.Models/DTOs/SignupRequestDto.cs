@@ -2,7 +2,7 @@
 
 namespace FalconOne.Models.DTOs
 {
-    public class RegisterNewUserRequestDTO
+    public class SignupRequestDto
     {
         [Required(AllowEmptyStrings = false, ErrorMessage = "First name is required.")]
         public string FirstName { get; set; }

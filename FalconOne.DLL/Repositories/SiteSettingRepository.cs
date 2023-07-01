@@ -9,19 +9,19 @@ namespace FalconOne.DAL.Repositories
     {
         public SiteSettingRepository(FalconOneContext falconOneContext) : base(falconOneContext) { }
 
-        public async Task<IEnumerable<SiteSetting>> GetTenantSiteSettingsByTypeAsync(SettingTypeEnum type, Guid tenantId)
+        public async Task<IEnumerable<SiteSetting>> GetTenantSiteSettingsByTypeAsync(SystemSettingTypeEnum type, Guid tenantId)
         {
             return await _context.SiteSettings.Where(x => x.SettingType == type && x.TenantId == tenantId).ToListAsync();
         }
 
-        public async Task<IEnumerable<SiteSetting>> GetSiteSettingsByTypeAsync(SettingTypeEnum type)
+        public async Task<IEnumerable<SiteSetting>> GetSiteSettingsByTypeAsync(SystemSettingTypeEnum type)
         {
             return await _context.SiteSettings.Where(x => x.SettingType == type).ToListAsync();
         }
 
         public async Task<IEnumerable<SiteSetting>> GetSiteSettingsByTenantIdAsync(Guid tenantId)
         {
-            return await _context.SiteSettings.Where(x => x.TenantId == tenantId).ToListAsync();
+            return await _context.SiteSettings.Where(x => x.TenantId == tenantId).AsNoTracking().ToListAsync();
         }
 
         public async Task<SiteSetting> GetSiteSettingByNameAsync(string name)

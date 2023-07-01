@@ -5,7 +5,7 @@ namespace FalconeOne.BLL.Interfaces
 {
     public interface IAppPolicyService
     {
-        Task<ApiResponse> CreatePolicy(CreatePolicyDTO model);
+        Task<ApiResponse> CreatePolicy(CreatePolicyDto model);
         Task<ApiResponse> GetAllPolicies();
         Task<ApiResponse> DeletePolicy(Guid id);
     }

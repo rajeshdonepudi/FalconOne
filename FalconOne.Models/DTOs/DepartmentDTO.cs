@@ -2,14 +2,14 @@
 
 namespace FalconOne.Models.DTOs
 {
-    public record DepartmentDTO : BaseDTO
+    public record DepartmentDto : BaseDto
     {
-        public DepartmentDTO()
+        public DepartmentDto()
         {
 
         }
 
-        public DepartmentDTO(Department department)
+        public DepartmentDto(Department department)
         {
             Id = department.Id;
             Name = department.Name;

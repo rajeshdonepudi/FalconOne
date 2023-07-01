@@ -7,9 +7,9 @@ namespace FalconOne.DAL.Contracts
     public interface ISiteSettingRepository : IGenericRepository<SiteSetting>
     {
         Task<IEnumerable<SiteSetting>> GetSiteSettingsByTenantIdAsync(Guid tenantId);
-        Task<IEnumerable<SiteSetting>> GetSiteSettingsByTypeAsync(SettingTypeEnum type);
+        Task<IEnumerable<SiteSetting>> GetSiteSettingsByTypeAsync(SystemSettingTypeEnum type);
         Task<SiteSetting> GetSiteSettingByNameAsync(string name);
-        Task<IEnumerable<SiteSetting>> GetTenantSiteSettingsByTypeAsync(SettingTypeEnum type, Guid tenantId);
+        Task<IEnumerable<SiteSetting>> GetTenantSiteSettingsByTypeAsync(SystemSettingTypeEnum type, Guid tenantId);
         Task<SiteSetting> GetTenantSiteSettingByNameAsync(string name, Guid tenantId);
     }
 }

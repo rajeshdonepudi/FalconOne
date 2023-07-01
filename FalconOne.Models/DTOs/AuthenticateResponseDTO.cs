@@ -1,6 +1,6 @@
 ﻿namespace FalconOne.Models.DTOs
 {
-    public class AuthenticateResponseDTO
+    public class AuthenticateResponseDto
     {
         public Guid Id { get; set; }
         public string Email { get; set; }

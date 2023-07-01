@@ -18,7 +18,7 @@ namespace FalconOne.API.Filters
             ISystemLogsService requestInformationService = (ISystemLogsService)context.HttpContext.RequestServices.GetService(typeof(ISystemLogsService))!;
             ITenantService tenantService = (ITenantService)context.HttpContext.RequestServices.GetService(typeof(ITenantService))!;
 
-            await requestInformationService!.SaveRequestInfoAsync(new RequestInformationDTO
+            await requestInformationService!.SaveRequestInfoAsync(new RequestInformationDto
             {
                 TraceIdentifier = context.HttpContext.TraceIdentifier,
                 Controller = context.RouteData.Values[CONTROLLER_KEY].ToString()!,

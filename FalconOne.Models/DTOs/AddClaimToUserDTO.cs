@@ -2,7 +2,8 @@
 
 namespace FalconOne.Models.DTOs
 {
-    public class AddClaimToUserDTO
+    public class AddClaimToUserDto
+
     {
         [Required]
         public string UserId { get; set; }

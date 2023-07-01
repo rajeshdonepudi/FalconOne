@@ -20,7 +20,7 @@ namespace FalconOne.API.Controllers
 
         [HttpGet("get-all")]
         [AllowAnonymous]
-        [ResourceIdentifier(AppResourceCodes.Account.REGISTER_NEW_USER)]
+        [ResourceIdentifier(AppResourceCodes.Account.NEW_USER_SIGNUP)]
         public async Task<IActionResult> GetAll([FromQuery] PageParams model)
         {
             return ReturnResponse(await _requestInformationService.GetAllAsync(model));

@@ -16,7 +16,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("create-new-claim")]
-        public async Task<IActionResult> CreateNewClaim(UserClaimDTO model)
+        public async Task<IActionResult> CreateNewClaim(UserClaimDto model)
         {
             if (ModelState.IsValid)
             {

@@ -2,7 +2,7 @@
 
 namespace FalconOne.Models.DTOs
 {
-    public class UserRoleDTO
+    public class UserRoleDto
     {
         [Required]
         public string Name { get; set; }

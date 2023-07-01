@@ -17,7 +17,7 @@ namespace FalconeOne.BLL.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task SaveRequestInfoAsync(RequestInformationDTO model)
+        public async Task SaveRequestInfoAsync(RequestInformationDto model)
         {
             SystemLog requestInformation = new()
             {

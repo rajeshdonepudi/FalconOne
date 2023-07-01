@@ -6,7 +6,7 @@ namespace FalconeOne.BLL.Interfaces
 {
     public interface ISystemLogsService
     {
-        Task SaveRequestInfoAsync(RequestInformationDTO model);
+        Task SaveRequestInfoAsync(RequestInformationDto model);
 
         Task<ApiResponse> GetAllAsync(PageParams pageParams);
     }

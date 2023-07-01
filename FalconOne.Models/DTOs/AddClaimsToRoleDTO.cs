@@ -3,7 +3,7 @@ using System.Security.Claims;
 
 namespace FalconOne.Models.DTOs
 {
-    public class AddClaimsToRoleDTO
+    public class AddClaimsToRoleDto
     {
         [Required]
         public string RoleId { get; set; }

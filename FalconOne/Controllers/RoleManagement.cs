@@ -18,7 +18,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("create-role")]
-        public async Task<IActionResult> CreateRole(UserRoleDTO role)
+        public async Task<IActionResult> CreateRole(UserRoleDto role)
         {
             if (ModelState.IsValid)
             {
@@ -33,7 +33,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("add-claim-to-role")]
-        public async Task<IActionResult> AddClaimToRole(AddClaimToRoleDTO model)
+        public async Task<IActionResult> AddClaimToRole(AddClaimToRoleDto model)
         {
             if (ModelState.IsValid)
             {

@@ -10,8 +10,9 @@ namespace FalconOne.Models.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string DisplayName { get; set; }
         public string Value { get; set; }
         public string Description { get; set; }
-        public SettingTypeEnum SettingType { get; set; }
+        public SystemSettingTypeEnum SettingType { get; set; }
     }
 }

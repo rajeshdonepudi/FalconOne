@@ -2,7 +2,7 @@
 
 namespace FalconOne.Models.DTOs
 {
-    public class ResetPasswordRequestDTO
+    public class ResetPasswordRequestDto
     {
         [Required]
         public string UserId { get; set; }

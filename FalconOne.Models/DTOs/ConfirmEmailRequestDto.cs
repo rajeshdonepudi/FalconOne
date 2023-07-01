@@ -7,7 +7,7 @@
         public long TotalCount { get; set; }
         public object Records { get; set; }
     }
-    public class VerifyEmailDTO
+    public class ConfirmEmailRequestDto
     {
         public string UserId { get; set; }
         public string EmailConfirmationToken { get; set; }

@@ -2,7 +2,8 @@
 using FalconeOne.BLL.Interfaces;
 using FalconOne.DAL.Contracts;
 using FalconOne.Enumerations.Settings;
-using FalconOne.Models.DTOs;
+using FalconOne.Extensions.Enumerations;
+using FalconOne.Models.DTOs.Settings;
 using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -14,10 +15,10 @@ namespace FalconeOne.BLL.Services
     public class SiteSettingsService : BaseService, ISiteSettingsService
     {
         public SiteSettingsService(UserManager<User> userManager,
-            IUnitOfWork unitOfWork, 
+            IUnitOfWork unitOfWork,
             IHttpContextAccessor httpContextAccessor,
             IConfiguration configuration,
-            ITenantService tenantService) : 
+            ITenantService tenantService) :
             base(userManager,
                 unitOfWork,
                 httpContextAccessor,
@@ -26,11 +27,18 @@ namespace FalconeOne.BLL.Services
         {
         }
 
-        public async Task<ApiResponse> AddNewSetting(ApplicationSettingDTO model)
+        public async Task<ApiResponse> AddNewSetting(AddSiteSettingDto model)
         {
-            SiteSetting setting = new();
-
-            setting.CreatedOn = DateTime.UtcNow;
+            SiteSetting setting = new SiteSetting
+            {
+                Name = model.Name,
+                Value = model.Value,
+                Description = model.Description,
+                SettingType = model.SettingType,
+                CreatedOn = DateTime.UtcNow,
+                DisplayName = model.DisplayName,
+                TenantId = await _tenantService.GetTenantId(),
+            };
 
             await _unitOfWork.ApplicationSettingRepository.AddAsync(setting);
 
@@ -48,15 +56,15 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.NoContent, MessageHelper.SUCESSFULL));
         }
 
-        public async Task<ApiResponse> GetSettings(SettingTypeEnum settingType)
+        public async Task<ApiResponse> GetSettings(SystemSettingTypeEnum settingType)
         {
             IEnumerable<SiteSetting> settings = await _unitOfWork.ApplicationSettingRepository.GetTenantSiteSettingsByTypeAsync(settingType, await _tenantService.GetTenantId());
 
-            List<ApplicationSettingDTO> result = new();
+            List<SiteSettingDto> result = new();
 
             foreach (SiteSetting setting in settings)
             {
-                result.Add(new ApplicationSettingDTO
+                result.Add(new SiteSettingDto
                 {
                     SettingType = setting.SettingType,
                     Description = setting.Description,
@@ -65,11 +73,30 @@ namespace FalconeOne.BLL.Services
                     Value = setting.Value,
                 });
             }
-
             return new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result);
         }
 
-        public async Task<ApiResponse> UpdateSettings(List<ApplicationSettingDTO> settings)
+        public Task<ApiResponse> GetSettingTypes()
+        {
+            var settingTypes = EnumExtensions.GetEnumKeyValuePairList<SystemSettingTypeEnum, string, int>();
+
+            return Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, settingTypes));
+        }
+
+        public async Task<ApiResponse> GetTenantSettings()
+        {
+            var tenantSettings = await _unitOfWork.ApplicationSettingRepository.GetSiteSettingsByTenantIdAsync(await _tenantService.GetTenantId());
+
+            var settings = tenantSettings.GroupBy(x => x.SettingType.GetDescription()).Select(x => new TenantSettingsResponse
+            {
+                SettingType = x.Key,
+                Settings = x.Select(x => new TenantSettingDto { Key = x.Name, Type = (int) x.SettingType, Value = x.Value, DisplayName = x.DisplayName, Id = x.Id }).ToList()
+            }).ToList();
+
+            return new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, settings);
+        }
+
+        public async Task<ApiResponse> UpdateSettings(List<UpdateSiteSettingDto> settings)
         {
             List<SiteSetting> result = new();
 
@@ -80,9 +107,9 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.Accepted, MessageHelper.SUCESSFULL));
         }
 
-        public async Task<ApiResponse> UpdateSettingsByName(List<ApplicationSettingDTO> settings)
+        public async Task<ApiResponse> UpdateSettingsByName(List<UpdateSiteSettingDto> settings)
         {
-            foreach (ApplicationSettingDTO setting in settings)
+            foreach (UpdateSiteSettingDto setting in settings)
             {
                 SiteSetting settingToUpdate = await _unitOfWork.ApplicationSettingRepository.GetTenantSiteSettingByNameAsync(setting.Name, await _tenantService.GetTenantId());
 

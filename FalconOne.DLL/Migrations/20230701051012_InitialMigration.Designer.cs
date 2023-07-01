@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FalconOne.DAL.Migrations
 {
     [DbContext(typeof(FalconOneContext))]
-    [Migration("20230618133543_InitialMigration")]
+    [Migration("20230701051012_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -97,19 +97,19 @@ namespace FalconOne.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("50ee6ff5-17d8-4c5b-8d33-cc764e3f143a"),
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 240, DateTimeKind.Utc).AddTicks(3673),
-                            LocationId = new Guid("3acd53f4-cee7-4f2e-a82f-b8e2e83472d8"),
+                            Id = new Guid("8cfda37d-019c-4c52-9301-2aa89fb99160"),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 505, DateTimeKind.Utc).AddTicks(7417),
+                            LocationId = new Guid("87e0755d-d3d9-4c99-a3fc-1474e6b0270d"),
                             Name = "Development",
-                            TenantId = new Guid("f924c52c-b7ec-4609-8209-3a2160737cf5")
+                            TenantId = new Guid("d08e3be4-3779-47ff-98eb-10dd56bfd39e")
                         },
                         new
                         {
-                            Id = new Guid("9d5b6e07-de99-4dd3-a1ff-52af4889237d"),
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 240, DateTimeKind.Utc).AddTicks(3676),
-                            LocationId = new Guid("3acd53f4-cee7-4f2e-a82f-b8e2e83472d8"),
+                            Id = new Guid("761d16ba-70d4-41d6-abc0-cd9e5633239e"),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 505, DateTimeKind.Utc).AddTicks(7436),
+                            LocationId = new Guid("87e0755d-d3d9-4c99-a3fc-1474e6b0270d"),
                             Name = ".NET",
-                            TenantId = new Guid("f34f9cfd-f1f7-4fe9-b8e9-e2ae9f18d6fa")
+                            TenantId = new Guid("530e0191-cdc2-4831-ae67-bc92a2c24171")
                         });
                 });
 
@@ -162,7 +162,7 @@ namespace FalconOne.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3acd53f4-cee7-4f2e-a82f-b8e2e83472d8"),
+                            Id = new Guid("87e0755d-d3d9-4c99-a3fc-1474e6b0270d"),
                             Latitude = "78.4867° E",
                             Longitude = "17.3850° N",
                             Name = "Hyderabad"
@@ -210,22 +210,22 @@ namespace FalconOne.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("27366c61-6b56-4a9b-8018-8a3393cf13f0"),
+                            Id = new Guid("c4403744-b256-460b-9df3-737fb5fdd5c2"),
                             ApplicationClaimId = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 430, DateTimeKind.Utc).AddTicks(6383),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 672, DateTimeKind.Utc).AddTicks(8062),
                             Description = "User login",
                             Name = "Login",
-                            TenantId = new Guid("f924c52c-b7ec-4609-8209-3a2160737cf5"),
+                            TenantId = new Guid("d08e3be4-3779-47ff-98eb-10dd56bfd39e"),
                             URL = "login"
                         },
                         new
                         {
-                            Id = new Guid("f6b4de1c-c316-46eb-9b3f-75e49b3943b2"),
+                            Id = new Guid("bdba8c60-889b-422d-9886-52dab943c7c8"),
                             ApplicationClaimId = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 430, DateTimeKind.Utc).AddTicks(6387),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 672, DateTimeKind.Utc).AddTicks(8065),
                             Description = "User signup",
                             Name = "Singup",
-                            TenantId = new Guid("f924c52c-b7ec-4609-8209-3a2160737cf5"),
+                            TenantId = new Guid("d08e3be4-3779-47ff-98eb-10dd56bfd39e"),
                             URL = "signup"
                         });
                 });
@@ -271,12 +271,12 @@ namespace FalconOne.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("f5727c4d-b803-4ca8-bbfc-7a0e1cb94fc5"),
+                            Id = new Guid("504f6f09-7694-42c6-b6ae-94bb3dd472a9"),
                             Content = "Hey this is new post on our site.",
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 430, DateTimeKind.Utc).AddTicks(6656),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 672, DateTimeKind.Utc).AddTicks(8260),
                             PostedById = new Guid("5090b588-6e3f-464a-994d-9cd2af4a0198"),
-                            PostedOn = new DateTime(2023, 6, 18, 13, 35, 43, 430, DateTimeKind.Utc).AddTicks(6657),
-                            TenantId = new Guid("f924c52c-b7ec-4609-8209-3a2160737cf5")
+                            PostedOn = new DateTime(2023, 7, 1, 5, 10, 12, 672, DateTimeKind.Utc).AddTicks(8260),
+                            TenantId = new Guid("d08e3be4-3779-47ff-98eb-10dd56bfd39e")
                         });
                 });
 
@@ -350,19 +350,19 @@ namespace FalconOne.DAL.Migrations
                         {
                             Id = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
                             ApplicationPolicyId = new Guid("b7538a53-d3b2-4b66-ba40-97619cda8d00"),
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 430, DateTimeKind.Utc).AddTicks(6273),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 672, DateTimeKind.Utc).AddTicks(7961),
                             Description = "Database seeded",
-                            TenantId = new Guid("f924c52c-b7ec-4609-8209-3a2160737cf5"),
+                            TenantId = new Guid("d08e3be4-3779-47ff-98eb-10dd56bfd39e"),
                             Type = "Admin",
                             Value = "Everything"
                         },
                         new
                         {
-                            Id = new Guid("e9963a82-8fa8-4297-9af6-cf85b5bacff5"),
+                            Id = new Guid("5d36704f-a3a9-45b7-a40c-05100a1a13c6"),
                             ApplicationPolicyId = new Guid("9fa14d9e-0d8e-4b51-85e4-c4bdd5873d14"),
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 430, DateTimeKind.Utc).AddTicks(6326),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 672, DateTimeKind.Utc).AddTicks(8003),
                             Description = "Database seeded",
-                            TenantId = new Guid("f924c52c-b7ec-4609-8209-3a2160737cf5"),
+                            TenantId = new Guid("d08e3be4-3779-47ff-98eb-10dd56bfd39e"),
                             Type = "User",
                             Value = "BasicThings"
                         });
@@ -397,16 +397,16 @@ namespace FalconOne.DAL.Migrations
                         new
                         {
                             Id = new Guid("9fa14d9e-0d8e-4b51-85e4-c4bdd5873d14"),
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 430, DateTimeKind.Utc).AddTicks(6218),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 672, DateTimeKind.Utc).AddTicks(7905),
                             Name = "User",
-                            TenantId = new Guid("f924c52c-b7ec-4609-8209-3a2160737cf5")
+                            TenantId = new Guid("d08e3be4-3779-47ff-98eb-10dd56bfd39e")
                         },
                         new
                         {
                             Id = new Guid("b7538a53-d3b2-4b66-ba40-97619cda8d00"),
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 430, DateTimeKind.Utc).AddTicks(6224),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 672, DateTimeKind.Utc).AddTicks(7911),
                             Name = "Admin",
-                            TenantId = new Guid("f924c52c-b7ec-4609-8209-3a2160737cf5")
+                            TenantId = new Guid("d08e3be4-3779-47ff-98eb-10dd56bfd39e")
                         });
                 });
 
@@ -420,6 +420,10 @@ namespace FalconOne.DAL.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -449,62 +453,68 @@ namespace FalconOne.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("7107b52e-1586-44a9-90b4-168f6c11c22f"),
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 430, DateTimeKind.Utc).AddTicks(6444),
+                            Id = new Guid("81220971-0f1e-4846-b3b8-1661c6369357"),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 672, DateTimeKind.Utc).AddTicks(8094),
                             Description = "This is primary color",
+                            DisplayName = "Primary Color",
                             Name = "primaryColor",
                             SettingType = 1,
-                            TenantId = new Guid("f924c52c-b7ec-4609-8209-3a2160737cf5"),
+                            TenantId = new Guid("d08e3be4-3779-47ff-98eb-10dd56bfd39e"),
                             Value = "#144272"
                         },
                         new
                         {
-                            Id = new Guid("489b5826-1f68-49d9-a677-8d4e424731ad"),
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 430, DateTimeKind.Utc).AddTicks(6472),
+                            Id = new Guid("b3619675-fca0-46db-8471-474701ea36b5"),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 672, DateTimeKind.Utc).AddTicks(8125),
                             Description = "This is secondary color",
+                            DisplayName = "Secondary Color",
                             Name = "secondaryColor",
                             SettingType = 1,
-                            TenantId = new Guid("f924c52c-b7ec-4609-8209-3a2160737cf5"),
+                            TenantId = new Guid("d08e3be4-3779-47ff-98eb-10dd56bfd39e"),
                             Value = "#205295"
                         },
                         new
                         {
-                            Id = new Guid("1b19821f-1ca6-4b6c-ba4e-40512d6669c3"),
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 430, DateTimeKind.Utc).AddTicks(6495),
+                            Id = new Guid("8289fdd2-4e0b-42b0-a56f-39b9e552a025"),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 672, DateTimeKind.Utc).AddTicks(8143),
                             Description = "This is site theme",
+                            DisplayName = "Theme",
                             Name = "theme",
                             SettingType = 1,
-                            TenantId = new Guid("f924c52c-b7ec-4609-8209-3a2160737cf5"),
+                            TenantId = new Guid("d08e3be4-3779-47ff-98eb-10dd56bfd39e"),
                             Value = "light"
                         },
                         new
                         {
-                            Id = new Guid("4e2087d0-cd8c-411f-adba-5e0ace8b34c5"),
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 430, DateTimeKind.Utc).AddTicks(6519),
+                            Id = new Guid("a079d9fb-7738-48f6-b0cc-55d374d0ff0a"),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 672, DateTimeKind.Utc).AddTicks(8160),
                             Description = "This is primary color",
+                            DisplayName = "Primary Color",
                             Name = "primaryColor",
                             SettingType = 1,
-                            TenantId = new Guid("f34f9cfd-f1f7-4fe9-b8e9-e2ae9f18d6fa"),
+                            TenantId = new Guid("530e0191-cdc2-4831-ae67-bc92a2c24171"),
                             Value = "#144272"
                         },
                         new
                         {
-                            Id = new Guid("2058678b-765d-4d26-b8ee-d9f2c0e0fcf8"),
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 430, DateTimeKind.Utc).AddTicks(6547),
+                            Id = new Guid("1c0184b2-ad96-4951-b791-2d1f843c538b"),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 672, DateTimeKind.Utc).AddTicks(8179),
                             Description = "This is secondary color",
+                            DisplayName = "Secondary Color",
                             Name = "secondaryColor",
                             SettingType = 1,
-                            TenantId = new Guid("f34f9cfd-f1f7-4fe9-b8e9-e2ae9f18d6fa"),
+                            TenantId = new Guid("530e0191-cdc2-4831-ae67-bc92a2c24171"),
                             Value = "#205295"
                         },
                         new
                         {
-                            Id = new Guid("e3093e5a-69ce-4849-90d0-e97a9ccfb2a6"),
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 430, DateTimeKind.Utc).AddTicks(6605),
+                            Id = new Guid("996a525e-1357-44c3-a7a9-6e8c8a182c62"),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 672, DateTimeKind.Utc).AddTicks(8216),
                             Description = "This is site theme",
+                            DisplayName = "Theme",
                             Name = "theme",
                             SettingType = 1,
-                            TenantId = new Guid("f34f9cfd-f1f7-4fe9-b8e9-e2ae9f18d6fa"),
+                            TenantId = new Guid("530e0191-cdc2-4831-ae67-bc92a2c24171"),
                             Value = "light"
                         });
                 });
@@ -618,18 +628,18 @@ namespace FalconOne.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("f924c52c-b7ec-4609-8209-3a2160737cf5"),
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 424, DateTimeKind.Utc).AddTicks(6360),
+                            Id = new Guid("d08e3be4-3779-47ff-98eb-10dd56bfd39e"),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 671, DateTimeKind.Utc).AddTicks(9862),
                             Host = "localhost",
-                            LocationId = new Guid("3acd53f4-cee7-4f2e-a82f-b8e2e83472d8"),
+                            LocationId = new Guid("87e0755d-d3d9-4c99-a3fc-1474e6b0270d"),
                             Name = "development"
                         },
                         new
                         {
-                            Id = new Guid("f34f9cfd-f1f7-4fe9-b8e9-e2ae9f18d6fa"),
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 424, DateTimeKind.Utc).AddTicks(6366),
+                            Id = new Guid("530e0191-cdc2-4831-ae67-bc92a2c24171"),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 671, DateTimeKind.Utc).AddTicks(9870),
                             Host = "api.falconone.com",
-                            LocationId = new Guid("3acd53f4-cee7-4f2e-a82f-b8e2e83472d8"),
+                            LocationId = new Guid("87e0755d-d3d9-4c99-a3fc-1474e6b0270d"),
                             Name = "FalconOne"
                         });
                 });
@@ -651,22 +661,22 @@ namespace FalconOne.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            TenantId = new Guid("f924c52c-b7ec-4609-8209-3a2160737cf5"),
+                            TenantId = new Guid("d08e3be4-3779-47ff-98eb-10dd56bfd39e"),
                             UserId = new Guid("5090b588-6e3f-464a-994d-9cd2af4a0198")
                         },
                         new
                         {
-                            TenantId = new Guid("f924c52c-b7ec-4609-8209-3a2160737cf5"),
+                            TenantId = new Guid("d08e3be4-3779-47ff-98eb-10dd56bfd39e"),
                             UserId = new Guid("6521474a-6e39-4a5e-8628-cd89b4e922bc")
                         },
                         new
                         {
-                            TenantId = new Guid("f34f9cfd-f1f7-4fe9-b8e9-e2ae9f18d6fa"),
+                            TenantId = new Guid("530e0191-cdc2-4831-ae67-bc92a2c24171"),
                             UserId = new Guid("5090b588-6e3f-464a-994d-9cd2af4a0198")
                         },
                         new
                         {
-                            TenantId = new Guid("f34f9cfd-f1f7-4fe9-b8e9-e2ae9f18d6fa"),
+                            TenantId = new Guid("530e0191-cdc2-4831-ae67-bc92a2c24171"),
                             UserId = new Guid("6521474a-6e39-4a5e-8628-cd89b4e922bc")
                         });
                 });
@@ -815,8 +825,8 @@ namespace FalconOne.DAL.Migrations
                             Id = new Guid("6521474a-6e39-4a5e-8628-cd89b4e922bc"),
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==",
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 240, DateTimeKind.Utc).AddTicks(3778),
-                            DepartmentId = new Guid("50ee6ff5-17d8-4c5b-8d33-cc764e3f143a"),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 505, DateTimeKind.Utc).AddTicks(7572),
+                            DepartmentId = new Guid("8cfda37d-019c-4c52-9301-2aa89fb99160"),
                             Email = "b@b.com",
                             EmailConfirmed = true,
                             FirstName = "Basic",
@@ -824,7 +834,7 @@ namespace FalconOne.DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "b@b.com",
                             NormalizedUserName = "b",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBH9oEHUxCcVl6/oGA44aaoICeBpEAsU0NlUxcs6zLhkPwIR5mz5veziRGx5G+zSyQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIUAO+JRDKZEBRQ2pRiuDsKSgsMr8+Kz+PXcO+WqgP4cU8UvWNnEsc+Q2qT087P9dg==",
                             PhoneNumber = "8886014996",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "UCQO32XEFNXIAZIR3LTNFDRRX7A2NHLK",
@@ -836,8 +846,8 @@ namespace FalconOne.DAL.Migrations
                             Id = new Guid("5090b588-6e3f-464a-994d-9cd2af4a0198"),
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==",
-                            CreatedOn = new DateTime(2023, 6, 18, 13, 35, 43, 240, DateTimeKind.Utc).AddTicks(3791),
-                            DepartmentId = new Guid("50ee6ff5-17d8-4c5b-8d33-cc764e3f143a"),
+                            CreatedOn = new DateTime(2023, 7, 1, 5, 10, 12, 505, DateTimeKind.Utc).AddTicks(7579),
+                            DepartmentId = new Guid("8cfda37d-019c-4c52-9301-2aa89fb99160"),
                             Email = "a@a.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -845,7 +855,7 @@ namespace FalconOne.DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "a@a.com",
                             NormalizedUserName = "a",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMG/i/odkohpIT19rVraL9zhs+JiF1YdNf1LlwxPpo3byI9IetD/nmaFjb5mhlMFdg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDhMY8dHGJwS1u6F5twiGOMD5SMwFL12w/OPr/eC2Xon2rvABeNRXwyjAMKvUsU8Bg==",
                             PhoneNumber = "8886014997",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "UCQO32XEFNXIAZIR3LTNFDRRX7A2NHLK",

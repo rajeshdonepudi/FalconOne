@@ -2,13 +2,13 @@
 
 namespace FalconOne.Models.DTOs
 {
-    public class UserDTO
+    public class UserDto
     {
-        public UserDTO()
+        public UserDto()
         {
                 
         }
-        public UserDTO(User user)
+        public UserDto(User user)
         {
             Id = user.Id;
             FirstName = user.FirstName;

@@ -1,6 +1,4 @@
 ﻿using FalconeOne.BLL.Interfaces;
-using FalconOne.Models.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -11,13 +9,10 @@ namespace FalconeOne.BLL.Services
     public class TokenService : ITokenService
     {
         private readonly IAppConfigService _appConfigService;
-        private readonly UserManager<User> _userManager;
 
-        public TokenService(IAppConfigService appConfigService,
-            UserManager<User> userManager)
+        public TokenService(IAppConfigService appConfigService)
         {
             _appConfigService = appConfigService;
-            _userManager = userManager;
         }
 
         public async Task<string> GenerateJWTToken<T, T1>(T type, T1 claims)
@@ -33,7 +28,6 @@ namespace FalconeOne.BLL.Services
                 Audience = await _appConfigService.GetValue("JWT:Audience"),
                 Issuer = await _appConfigService.GetValue("JWT:Issuer"),
                 Expires = DateTime.UtcNow.AddMinutes(double.Parse(await _appConfigService.GetValue("JWT:Expires"))),
-
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 

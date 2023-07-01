@@ -12,17 +12,17 @@ namespace FalconOne.API.Controllers
     [ApiController]
     public class UserManagement : BaseController
     {
-        private readonly IAccountService _accountService;
+        private readonly IUserService _accountService;
         private readonly IAppClaimService _appClaimService;
 
-        public UserManagement(IAccountService accountService, IAppClaimService appClaimService)
+        public UserManagement(IUserService accountService, IAppClaimService appClaimService)
         {
             _accountService = accountService;
             _appClaimService = appClaimService;
         }
 
         [HttpPost("add-user-to-role")]
-        public async Task<IActionResult> AddUserToRole(AddToRoleDTO model)
+        public async Task<IActionResult> AddUserToRole(AddToRoleDto model)
         {
             if (ModelState.IsValid)
             {
@@ -37,7 +37,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("add-claim-to-user")]
-        public async Task<IActionResult> AddClaimToUser(AddClaimToUserDTO model)
+        public async Task<IActionResult> AddClaimToUser(AddClaimToUserDto model)
         {
             if (ModelState.IsValid)
             {
@@ -58,6 +58,31 @@ namespace FalconOne.API.Controllers
             FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.GetAllAsync(model);
 
             return ReturnResponse(response);
+        }
+
+        [HttpGet("get-user")]
+        [ResourceIdentifier(AppResourceCodes.Account.GET_USER)]
+        public async Task<IActionResult> GetByUserId(string userId)
+        {
+            FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.GetByIdAsync(userId);
+
+            return ReturnResponse(response);
+        }
+
+        [HttpPatch("{userId}/email-confirmed/{value}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> UpdateEmailConfirmed(string userId, bool value)
+        {
+            if (ModelState.IsValid)
+            {
+                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.UpdateEmailConfirmed(userId, value);
+
+                return ReturnResponse(response);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
     }
 }

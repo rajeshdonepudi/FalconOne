@@ -20,7 +20,7 @@ namespace FalconOne.API.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [ResourceIdentifier(AppResourceCodes.Account.REGISTER_NEW_USER)]
+        [ResourceIdentifier(AppResourceCodes.Account.NEW_USER_SIGNUP)]
 
         public async Task<IActionResult> Get()
         {
@@ -28,7 +28,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(NewPostDTO postDTO)
+        public async Task<IActionResult> Create(NewPostDto postDTO)
         {
             FalconeOne.BLL.Helpers.ApiResponse response = await _postsService.CreateAsync(postDTO);
 

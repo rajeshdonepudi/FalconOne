@@ -2,7 +2,7 @@
 using FalconeOne.BLL.Interfaces;
 using FalconOne.API.Attributes;
 using FalconOne.Enumerations.Settings;
-using FalconOne.Models.DTOs;
+using FalconOne.Models.DTOs.Settings;
 using FalconOne.ResourceCodes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,14 +23,31 @@ namespace FalconOne.API.Controllers
         [HttpGet("type/{settingType}")]
         [AllowAnonymous]
         [ResourceIdentifier(AppResourceCodes.Settings.GET_SETTING_BY_TYPE)]
-        public async Task<IActionResult> GetSettings(SettingTypeEnum settingType)
+        public async Task<IActionResult> GetSettings(SystemSettingTypeEnum settingType)
         {
             return Ok(await _settingsService.GetSettings(settingType));
         }
 
+        [HttpGet("types")]
+        [Authorize(Policy = "Admin")]
+        [ResourceIdentifier(AppResourceCodes.Settings.GET_SETTING_BY_TYPE)]
+        public async Task<IActionResult> GetSettingTypes()
+        {
+            return Ok(await _settingsService.GetSettingTypes());
+        }
+
+        [HttpGet("tenant-settings")]
+        [AllowAnonymous]
+        [ResourceIdentifier(AppResourceCodes.Settings.GET_TENANT_SETTINGS)]
+        public async Task<IActionResult> GetTenantSettings()
+        {
+            return Ok(await _settingsService.GetTenantSettings());
+        }
+
         [HttpPost("add-new")]
-        [Authorize(Policy = "SomePolicy")]
-        public async Task<IActionResult> AddNewSetting(ApplicationSettingDTO model)
+        [Authorize(Policy = "Admin")]
+        [ResourceIdentifier(AppResourceCodes.Settings.ADD_NEW_SETTING)]
+        public async Task<IActionResult> AddNewSetting(AddSiteSettingDto model)
         {
             if (ModelState.IsValid)
             {
@@ -44,14 +61,16 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPatch]
-        [AllowAnonymous]
+        [Authorize(Policy = "Admin")]
         [ResourceIdentifier(AppResourceCodes.Settings.UPDATE_SETTINGS)]
-        public async Task<IActionResult> UpdateSettings(List<ApplicationSettingDTO> settings)
+        public async Task<IActionResult> UpdateSettings(List<UpdateSiteSettingDto> settings)
         {
             return ReturnResponse(await _settingsService.UpdateSettingsByName(settings));
         }
 
         [HttpDelete("delete")]
+        [Authorize(Policy = "Admin")]
+        [ResourceIdentifier(AppResourceCodes.Settings.DELETE_SETTING)]
         public async Task<IActionResult> DeleteSetting(string guid)
         {
             bool validId = Guid.TryParse(guid, out Guid settingId);

@@ -1,6 +1,6 @@
 ﻿namespace FalconOne.Models.DTOs
 {
-    public class RequestInformationDTO
+    public class RequestInformationDto
     {
         public string IP { get; set; }
         public string UserAgent { get; set; }

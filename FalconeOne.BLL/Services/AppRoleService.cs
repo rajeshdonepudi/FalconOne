@@ -22,7 +22,7 @@ namespace FalconeOne.BLL.Services
         {
             _roleManager = roleManager;
         }
-        public async Task<ApiResponse> CreateRoleAsync(UserRoleDTO userRole)
+        public async Task<ApiResponse> CreateRoleAsync(UserRoleDto userRole)
         {
             if (userRole is null)
             {

@@ -21,7 +21,7 @@ namespace FalconeOne.BLL.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<ApiResponse> CreatePolicy(CreatePolicyDTO model)
+        public async Task<ApiResponse> CreatePolicy(CreatePolicyDto model)
         {
             SecurityPolicy policy = new()
             {

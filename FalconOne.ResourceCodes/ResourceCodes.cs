@@ -7,7 +7,7 @@
             public const string USER_CREATE = "USER_CREATE";
             public const string LOGIN = "LOGIN";
             public const string GET_USER = "GET_USER";
-            public const string REGISTER_NEW_USER = "REGISTER_NEW_USER";
+            public const string NEW_USER_SIGNUP = "REGISTER_NEW_USER";
             public const string FORGOT_PASSWORD = "FORGOT_PASSWORD";
             public const string RESET_PASSWORD = "RESET_PASSWORD";
             public const string REVOKE_REFRESH_TOKEN = "REVOKE_REFRESH_TOKEN";
@@ -17,7 +17,11 @@
         public static class Settings
         {
             public const string GET_SETTING_BY_TYPE = "GET_SETTING_BY_TYPE";
+            public const string GET_SETTING_TYPES = "GET_SETTING_TYPES";
             public const string UPDATE_SETTINGS = "UPDATE_SETTINGS";
+            public const string GET_TENANT_SETTINGS = "GET_TENANT_SETTINGS";
+            public const string ADD_NEW_SETTING = "ADD_NEW_SETTING";
+            public const string DELETE_SETTING = "DELETE_SETTING";
         }
 
         public static class Fonts

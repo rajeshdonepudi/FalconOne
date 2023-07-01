@@ -2,14 +2,12 @@
 using FalconeOne.BLL.Interfaces;
 using FalconOne.DAL.Contracts;
 using FalconOne.Extensions.Http;
-using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
 using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -20,10 +18,7 @@ namespace FalconeOne.BLL.Services
     {
         #region Fields
         private readonly SignInManager<User> _signInManager;
-        private readonly RoleManager<UserRole> _roleManager;
-        private readonly IOptions<IdentityOptions> _optionsAccessor;
         private readonly ITokenService _tokenService;
-        private readonly ITenantService _tenantService;
         private readonly IAppConfigService _appConfigService;
 
         /// <summary>
@@ -46,26 +41,21 @@ namespace FalconeOne.BLL.Services
         public AccountService(UserManager<User> userManager,
             IUnitOfWork unitOfWork,
             SignInManager<User> signInManager,
-            RoleManager<UserRole> roleManager,
-            IOptions<IdentityOptions> optionsAccessor,
-            ITokenService tokenService,
             ITenantService tenantService,
+            ITokenService tokenService,
             IAppConfigService appConfigService,
             IHttpContextAccessor httpContextAccessor,
             IConfiguration configuration) : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
         {
             _signInManager = signInManager;
-            _roleManager = roleManager;
-            _optionsAccessor = optionsAccessor;
             _tokenService = tokenService;
-            _tenantService = tenantService;
             _appConfigService = appConfigService;
         }
         #endregion
 
         #region Implementation
 
-        public async Task<ApiResponse> AuthenticateUserAsync(AuthenticateRequestDTO model)
+        public async Task<ApiResponse> LoginUserAsync(LoginRequestDto model)
         {
             User? user = await _userManager.FindByEmailAsync(model.Email);
 
@@ -93,7 +83,7 @@ namespace FalconeOne.BLL.Services
 
             await _unitOfWork.SaveChangesAsync();
 
-            AuthenticateResponseDTO authResponse = new()
+            AuthenticateResponseDto authResponse = new()
             {
                 Email = user.Email,
                 FirstName = user.FirstName,
@@ -111,9 +101,16 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.LOGIN_SUCCESSFULL, authResponse));
         }
 
-        public async Task<ApiResponse> CreateNewUserAsync(RegisterNewUserRequestDTO model)
+        public async Task<ApiResponse> SignupNewUserAsync(SignupRequestDto model)
         {
-            User newUser = new() { };
+            User newUser = new()
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                UserName = model.UserName,
+                PhoneNumber = model.PhoneNumber,
+            };
 
             newUser.CreatedOn = DateTime.UtcNow;
 
@@ -130,35 +127,10 @@ namespace FalconeOne.BLL.Services
             {
                 return new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG);
             }
-            UserDTO account = new() { };
-
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.Created, MessageHelper.USER_CREATED_SUCCESSFULLY, account));
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.Created, MessageHelper.USER_CREATED_SUCCESSFULLY, new RegisterResponse(user.FirstName, user.LastName, user.Email)));
         }
 
-        public async Task<ApiResponse> DeleteAsync(string userId)
-        {
-            if (!string.IsNullOrEmpty(userId))
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_USER_ID));
-            }
-
-            User? user = await _userManager.FindByIdAsync(userId);
-
-            if (user is null)
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
-            }
-
-            IdentityResult result = await _userManager.DeleteAsync(user);
-
-            if (!result.Succeeded)
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.USER_DELETION_FAILED));
-            }
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.NoContent, MessageHelper.USER_DELETED_SUCCESSFULLY));
-        }
-
-        public async Task<ApiResponse> ForgotPasswordAsync(ForgotPasswordRequestDTO model)
+        public async Task<ApiResponse> ForgotPasswordAsync(ForgotPasswordRequestDto model)
         {
             User? user = await _userManager.FindByEmailAsync(model.Email);
 
@@ -176,52 +148,6 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.FORGOT_PASSWORD_SUCCESS, resetToken));
         }
 
-        public async Task<ApiResponse> GetAllAsync(PageParams model)
-        {
-            List<UserDTO> result = new();
-
-            PagedList<User> users = await _unitOfWork.UserRepository.GetAllUsersByTenantIdPaginatedAsync(await _tenantService.GetTenantId(), model);
-
-            if (!users.Any())
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.NO_USERS_FOUND));
-            }
-
-            foreach (User user in users)
-            {
-                UserDTO res = new(user);
-                result.Add(res);
-            }
-
-            PagedListDTO pagedList = new()
-            {
-                TotalCount = users.TotalCount,
-                PageIndex = users.PageIndex,
-                PageSize = users.PageSize,
-                Records = result
-            };
-
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, pagedList));
-        }
-
-        public async Task<ApiResponse> GetByIdAsync(string userId)
-        {
-            if (string.IsNullOrEmpty(userId))
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_USER_ID));
-            }
-
-            User? user = await _userManager.FindByIdAsync(userId);
-
-            if (user is null)
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
-            }
-
-            UserDTO result = new();
-
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result));
-        }
 
         public async Task<ApiResponse> GetNewJWTByRefreshTokenAsync(string refreshToken)
         {
@@ -258,7 +184,7 @@ namespace FalconeOne.BLL.Services
 
             string jwtToken = await GenerateJWTToken(account);
 
-            AuthenticateResponseDTO response = new()
+            AuthenticateResponseDto response = new()
             {
                 JWTToken = jwtToken,
                 RefreshToken = newRefreshToken.Token
@@ -266,7 +192,7 @@ namespace FalconeOne.BLL.Services
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, response));
         }
-        public async Task<ApiResponse> ResetPasswordAsync(ResetPasswordRequestDTO model)
+        public async Task<ApiResponse> ResetPasswordAsync(ResetPasswordRequestDto model)
         {
             User? user = await _userManager.FindByIdAsync(model.UserId);
 
@@ -307,12 +233,7 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.Accepted, MessageHelper.SUCESSFULL));
         }
 
-        public Task<AuthenticateResponseDTO> UpdateUserAsync(int id, RegisterNewUserRequestDTO model)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<ApiResponse> VerifyEmailAsync(VerifyEmailDTO model)
+        public async Task<ApiResponse> ConfirmEmailAsync(ConfirmEmailRequestDto model)
         {
             User? user = await _userManager.FindByIdAsync(model.UserId);
 
@@ -329,35 +250,31 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.EMAIL_CONFIRM_SUCCESS));
         }
 
-        public async Task<ApiResponse> AddUserToRoleAsync(AddToRoleDTO addToRoleDTO)
+        public async Task<ApiResponse> UpdateEmailConfirmed(string userId, bool value)
         {
-            if (addToRoleDTO is null)
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REQUEST));
-            }
-
-            User? user = await _userManager.FindByIdAsync(addToRoleDTO.UserId);
+            User? user = await _userManager.FindByIdAsync(userId);
 
             if (user is null)
             {
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
             }
 
-            UserRole? role = await _roleManager.FindByIdAsync(addToRoleDTO.RoleId);
+            user.EmailConfirmed = value;
 
-            if (role is null)
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.ROLE_NOT_FOUND));
-            }
-
-            IdentityResult result = await _userManager.AddToRoleAsync(user, role.Name);
-
-            if (!result.Succeeded)
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG, null, result.Errors));
-            }
+            await _userManager.UpdateAsync(user);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
+        }
+
+        public async Task<ApiResponse> IsUserNameAvailable(string username)
+        {
+            if (!string.IsNullOrEmpty(username))
+            {
+                var result = _unitOfWork.UserRepository.IsUserNameAvailable(username);
+
+                return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, new { UserNameAvailable = result }));
+            }
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REQUEST, new { UserNameAvailable = false }));
         }
 
         #endregion
@@ -450,20 +367,9 @@ namespace FalconeOne.BLL.Services
             return newRefreshToken;
         }
 
-        public async Task<ApiResponse> UpdateEmailConfirmed(string userId, bool value)
+        private void ValidateUserSignupInfo(SignupRequestDto info)
         {
-            User? user = await _userManager.FindByIdAsync(userId);
 
-            if (user is null)
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
-            }
-
-            user.EmailConfirmed = value;
-
-            await _userManager.UpdateAsync(user);
-
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
         }
         #endregion
     }

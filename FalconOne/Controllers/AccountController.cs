@@ -17,14 +17,14 @@ namespace FalconOne.API.Controllers
             _accountService = accountService;
         }
 
-        [HttpPost("register-new-user")]
+        [HttpPost("signup")]
         [AllowAnonymous]
-        [ResourceIdentifier(AppResourceCodes.Account.REGISTER_NEW_USER)]
-        public async Task<IActionResult> Register(RegisterNewUserRequestDTO model)
+        [ResourceIdentifier(AppResourceCodes.Account.NEW_USER_SIGNUP)]
+        public async Task<IActionResult> Signup(SignupRequestDto model)
         {
             if (ModelState.IsValid)
             {
-                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.CreateNewUserAsync(model);
+                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.SignupNewUserAsync(model);
 
                 return ReturnResponse(response);
             }
@@ -37,11 +37,11 @@ namespace FalconOne.API.Controllers
         [HttpPost("login")]
         [AllowAnonymous]
         [ResourceIdentifier(AppResourceCodes.Account.LOGIN)]
-        public async Task<IActionResult> Login(AuthenticateRequestDTO model)
+        public async Task<IActionResult> Login(LoginRequestDto model)
         {
             if (ModelState.IsValid)
             {
-                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.AuthenticateUserAsync(model);
+                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.LoginUserAsync(model);
 
                 return ReturnResponse(response);
             }
@@ -50,20 +50,12 @@ namespace FalconOne.API.Controllers
                 return BadRequest(ModelState);
             }
         }
-
-        [HttpGet("get-user")]
-        [ResourceIdentifier(AppResourceCodes.Account.GET_USER)]
-        public async Task<IActionResult> GetByUserId(string userId)
-        {
-            FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.GetByIdAsync(userId);
-
-            return ReturnResponse(response);
-        }
+        
 
         [HttpPost("forgot-password")]
         [ResourceIdentifier(AppResourceCodes.Account.FORGOT_PASSWORD)]
         [AllowAnonymous]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequestDTO model)
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequestDto model)
         {
             if (ModelState.IsValid)
             {
@@ -80,7 +72,7 @@ namespace FalconOne.API.Controllers
         [HttpPost("reset-password")]
         [ResourceIdentifier(AppResourceCodes.Account.RESET_PASSWORD)]
         [AllowAnonymous]
-        public async Task<IActionResult> ResetPassword(ResetPasswordRequestDTO model)
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequestDto model)
         {
             if (ModelState.IsValid)
             {
@@ -97,7 +89,7 @@ namespace FalconOne.API.Controllers
         [HttpPost("revoke-refresh-token")]
         [ResourceIdentifier(AppResourceCodes.Account.REVOKE_REFRESH_TOKEN)]
         [AllowAnonymous]
-        public async Task<IActionResult> RevokeRefreshToken(RevokeRefreshTokenRequestDTO model)
+        public async Task<IActionResult> RevokeRefreshToken(RevokeRefreshTokenRequestDto model)
         {
             if (ModelState.IsValid)
             {
@@ -114,7 +106,7 @@ namespace FalconOne.API.Controllers
         [HttpPost("refresh-token")]
         [ResourceIdentifier(AppResourceCodes.Account.REFRESH_TOKEN)]
         [AllowAnonymous]
-        public async Task<IActionResult> RefreshToken(RefreshTokenRequestDTO model)
+        public async Task<IActionResult> RefreshToken(RefreshTokenRequestDto model)
         {
             if (ModelState.IsValid)
             {
@@ -128,20 +120,12 @@ namespace FalconOne.API.Controllers
             }
         }
 
-        [HttpPatch("{userId}/email-confirmed/{value}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> UpdateEmailConfirmed(string userId, bool value)
+        [HttpPost("username-available")]
+        public async Task<IActionResult> IsUserNameAvailable(string username)
         {
-            if (ModelState.IsValid)
-            {
-                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.UpdateEmailConfirmed(userId, value);
+            var response = await _accountService.IsUserNameAvailable(username);
 
-                return ReturnResponse(response);
-            }
-            else
-            {
-                return BadRequest(ModelState);
-            }
+            return ReturnResponse(response);
         }
     }
 }

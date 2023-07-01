@@ -5,7 +5,7 @@ namespace FalconeOne.BLL.Interfaces
 {
     public interface IPostService
     {
-        Task<ApiResponse> CreateAsync(NewPostDTO newPost);
+        Task<ApiResponse> CreateAsync(NewPostDto newPost);
         Task<ApiResponse> GetAllPosts();
     }
 }

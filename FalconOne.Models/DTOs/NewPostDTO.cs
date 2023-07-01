@@ -1,6 +1,6 @@
 ﻿namespace FalconOne.Models.DTOs
 {
-    public class NewPostDTO
+    public class NewPostDto
     {
         public string Content { get; set; }
         public Guid? DepartmentId { get; set; }

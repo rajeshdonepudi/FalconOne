@@ -244,8 +244,9 @@ namespace FalconOne.DAL
             modelBuilder.Entity<SiteSetting>().HasData(new SiteSetting
             {
                 Id = Guid.NewGuid(),
-                SettingType = Enumerations.Settings.SettingTypeEnum.Theme,
+                SettingType = Enumerations.Settings.SystemSettingTypeEnum.Theme,
                 CreatedOn = DateTime.UtcNow,
+                DisplayName = "Primary Color",
                 Description = "This is primary color",
                 Name = "primaryColor",
                 Value = "#144272",
@@ -255,9 +256,10 @@ namespace FalconOne.DAL
             modelBuilder.Entity<SiteSetting>().HasData(new SiteSetting
             {
                 Id = Guid.NewGuid(),
-                SettingType = FalconOne.Enumerations.Settings.SettingTypeEnum.Theme,
+                SettingType = Enumerations.Settings.SystemSettingTypeEnum.Theme,
                 CreatedOn = DateTime.UtcNow,
                 Description = "This is secondary color",
+                DisplayName = "Secondary Color",
                 Name = "secondaryColor",
                 Value = "#205295",
                 TenantId = tenantId1
@@ -266,9 +268,10 @@ namespace FalconOne.DAL
             modelBuilder.Entity<SiteSetting>().HasData(new SiteSetting
             {
                 Id = Guid.NewGuid(),
-                SettingType = FalconOne.Enumerations.Settings.SettingTypeEnum.Theme,
+                SettingType = Enumerations.Settings.SystemSettingTypeEnum.Theme,
                 CreatedOn = DateTime.UtcNow,
                 Description = "This is site theme",
+                DisplayName = "Theme",
                 Name = "theme",
                 Value = "light",
                 TenantId = tenantId1
@@ -277,9 +280,10 @@ namespace FalconOne.DAL
             modelBuilder.Entity<SiteSetting>().HasData(new SiteSetting
             {
                 Id = Guid.NewGuid(),
-                SettingType = Enumerations.Settings.SettingTypeEnum.Theme,
+                SettingType = Enumerations.Settings.SystemSettingTypeEnum.Theme,
                 CreatedOn = DateTime.UtcNow,
                 Description = "This is primary color",
+                DisplayName = "Primary Color",
                 Name = "primaryColor",
                 Value = "#144272",
                 TenantId = tenantId2
@@ -288,10 +292,11 @@ namespace FalconOne.DAL
             modelBuilder.Entity<SiteSetting>().HasData(new SiteSetting
             {
                 Id = Guid.NewGuid(),
-                SettingType = FalconOne.Enumerations.Settings.SettingTypeEnum.Theme,
+                SettingType = FalconOne.Enumerations.Settings.SystemSettingTypeEnum.Theme,
                 CreatedOn = DateTime.UtcNow,
                 Description = "This is secondary color",
                 Name = "secondaryColor",
+                DisplayName = "Secondary Color",
                 Value = "#205295",
                 TenantId = tenantId2
             });
@@ -299,11 +304,12 @@ namespace FalconOne.DAL
             modelBuilder.Entity<SiteSetting>().HasData(new SiteSetting
             {
                 Id = Guid.NewGuid(),
-                SettingType = FalconOne.Enumerations.Settings.SettingTypeEnum.Theme,
+                SettingType = Enumerations.Settings.SystemSettingTypeEnum.Theme,
                 CreatedOn = DateTime.UtcNow,
                 Description = "This is site theme",
                 Name = "theme",
                 Value = "light",
+                DisplayName = "Theme",
                 TenantId = tenantId2
             });
             #endregion

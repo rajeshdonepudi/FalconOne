@@ -5,10 +5,10 @@ namespace FalconeOne.BLL.Interfaces
 {
     public interface IAppClaimService
     {
-        Task<ApiResponse> AddClaimToRoleAsync(AddClaimToRoleDTO model);
-        Task<ApiResponse> AddClaimToUserAsync(AddClaimToUserDTO model);
-        Task<ApiResponse> AddClaimsToUserAsync(AddClaimsToUserDTO model);
-        Task<ApiResponse> CreateClaimAsync(UserClaimDTO model);
+        Task<ApiResponse> AddClaimToRoleAsync(AddClaimToRoleDto model);
+        Task<ApiResponse> AddClaimToUserAsync(AddClaimToUserDto model);
+        Task<ApiResponse> AddClaimsToUserAsync(AddClaimsToUserDto model);
+        Task<ApiResponse> CreateClaimAsync(UserClaimDto model);
         Task<ApiResponse> GetAllClaimsAsync();
         Task<ApiResponse> DeleteClaimAsync(Guid guid);
     }

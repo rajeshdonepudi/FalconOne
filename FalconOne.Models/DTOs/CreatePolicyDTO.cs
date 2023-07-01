@@ -2,7 +2,7 @@
 
 namespace FalconOne.Models.DTOs
 {
-    public class CreatePolicyDTO
+    public class CreatePolicyDto
     {
         [Required]
         public string Name { get; set; }

@@ -18,6 +18,11 @@ namespace FalconOne.DAL.Repositories
 
             return new PagedList<User>(records, await _context.Users.LongCountAsync(), pageParams.PageIndex, pageParams.PageSize);
         }
+
+        public async Task<bool> IsUserNameAvailable(string username)
+        {
+            return await _context.Users.AnyAsync(x => x.UserName != username);
+        }
     }
 }
 

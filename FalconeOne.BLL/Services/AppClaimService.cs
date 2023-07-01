@@ -22,7 +22,7 @@ namespace FalconeOne.BLL.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ApiResponse> CreateClaimAsync(UserClaimDTO model)
+        public async Task<ApiResponse> CreateClaimAsync(UserClaimDto model)
         {
             await _unitOfWork.UserClaimsRepository.AddAsync(new SecurityClaim
             {
@@ -37,7 +37,7 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
         }
 
-        public async Task<ApiResponse> AddClaimToRoleAsync(AddClaimToRoleDTO model)
+        public async Task<ApiResponse> AddClaimToRoleAsync(AddClaimToRoleDto model)
         {
             UserRole role = await _roleManager.FindByIdAsync(model.RoleId);
 
@@ -48,7 +48,7 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
         }
 
-        public async Task<ApiResponse> AddClaimToUserAsync(AddClaimToUserDTO model)
+        public async Task<ApiResponse> AddClaimToUserAsync(AddClaimToUserDto model)
         {
             User user = await _userManager.FindByIdAsync(model.UserId);
 
@@ -59,7 +59,7 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
         }
 
-        public async Task<ApiResponse> AddClaimsToUserAsync(AddClaimsToUserDTO model)
+        public async Task<ApiResponse> AddClaimsToUserAsync(AddClaimsToUserDto model)
         {
             User user = await _userManager.FindByIdAsync(model.UserId);
 

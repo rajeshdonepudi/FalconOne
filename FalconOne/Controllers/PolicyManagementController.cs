@@ -16,7 +16,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("create-new-policy")]
-        public async Task<IActionResult> CreatePolicy(CreatePolicyDTO model)
+        public async Task<IActionResult> CreatePolicy(CreatePolicyDto model)
         {
             if (ModelState.IsValid)
             {

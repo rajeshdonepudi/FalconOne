@@ -21,7 +21,7 @@ namespace FalconeOne.BLL.Services
         {
         }
 
-        public async Task<ApiResponse> CreateAsync(NewPostDTO newPost)
+        public async Task<ApiResponse> CreateAsync(NewPostDto newPost)
         {
             User user = await _userManager.FindByIdAsync(newPost.PostedBy.ToString());
 
@@ -58,15 +58,15 @@ namespace FalconeOne.BLL.Services
         {
             IEnumerable<Post> posts = await _unitOfWork.PostRepository.GetAllAsync();
 
-            List<PostDTO> result = new();
+            List<PostDto> result = new();
 
             foreach (Post post in posts)
             {
-                result.Add(new PostDTO
+                result.Add(new PostDto
                 {
                     Content = post.Content,
                     DepartmentId = post.DepartmentId,
-                    PostedBy = new UserDTO
+                    PostedBy = new UserDto
                     {
                         FirstName = post.PostedBy.FirstName,
                         LastName = post.PostedBy.LastName,

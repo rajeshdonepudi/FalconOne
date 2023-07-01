@@ -2,7 +2,7 @@
 
 namespace FalconOne.Models.DTOs
 {
-    public class ForgotPasswordRequestDTO
+    public class ForgotPasswordRequestDto
     {
         [Required(AllowEmptyStrings = false, ErrorMessage = "Email is required.")]
         [EmailAddress]
