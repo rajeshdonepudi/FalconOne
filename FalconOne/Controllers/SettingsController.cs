@@ -29,8 +29,8 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpGet("types")]
-        [Authorize(Policy = "Admin")]
-        [ResourceIdentifier(AppResourceCodes.Settings.GET_SETTING_BY_TYPE)]
+        [FalconOneAuthorize("Admin")]
+        [ResourceIdentifier(AppResourceCodes.Settings.GET_SETTING_TYPES)]
         public async Task<IActionResult> GetSettingTypes()
         {
             return Ok(await _settingsService.GetSettingTypes());

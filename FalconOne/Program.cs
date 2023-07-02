@@ -33,7 +33,12 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader()
         .AllowCredentials()
         .SetIsOriginAllowed((host) => true)
-        .WithOrigins("http://localhost:3000", "http://localhost:5173", "https://localhost:5173", "https://falcone-one.web.app", "https://localhost:3000");
+        .WithOrigins("http://localhost:3000",
+        "http://app.falconone.com:5173",
+        "http://localhost:5173",
+        "https://localhost:5173",
+        "https://falcone-one.web.app",
+        "https://localhost:3000");
     });
 });
 
@@ -64,6 +69,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
+
+//app.UseMiddleware<DebugAuthorizationMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI(o => o.DefaultModelsExpandDepth(-1));

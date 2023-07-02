@@ -76,11 +76,11 @@ namespace FalconeOne.BLL.Services
             return new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result);
         }
 
-        public Task<ApiResponse> GetSettingTypes()
+        public async Task<ApiResponse> GetSettingTypes()
         {
             var settingTypes = EnumExtensions.GetEnumKeyValuePairList<SystemSettingTypeEnum, string, int>();
 
-            return Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, settingTypes));
+            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, settingTypes));
         }
 
         public async Task<ApiResponse> GetTenantSettings()

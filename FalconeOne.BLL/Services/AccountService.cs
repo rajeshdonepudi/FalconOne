@@ -91,7 +91,7 @@ namespace FalconeOne.BLL.Services
                 Id = user.Id,
                 JWTToken = jwtToken,
                 RefreshToken = refreshToken?.Token,
-                Tenants = user.Tenants.Select(x => x.TenantId).ToList()
+                TenantId = await _tenantService.GetTenantId()
             };
 
             authResponse.JWTToken = jwtToken;
@@ -284,7 +284,7 @@ namespace FalconeOne.BLL.Services
         {
             IList<Claim> claims = await _userManager.GetClaimsAsync(user);
 
-            claims.Add(new Claim("Tenants", string.Join(',', user.Tenants.Select(x => x.TenantId).ToList())));
+            claims.Add(new Claim("TenantId", (await _tenantService.GetTenantId()).ToString()));
 
             claims.Add(new Claim("UserId", user.Id.ToString()));
 

@@ -61,20 +61,13 @@ namespace FalconOne.API.AuthenticationConfig
 
                 options.SignIn.RequireConfirmedPhoneNumber = false;
                 options.SignIn.RequireConfirmedEmail = true;
-
                 options.Stores.MaxLengthForKeys = 6;
 
             }).AddEntityFrameworkStores<FalconOneContext>()
               .AddDefaultTokenProviders()
               .AddTokenProvider<FalconOneEmailConfirmationTokenProvider<User>>("FalconOneEmailConfirmationTokenProvider");
 
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-
-            }).AddJwtBearer(o =>
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
             {
                 o.TokenValidationParameters = new TokenValidationParameters
                 {

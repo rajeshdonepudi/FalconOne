@@ -1,12 +1,13 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconOne.API.Filters;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 namespace FalconOne.API.Controllers
 {
     [ServiceFilter(typeof(AsyncActionFilter))]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class BaseController : ControllerBase
     {
         public BaseController() : base()

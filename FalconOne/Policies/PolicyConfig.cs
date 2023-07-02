@@ -38,7 +38,8 @@ namespace FalconOne.API.Policies
                             {
                                 foreach (SecurityClaim claim in applicationPolicy.PolicyClaims)
                                 {
-                                    p.RequireClaim(claim.Type, claim.Value.Split(','));
+                                    Console.WriteLine(claim.Type + "00000000" + claim.Value);
+                                    p.RequireClaim(claim.Type, new string[] { claim.Value });
                                 }
                             });
                         }
