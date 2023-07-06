@@ -25,7 +25,7 @@ namespace FalconeOne.BLL.Services
         {
             Guid tenantId = await GetCurrentTenantId();
 
-            IEnumerable<Department> departments = await _unitOfWork.DepartmentRepository.GetDepartmentsByTenantId(tenantId);
+            IEnumerable<Department> departments = await _unitOfWork.DepartmentRepository.GetDepartmentsByTenantId(tenantId, CancellationToken.None);
 
             List<DepartmentDto> result = new();
 

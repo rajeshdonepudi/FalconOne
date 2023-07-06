@@ -12,11 +12,11 @@ namespace FalconeOne.BLL.Services
 {
     public class AppRoleService : BaseService, IAppRoleService
     {
-        private readonly RoleManager<UserRole> _roleManager;
+        private readonly RoleManager<SecurityRole> _roleManager;
 
         public AppRoleService(UserManager<User> userManager,
             IUnitOfWork unitOfWork,
-            RoleManager<UserRole> roleManager,
+            RoleManager<SecurityRole> roleManager,
             IHttpContextAccessor httpContextAccessor,
             IConfiguration configuration, ITenantService tenantService) : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
         {
@@ -29,7 +29,7 @@ namespace FalconeOne.BLL.Services
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REQUEST));
             }
 
-            UserRole? role = new()
+            SecurityRole? role = new()
             {
                 Name = userRole.Name,
                 CreatedOn = DateTime.UtcNow
@@ -57,7 +57,7 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> GetAllRolesAsync()
         {
-            List<UserRole> roles = _roleManager.Roles.ToList();
+            List<SecurityRole> roles = _roleManager.Roles.ToList();
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, roles));
         }
 

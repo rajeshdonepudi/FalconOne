@@ -47,7 +47,7 @@ namespace FalconOne.API.AuthenticationConfig
     {
         public static void Configure(WebApplicationBuilder builder)
         {
-            builder.Services.AddIdentity<User, UserRole>(options =>
+            builder.Services.AddIdentity<User, SecurityRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
 

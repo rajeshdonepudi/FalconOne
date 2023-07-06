@@ -26,6 +26,7 @@ namespace FalconOne.API.DependencyConfig
             builder.Services.AddScoped<ISiteSettingsService, SiteSettingsService>();
             builder.Services.AddScoped<ITenantService, TenantService>();
             builder.Services.AddTransient<IUserService, UserService>();
+            builder.Services.AddTransient<ISecurityService, SecurityService>();
         }
     }
 }

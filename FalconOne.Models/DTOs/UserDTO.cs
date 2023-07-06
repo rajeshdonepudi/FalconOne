@@ -6,7 +6,7 @@ namespace FalconOne.Models.DTOs
     {
         public UserDto()
         {
-                
+
         }
         public UserDto(User user)
         {

@@ -17,7 +17,7 @@ namespace FalconeOne.BLL.Services
         public AppPolicyService(UserManager<User> userManager,
             IUnitOfWork unitOfWork,
             IHttpContextAccessor httpContextAccessor,
-            IConfiguration configuration,ITenantService tenantService) : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
+            IConfiguration configuration, ITenantService tenantService) : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
         {
             _unitOfWork = unitOfWork;
         }
@@ -28,23 +28,23 @@ namespace FalconeOne.BLL.Services
                 Name = model.Name,
             };
 
-            await _unitOfWork.ApplicationPolicyRepository.AddAsync(policy);
+            await _unitOfWork.ApplicationPolicyRepository.AddAsync(policy, CancellationToken.None);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.Created, MessageHelper.SUCESSFULL));
         }
 
         public async Task<ApiResponse> DeletePolicy(Guid id)
         {
-            SecurityPolicy policy = await _unitOfWork.ApplicationPolicyRepository.FindAsync(x => x.Id == id);
+            SecurityPolicy policy = await _unitOfWork.ApplicationPolicyRepository.FindAsync(x => x.Id == id, CancellationToken.None);
 
             /*** Delete claims first */
             await DeleteAssociatedClaims(id);
 
             _unitOfWork.ApplicationPolicyRepository.Remove(policy);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.Created, MessageHelper.SUCESSFULL));
         }
@@ -59,11 +59,11 @@ namespace FalconeOne.BLL.Services
         #region Private
         private async Task DeleteAssociatedClaims(Guid policyId)
         {
-            IEnumerable<SecurityClaim> claims = await _unitOfWork.UserClaimsRepository.GetSecurityClaimsByPolicyId(policyId);
+            IEnumerable<SecurityClaim> claims = await _unitOfWork.SecurityClaimsRepository.GetSecurityClaimsByPolicyId(policyId);
 
             foreach (SecurityClaim? claim in claims)
             {
-                _unitOfWork.UserClaimsRepository.Remove(claim);
+                _unitOfWork.SecurityClaimsRepository.Remove(claim);
             }
         }
         #endregion
