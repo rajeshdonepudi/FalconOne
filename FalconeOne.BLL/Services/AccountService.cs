@@ -85,18 +85,18 @@ namespace FalconeOne.BLL.Services
 
             AuthenticateResponseDto authResponse = new()
             {
-                Email = user.Email,
+                Email = user.Email!,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Id = user.Id,
                 JWTToken = jwtToken,
-                RefreshToken = refreshToken?.Token,
+                RefreshToken = refreshToken?.Token!,
                 TenantId = await _tenantService.GetTenantId()
             };
 
             authResponse.JWTToken = jwtToken;
 
-            authResponse.RefreshToken = refreshToken.Token!;
+            authResponse.RefreshToken = refreshToken?.Token!;
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.LOGIN_SUCCESSFULL, authResponse));
         }
@@ -110,9 +110,8 @@ namespace FalconeOne.BLL.Services
                 Email = model.Email,
                 UserName = model.UserName,
                 PhoneNumber = model.PhoneNumber,
+                CreatedOn = DateTime.UtcNow,
             };
-
-            newUser.CreatedOn = DateTime.UtcNow;
 
             IdentityResult result = await _userManager.CreateAsync(newUser, model.ConfirmPassword);
 
@@ -187,7 +186,7 @@ namespace FalconeOne.BLL.Services
             AuthenticateResponseDto response = new()
             {
                 JWTToken = jwtToken,
-                RefreshToken = newRefreshToken.Token
+                RefreshToken = newRefreshToken.Token!
             };
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, response));
@@ -214,7 +213,7 @@ namespace FalconeOne.BLL.Services
         {
             User? account = await _userManager.Users.FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
 
-            RefreshToken? token = account.RefreshTokens.FirstOrDefault(x => x.Token == refreshToken);
+            RefreshToken? token = account?.RefreshTokens.FirstOrDefault(x => x.Token == refreshToken);
 
             if (account is null)
             {
