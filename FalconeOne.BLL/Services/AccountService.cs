@@ -270,7 +270,7 @@ namespace FalconeOne.BLL.Services
         {
             if (!string.IsNullOrEmpty(username))
             {
-                var result = _unitOfWork.UserRepository.IsUserNameAvailable(username);
+                Task<bool> result = _unitOfWork.UserRepository.IsUserNameAvailable(username, CancellationToken.None);
 
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, new { UserNameAvailable = result }));
             }
