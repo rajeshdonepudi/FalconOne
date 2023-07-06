@@ -5,6 +5,6 @@ namespace FalconOne.DAL.Contracts
 {
     public interface IDepartmentRepository : IGenericRepository<Department>
     {
-        Task<IEnumerable<Department>> GetDepartmentsByTenantId(Guid tenantId);
+        Task<IEnumerable<Department>> GetDepartmentsByTenantId(Guid tenantId, CancellationToken cancellationToken);
     }
 }

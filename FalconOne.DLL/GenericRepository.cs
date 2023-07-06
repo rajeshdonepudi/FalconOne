@@ -1,5 +1,6 @@
 ﻿using FalconOne.Models.Contracts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System.Linq.Expressions;
 
 namespace FalconOne.DAL
@@ -7,20 +8,22 @@ namespace FalconOne.DAL
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         protected readonly FalconOneContext _context;
+        protected readonly IMemoryCache _memoryCache;
 
-        public GenericRepository(FalconOneContext falconOneContext)
+        public GenericRepository(FalconOneContext falconOneContext, IMemoryCache memoryCache)
         {
             _context = falconOneContext;
+            _memoryCache = memoryCache;
         }
 
-        public async Task AddAsync(T entity)
+        public async Task AddAsync(T entity, CancellationToken cancellationToken)
         {
-            await _context.Set<T>().AddAsync(entity);
+            await _context.Set<T>().AddAsync(entity, cancellationToken);
         }
 
-        public async Task AddRangeAsync(List<T> entities)
+        public async Task AddRangeAsync(List<T> entities, CancellationToken cancellationToken)
         {
-            await _context.Set<T>().AddRangeAsync(entities);
+            await _context.Set<T>().AddRangeAsync(entities, cancellationToken);
         }
 
         public void Remove(T entity)
@@ -33,19 +36,19 @@ namespace FalconOne.DAL
             _context.Set<T>().RemoveRange(entities);
         }
 
-        public async Task<T> GetByIdAsync(Guid id)
+        public async Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _context.Set<T>().FindAsync(id);
+            return await _context.Set<T>().FindAsync(id, cancellationToken);
         }
 
-        public async Task<T> FindAsync(Expression<Func<T, bool>> expression)
+        public async Task<T> FindAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken)
         {
-            return await _context.Set<T>().Where(expression).FirstOrDefaultAsync();
+            return await _context.Set<T>().Where(expression).FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await _context.Set<T>().ToListAsync();
+            return await _context.Set<T>().ToListAsync(cancellationToken);
         }
 
         public void Update(T entity)

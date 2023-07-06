@@ -19,7 +19,7 @@ namespace FalconeOne.BLL.Services
         public BaseService(UserManager<User> userManager,
             IUnitOfWork unitOfWork,
             IHttpContextAccessor httpContextAccessor,
-            IConfiguration configuration,ITenantService tenantService)
+            IConfiguration configuration, ITenantService tenantService)
         {
             _userManager = userManager;
             _unitOfWork = unitOfWork;
@@ -65,7 +65,7 @@ namespace FalconeOne.BLL.Services
 
         private async Task<bool> IsValidTenant(Guid tenantId, Guid userId)
         {
-            Tenant? tenant = await _unitOfWork.TenantRepository.GetByIdAsync(tenantId);
+            Tenant? tenant = await _unitOfWork.TenantRepository.GetByIdAsync(tenantId, CancellationToken.None);
 
             User? user = await _userManager.FindByIdAsync(userId.ToString());
 

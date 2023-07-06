@@ -1,11 +1,11 @@
 ﻿using FalconOne.Models.Entities;
+using FalconOne.Models.EntityConfiguration;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using FalconOne.Models.EntityConfiguration;
 
 namespace FalconOne.DAL
 {
-    public class FalconOneContext : IdentityDbContext<User, UserRole, Guid>
+    public class FalconOneContext : IdentityDbContext<User, SecurityRole, Guid>
     {
         public DbSet<SystemLog> SystemLogs { get; set; }
         public DbSet<SecurityClaim> SecurityClaims { get; set; }

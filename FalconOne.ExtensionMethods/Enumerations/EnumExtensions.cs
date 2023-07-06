@@ -11,12 +11,12 @@ namespace FalconOne.Extensions.Enumerations
             if (!typeof(T).IsEnum)
                 return null;
 
-            var description = enumValue.ToString();
-            var fieldInfo = enumValue.GetType().GetField(enumValue.ToString());
+            string? description = enumValue.ToString();
+            FieldInfo? fieldInfo = enumValue.GetType().GetField(enumValue.ToString());
 
             if (fieldInfo != null)
             {
-                var attrs = fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), true);
+                object[] attrs = fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), true);
                 if (attrs != null && attrs.Length > 0)
                 {
                     description = ((DescriptionAttribute)attrs[0]).Description;
@@ -26,12 +26,12 @@ namespace FalconOne.Extensions.Enumerations
             return description;
         }
 
-        public static List<KeyValuePair<TKey, TValue>> GetEnumKeyValuePairList<TEnum,TKey, TValue>()
+        public static List<KeyValuePair<TKey, TValue>> GetEnumKeyValuePairList<TEnum, TKey, TValue>()
          where TEnum : Enum
         {
-            var enumValues = Enum.GetValues(typeof(TEnum));
+            Array enumValues = Enum.GetValues(typeof(TEnum));
 
-            var keyValuePairs = new List<KeyValuePair<TKey, TValue>>();
+            List<KeyValuePair<TKey, TValue>> keyValuePairs = new();
 
             foreach (TEnum enumValue in enumValues)
             {
@@ -39,7 +39,7 @@ namespace FalconOne.Extensions.Enumerations
 
                 object enumVal = Convert.ChangeType(enumValue, typeof(TValue));
 
-                keyValuePairs.Add(new KeyValuePair<TKey, TValue>((TKey) key, (TValue) enumVal));
+                keyValuePairs.Add(new KeyValuePair<TKey, TValue>((TKey)key, (TValue)enumVal));
             }
             return keyValuePairs;
         }

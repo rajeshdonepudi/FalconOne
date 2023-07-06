@@ -1,6 +1,7 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
+using FalconOne.Models.DTOs.Users;
 
 namespace FalconeOne.BLL.Interfaces
 {
@@ -12,5 +13,6 @@ namespace FalconeOne.BLL.Interfaces
         Task<ApiResponse> DeleteAsync(string userId);
         Task<ApiResponse> AddUserToRoleAsync(AddToRoleDto model);
         Task<ApiResponse> UpdateEmailConfirmed(string userId, bool value);
+        Task<ApiResponse> AddUser(AddUserDto model);
     }
 }

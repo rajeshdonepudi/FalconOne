@@ -2,6 +2,7 @@
 using FalconOne.API.Attributes;
 using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
+using FalconOne.Models.DTOs.Users;
 using FalconOne.ResourceCodes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,12 +13,12 @@ namespace FalconOne.API.Controllers
     [ApiController]
     public class UserManagement : BaseController
     {
-        private readonly IUserService _accountService;
+        private readonly IUserService _userService;
         private readonly IAppClaimService _appClaimService;
 
         public UserManagement(IUserService accountService, IAppClaimService appClaimService)
         {
-            _accountService = accountService;
+            _userService = accountService;
             _appClaimService = appClaimService;
         }
 
@@ -26,7 +27,7 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                FalconeOne.BLL.Helpers.ApiResponse result = await _accountService.AddUserToRoleAsync(model);
+                FalconeOne.BLL.Helpers.ApiResponse result = await _userService.AddUserToRoleAsync(model);
 
                 return ReturnResponse(result);
             }
@@ -34,6 +35,14 @@ namespace FalconOne.API.Controllers
             {
                 return BadRequest(ModelState);
             }
+        }
+
+        [HttpPost("add-user")]
+        public async Task<IActionResult> AddUser(AddUserDto model)
+        {
+            FalconeOne.BLL.Helpers.ApiResponse result = await _userService.AddUser(model);
+
+            return ReturnResponse(result);
         }
 
         [HttpPost("add-claim-to-user")]
@@ -55,7 +64,7 @@ namespace FalconOne.API.Controllers
         [ResourceIdentifier(AppResourceCodes.Account.GET_USER)]
         public async Task<IActionResult> GetAllUsers(PageParams model)
         {
-            FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.GetAllAsync(model);
+            FalconeOne.BLL.Helpers.ApiResponse response = await _userService.GetAllAsync(model);
 
             return ReturnResponse(response);
         }
@@ -64,7 +73,7 @@ namespace FalconOne.API.Controllers
         [ResourceIdentifier(AppResourceCodes.Account.GET_USER)]
         public async Task<IActionResult> GetByUserId(string userId)
         {
-            FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.GetByIdAsync(userId);
+            FalconeOne.BLL.Helpers.ApiResponse response = await _userService.GetByIdAsync(userId);
 
             return ReturnResponse(response);
         }
@@ -75,7 +84,7 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.UpdateEmailConfirmed(userId, value);
+                FalconeOne.BLL.Helpers.ApiResponse response = await _userService.UpdateEmailConfirmed(userId, value);
 
                 return ReturnResponse(response);
             }

@@ -11,19 +11,19 @@ namespace FalconOne.API.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class FalconOneAuthorizeAttribute : Attribute, IAsyncAuthorizationFilter
     {
-        private readonly string _policy;
+        private readonly List<string> _policies = new() { "FalconOneSuperAdmin" };
 
-        public FalconOneAuthorizeAttribute(string policy)
+        public FalconOneAuthorizeAttribute(string[] policies)
         {
-            _policy = policy;
+            _policies = policies.ToList();
         }
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var tenantService = context.HttpContext.RequestServices.GetService<ITenantService>();
+            ITenantService? tenantService = context.HttpContext.RequestServices.GetService<ITenantService>();
 
-            var configuration = context.HttpContext.RequestServices.GetService<IConfiguration>();
+            IConfiguration? configuration = context.HttpContext.RequestServices.GetService<IConfiguration>();
 
-            var currentTenantId = tenantService.GetTenantId().Result;
+            Guid currentTenantId = tenantService.GetTenantId().Result;
 
             string bearerToken = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
 
@@ -33,9 +33,9 @@ namespace FalconOne.API.Attributes
                 return;
             }
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+            JwtSecurityTokenHandler tokenHandler = new();
 
-            var tokenValidationParameters = new TokenValidationParameters
+            TokenValidationParameters tokenValidationParameters = new()
             {
                 ValidIssuer = configuration["JWT:Issuer"],
                 ValidAudience = configuration["JWT:Audience"],
@@ -53,9 +53,9 @@ namespace FalconOne.API.Attributes
 
             try
             {
-                var claimsPrincipal = tokenHandler.ValidateToken(token, tokenValidationParameters, out _);
+                System.Security.Claims.ClaimsPrincipal claimsPrincipal = tokenHandler.ValidateToken(token, tokenValidationParameters, out _);
 
-                var tenantIdClaim = claimsPrincipal.FindFirst("tenantId");
+                System.Security.Claims.Claim? tenantIdClaim = claimsPrincipal.FindFirst("tenantId");
 
                 Guid tokenTenantId;
 
@@ -67,7 +67,7 @@ namespace FalconOne.API.Attributes
                     return;
                 }
 
-                if(currentTenantId != tokenTenantId)
+                if (currentTenantId != tokenTenantId)
                 {
                     context.Result = new UnauthorizedResult();
                     return;
@@ -75,11 +75,17 @@ namespace FalconOne.API.Attributes
 
                 string tenantId = tenantIdClaim.Value;
 
-                var authService = context.HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
+                IAuthorizationService authService = context.HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
 
-                var authorizationResult = await authService.AuthorizeAsync(claimsPrincipal, null, _policy);
+                List<AuthorizationResult> authorizationResults = new();
 
-                if (!authorizationResult.Succeeded)
+                foreach (string policy in _policies)
+                {
+                    AuthorizationResult authorizationResult = await authService.AuthorizeAsync(claimsPrincipal, null, policy);
+                    authorizationResults.Add(authorizationResult);
+                }
+
+                if (!authorizationResults.Any(result => result.Succeeded))
                 {
                     context.Result = new ForbidResult();
                     return;

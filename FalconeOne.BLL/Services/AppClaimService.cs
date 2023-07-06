@@ -12,10 +12,10 @@ namespace FalconeOne.BLL.Services
     public class AppClaimService : IAppClaimService
     {
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<UserRole> _roleManager;
+        private readonly RoleManager<SecurityRole> _roleManager;
         private readonly IUnitOfWork _unitOfWork;
 
-        public AppClaimService(UserManager<User> userManager, RoleManager<UserRole> roleManager, IUnitOfWork unitOfWork)
+        public AppClaimService(UserManager<User> userManager, RoleManager<SecurityRole> roleManager, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -24,24 +24,24 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> CreateClaimAsync(UserClaimDto model)
         {
-            await _unitOfWork.UserClaimsRepository.AddAsync(new SecurityClaim
+            await _unitOfWork.SecurityClaimsRepository.AddAsync(new SecurityClaim
             {
                 Type = model.Type,
                 Value = model.Value,
                 CreatedOn = DateTime.UtcNow,
                 Description = model.Description,
                 ApplicationPolicyId = model.PolicyId is null ? Guid.Empty : Guid.Parse(model.PolicyId)
-            });
-            await _unitOfWork.SaveChangesAsync();
+            }, CancellationToken.None);
+            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
         }
 
         public async Task<ApiResponse> AddClaimToRoleAsync(AddClaimToRoleDto model)
         {
-            UserRole role = await _roleManager.FindByIdAsync(model.RoleId);
+            SecurityRole role = await _roleManager.FindByIdAsync(model.RoleId);
 
-            SecurityClaim res = await _unitOfWork.UserClaimsRepository.FindAsync(x => x.Id == model.ClaimId);
+            SecurityClaim res = await _unitOfWork.SecurityClaimsRepository.FindAsync(x => x.Id == model.ClaimId, CancellationToken.None);
 
             await _roleManager.AddClaimAsync(role, new Claim(res.Type, res.Value));
 
@@ -52,7 +52,7 @@ namespace FalconeOne.BLL.Services
         {
             User user = await _userManager.FindByIdAsync(model.UserId);
 
-            SecurityClaim res = await _unitOfWork.UserClaimsRepository.FindAsync(x => x.Id == model.ClaimId);
+            SecurityClaim res = await _unitOfWork.SecurityClaimsRepository.FindAsync(x => x.Id == model.ClaimId, CancellationToken.None);
 
             await _userManager.AddClaimAsync(user, new Claim(res.Type, res.Value));
 
@@ -67,7 +67,7 @@ namespace FalconeOne.BLL.Services
 
             foreach (Guid claim in model.Claims)
             {
-                SecurityClaim r = await _unitOfWork.UserClaimsRepository.FindAsync(x => x.Id == claim);
+                SecurityClaim r = await _unitOfWork.SecurityClaimsRepository.FindAsync(x => x.Id == claim, CancellationToken.None);
 
                 claims.Add(new Claim(r.Type, r.Value));
             }
@@ -79,7 +79,7 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> GetAllClaimsAsync()
         {
-            IEnumerable<SecurityClaim> result = await _unitOfWork.UserClaimsRepository.GetAllAsync();
+            IEnumerable<SecurityClaim> result = await _unitOfWork.SecurityClaimsRepository.GetAllAsync(CancellationToken.None);
 
             List<string> claims = result.Select(x => x.Type).ToList();
 
@@ -88,9 +88,9 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> DeleteClaimAsync(Guid guid)
         {
-            SecurityClaim claim = await _unitOfWork.UserClaimsRepository.GetByIdAsync(guid);
+            SecurityClaim claim = await _unitOfWork.SecurityClaimsRepository.GetByIdAsync(guid, CancellationToken.None);
 
-            _unitOfWork.UserClaimsRepository.Remove(claim);
+            _unitOfWork.SecurityClaimsRepository.Remove(claim);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
         }

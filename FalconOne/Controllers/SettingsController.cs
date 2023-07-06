@@ -29,7 +29,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpGet("types")]
-        [FalconOneAuthorize("Admin")]
+        [FalconOneAuthorize(new string[] { "Admin" })]
         [ResourceIdentifier(AppResourceCodes.Settings.GET_SETTING_TYPES)]
         public async Task<IActionResult> GetSettingTypes()
         {

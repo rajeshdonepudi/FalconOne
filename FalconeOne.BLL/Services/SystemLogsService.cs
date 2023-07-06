@@ -36,9 +36,9 @@ namespace FalconeOne.BLL.Services
                 Path = model.Path
             };
 
-            await _unitOfWork.RequestInformationRepository.AddAsync(requestInformation);
+            await _unitOfWork.RequestInformationRepository.AddAsync(requestInformation, CancellationToken.None);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
         }
 
         public async Task<ApiResponse> GetAllAsync(PageParams pageParams)

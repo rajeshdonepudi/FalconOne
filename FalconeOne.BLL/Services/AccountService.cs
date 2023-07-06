@@ -81,7 +81,7 @@ namespace FalconeOne.BLL.Services
 
             await _userManager.UpdateAsync(user);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
             AuthenticateResponseDto authResponse = new()
             {
@@ -270,7 +270,7 @@ namespace FalconeOne.BLL.Services
         {
             if (!string.IsNullOrEmpty(username))
             {
-                var result = _unitOfWork.UserRepository.IsUserNameAvailable(username);
+                Task<bool> result = _unitOfWork.UserRepository.IsUserNameAvailable(username);
 
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, new { UserNameAvailable = result }));
             }
