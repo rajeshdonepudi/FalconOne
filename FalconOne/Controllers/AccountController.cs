@@ -4,6 +4,7 @@ using FalconOne.Models.DTOs;
 using FalconOne.ResourceCodes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace FalconOne.API.Controllers
 {
@@ -36,6 +37,7 @@ namespace FalconOne.API.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
+        [EnableRateLimiting("Token")]
         [ResourceIdentifier(AppResourceCodes.Account.LOGIN)]
         public async Task<IActionResult> Login(LoginRequestDto model)
         {
@@ -50,7 +52,7 @@ namespace FalconOne.API.Controllers
                 return BadRequest(ModelState);
             }
         }
-        
+
 
         [HttpPost("forgot-password")]
         [ResourceIdentifier(AppResourceCodes.Account.FORGOT_PASSWORD)]
@@ -123,7 +125,7 @@ namespace FalconOne.API.Controllers
         [HttpPost("username-available")]
         public async Task<IActionResult> IsUserNameAvailable(string username)
         {
-            var response = await _accountService.IsUserNameAvailable(username);
+            FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.IsUserNameAvailable(username);
 
             return ReturnResponse(response);
         }

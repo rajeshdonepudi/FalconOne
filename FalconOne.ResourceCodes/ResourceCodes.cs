@@ -24,6 +24,17 @@
             public const string DELETE_SETTING = "DELETE_SETTING";
         }
 
+        public static class Security
+        {
+            public const string GET_SECURITY_CLAIMS_LOOKUP = "GET_SECURITY_CLAIMS_LOOKUP";
+            public const string GET_SECURITY_ROLES_LOOKUP = "GET_SECURITY_ROLES_LOOKUP";
+        }
+
+        public static class Post
+        {
+            public const string ADD_NEW_POST = "ADD_NEW_POST";
+        }
+
         public static class Fonts
         {
             public const string GET_FONT_FAMILIES = "GET_FONT_FAMILIES";

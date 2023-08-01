@@ -5,6 +5,6 @@ namespace FalconOne.DAL.Contracts
 {
     public interface ISecurityPolicyRepository : IGenericRepository<SecurityPolicy>
     {
-        Task<IEnumerable<SecurityPolicy>> GetAllSecurityPoliciesWithClaimsAsync();
+        Task<IEnumerable<SecurityPolicy>> GetAllSecurityPoliciesWithClaimsAsync(CancellationToken cancellationToken);
     }
 }

@@ -13,7 +13,12 @@ namespace FalconOne.DAL
         static readonly Guid departmentId1 = Guid.NewGuid();
         static readonly Guid departmentId2 = Guid.NewGuid();
 
-        static readonly Guid locationId = Guid.NewGuid();
+        static readonly Guid locationId1 = Guid.NewGuid();
+        static readonly Guid locationId2 = Guid.NewGuid();
+        static readonly Guid locationId3 = Guid.NewGuid();
+        static readonly Guid locationId4 = Guid.NewGuid();
+        static readonly Guid designationId1 = Guid.NewGuid();
+        static readonly Guid designationId2 = Guid.NewGuid();
 
         static readonly Guid userId1 = Guid.Parse("5090B588-6E3F-464A-994D-9CD2AF4A0198");
 
@@ -22,15 +27,43 @@ namespace FalconOne.DAL
         public static void Seed(ModelBuilder modelBuilder)
         {
             #region Create location
-            Location location = new()
+            Location location1 = new()
             {
-                Id = locationId,
+                Id = locationId1,
                 Name = "Hyderabad",
                 Longitude = "17.3850° N",
                 Latitude = "78.4867° E",
             };
 
-            modelBuilder.Entity<Location>().HasData(location);
+            Location location2 = new Location
+            {
+                Id = locationId2,
+                Latitude = "16.5102716",
+                Longitude = "80.4889922",
+                Name = "Vijayawada"
+            };
+
+            var location3 = new Location
+            {
+                Id  = locationId3,
+                Latitude = "16.5102716",
+                Longitude = "80.4889922",
+                Name = "Hitech City"
+            };
+
+            var location4 = new Location
+            {
+                Id = locationId4,
+                Latitude = "16.5102716",
+                Longitude = "80.4889922",
+                Name = "Nidamanuru"
+            };
+
+            modelBuilder.Entity<Location>().HasData(location1);
+            modelBuilder.Entity<Location>().HasData(location2);
+            modelBuilder.Entity<Location>().HasData(location3);
+            modelBuilder.Entity<Location>().HasData(location4);
+
             #endregion
 
             #region Create department
@@ -39,8 +72,7 @@ namespace FalconOne.DAL
                 Id = departmentId1,
                 Name = "Development",
                 CreatedOn = DateTime.UtcNow,
-                TenantId = tenantId1,
-                LocationId = locationId
+                TenantId = tenantId1
             };
 
             Department department2 = new()
@@ -48,58 +80,96 @@ namespace FalconOne.DAL
                 Id = departmentId2,
                 Name = ".NET",
                 CreatedOn = DateTime.UtcNow,
-                TenantId = tenantId2,
-                LocationId = locationId
+                TenantId = tenantId2
+            };
+
+            var departmentLocations = new List<DepartmentLocation>
+            {
+                new DepartmentLocation { DepartmentId = departmentId1, LocationId = locationId3 },
+                new DepartmentLocation { DepartmentId = departmentId2, LocationId = locationId4 },
             };
 
             modelBuilder.Entity<Department>().HasData(department);
             modelBuilder.Entity<Department>().HasData(department2);
+            modelBuilder.Entity<DepartmentLocation>().HasData(departmentLocations);
+            #endregion
+
+            #region Designation
+            var designation1 = new Designation
+            {
+                Id = designationId1,
+                Name = "Trainee Engineer",
+            };
+
+            var designation2 = new Designation
+            {
+                Id = designationId2,
+                Name = "Associate Software Engineer"
+            };
+
+            modelBuilder.Entity<Designation>().HasData(designation1);
+            modelBuilder.Entity<Designation>().HasData(designation2);
             #endregion
 
             #region Create users
 
-            User user1 = new()
+            var user1 = new Employee()
             {
                 Id = userId2,
                 FirstName = "Basic",
                 LastName = "User",
                 EmailConfirmed = true,
+                DesignationId = designationId1,
+                OrganizationIssuedId = 1,
                 Email = "b@b.com",
+                ResourceId = "USR1",
                 PhoneNumber = "8886014996",
                 UserName = "basicuser01",
                 NormalizedEmail = "b@b.com".Normalize(),
                 NormalizedUserName = "b".Normalize(),
-                DepartmentId = departmentId1,
                 CreatedOn = DateTime.UtcNow,
                 SecurityStamp = "UCQO32XEFNXIAZIR3LTNFDRRX7A2NHLK",
                 PasswordHash = "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==",
                 ConcurrencyStamp = "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==",
             };
 
-            User user2 = new()
+            var user2 = new Employee()
             {
                 Id = userId1,
                 FirstName = "Admin",
                 LastName = "User",
                 CreatedOn = DateTime.UtcNow,
+                OrganizationIssuedId = 2,
+                DesignationId = designationId2,
                 EmailConfirmed = true,
+                ResourceId = "USR2",
                 Email = "a@a.com",
                 UserName = "adminuser01",
                 NormalizedEmail = "a@a.com".Normalize(),
                 NormalizedUserName = "a".Normalize(),
-                DepartmentId = departmentId1,
                 SecurityStamp = "UCQO32XEFNXIAZIR3LTNFDRRX7A2NHLK",
                 PasswordHash = "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==",
                 ConcurrencyStamp = "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==",
                 PhoneNumber = "8886014997",
             };
 
+            
+
             user1.PasswordHash = PasswordHasher.HashPassword(user1, "@Raj@123");
             user2.PasswordHash = PasswordHasher.HashPassword(user2, "@Raj@123");
 
-            modelBuilder.Entity<User>().HasData(user1);
-            modelBuilder.Entity<User>().HasData(user2);
-
+            modelBuilder.Entity<Employee>().HasData(user1);
+            modelBuilder.Entity<Employee>().HasData(user2);
+            modelBuilder.Entity<EmployeeDepartment>().HasData(new EmployeeDepartment
+            {
+                DepartmentId = departmentId1,
+                EmployeeId = userId1
+            });
+            modelBuilder.Entity<EmployeeDepartment>().HasData(new EmployeeDepartment
+            {
+                DepartmentId = departmentId2,
+                EmployeeId = userId2
+            });
             #endregion
 
             #region Create tenant1
@@ -109,7 +179,6 @@ namespace FalconOne.DAL
                 Host = "localhost",
                 CreatedOn = DateTime.UtcNow,
                 Id = tenantId1,
-                LocationId = locationId,
             };
 
             Tenant tenant2 = new()
@@ -118,7 +187,6 @@ namespace FalconOne.DAL
                 Host = "api.falconone.com",
                 CreatedOn = DateTime.UtcNow,
                 Id = tenantId2,
-                LocationId = locationId,
             };
 
             modelBuilder.Entity<TenantUser>().HasNoKey().HasData(
@@ -146,6 +214,16 @@ namespace FalconOne.DAL
 
             modelBuilder.Entity<Tenant>().HasData(tenant1);
             modelBuilder.Entity<Tenant>().HasData(tenant2);
+            modelBuilder.Entity<TenantLocation>().HasData(new TenantLocation
+            {
+                TenantId = tenantId1,
+                LocationId = locationId1
+            });
+            modelBuilder.Entity<TenantLocation>().HasData(new TenantLocation
+            {
+                TenantId = tenantId2,
+                LocationId = locationId2
+            });
             #endregion
 
             #region UserClaims

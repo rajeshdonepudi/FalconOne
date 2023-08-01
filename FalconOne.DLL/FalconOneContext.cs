@@ -1,11 +1,11 @@
 ﻿using FalconOne.Models.Entities;
+using FalconOne.Models.EntityConfiguration;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using FalconOne.Models.EntityConfiguration;
 
 namespace FalconOne.DAL
 {
-    public class FalconOneContext : IdentityDbContext<User, UserRole, Guid>
+    public class FalconOneContext : IdentityDbContext<User, SecurityRole, Guid>
     {
         public DbSet<SystemLog> SystemLogs { get; set; }
         public DbSet<SecurityClaim> SecurityClaims { get; set; }
@@ -20,6 +20,39 @@ namespace FalconOne.DAL
         public DbSet<TimeEntry> AttendanceLogs { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<Image> Images { get; set; }
+        public DbSet<Country> Countries { get; set; }
+        public DbSet<BusinessUnit> BusinessUnits { get; set; }
+        public DbSet<Address> Addressess { get; set; }
+        public DbSet<ContactDetail> ContactDetails { get; set; }
+        public DbSet<Experience> Experiences { get; set; }
+        public DbSet<Skill> Skills { get; set; }
+        public DbSet<Media> Media { get; set; }
+        public DbSet<JobDetail> JobDetails { get; set; }
+        public DbSet<WeekOffPolicy> WeekOffPolicies { get; set; }
+        public DbSet<PolicyDay> PolicyDays { get; set; }
+        public DbSet<AttendanceTrackingPolicy> AttendanceTrackingPolicies { get; set; }
+        public DbSet<RemoteWorkEligibilityCriteria> RemoteWorkEligibilityCriteria { get; set; }
+        public DbSet<OverTimePolicy> OverTimePolicies { get; set; }
+        public DbSet<OverTimeAuthorization> OverTimeAuthorizations { get; set; }
+        public DbSet<BreakAndMealPeriod> BreakAndMealPeriods { get; set; }
+        public DbSet<AbsenceAndLeavePolicy> AbsenceAndLeavePolicies { get; set; }
+        public DbSet<LeaveType> LeaveTypes { get; set; }
+        public DbSet<EmployeeShift> EmployeeShifts { get; set; }
+        public DbSet<EmployeeTime> EmployeeTimes { get; set; }
+        public DbSet<ShiftWeeklyOffRule> ShiftWeeklyOffRules { get; set; }
+        public DbSet<ShiftAllowancePolicy> ShiftAllowancePolicies { get; set; }
+        public DbSet<AttendanceCaptureScheme> AttendanceCaptureSchemes { get; set; }
+        public DbSet<AttendanceCaptureMethod> AttendanceCaptureMethods { get; set; }
+        public DbSet<HolidayCalendar> HolidayCalendars { get; set; }
+        public DbSet<Holiday> Holidays { get; set; }
+        public DbSet<MetadataGroup> MetadataGroups { get; set; }
+        public DbSet<Metadata> Metadatas { get; set; }
+        public DbSet<EmployeeSummary> EmployeeSummaries { get; set; }
+        public DbSet<Interest> Interests { get; set; }
+        public DbSet<Hobby> Hobbies { get; set; }
+        public DbSet<LeavePlan> LeavePlans { get; set; }
+        public DbSet<Designation> Designations { get; set; }
+        public DbSet<DepartmentLocation> DepartmentLocations { get; set; }
 
         public FalconOneContext()
         {
@@ -35,12 +68,53 @@ namespace FalconOne.DAL
         {
             DatabaseSeed.Seed(modelBuilder);
             ApplyEntityConfigurations(modelBuilder);
+            EntityConfiguration(modelBuilder);
             base.OnModelCreating(modelBuilder);
+        }
+
+        private static void EntityConfiguration(ModelBuilder builder)
+        {
+            #region Tenants
+            builder.Entity<Tenant>()
+                   .Property(a => a.AccountId)
+                   .HasComputedColumnSql("CONCAT('FONE', IDENTITY(1,1))");
+            #endregion
+
+            #region Employees
+
+            builder.Entity<User>()
+                   .HasDiscriminator<string>("Discriminator")
+                   .HasValue<Employee>("Employee");
+
+            builder.Entity<Employee>()
+                   .Property(p => p.OrganizationIssuedId)
+                   .ValueGeneratedNever();
+
+            builder.Entity<User>()
+                   .HasAlternateKey(x => x.ResourceId);
+
+            builder.Entity<User>()
+                   .Property(x => x.ResourceId)
+                   .ValueGeneratedNever()
+                   .HasComputedColumnSql("CONCAT('USR', IDENTITY(1,1))");
+            #endregion
+
+            #region Policies
+            builder.Entity<OverTimeAuthorization>()
+                   .HasOne(e => e.RequestedBy)
+                   .WithMany(e => e.OverTimeAuthorizations)
+                   .HasForeignKey(e => e.RequestedById)
+                   .OnDelete(DeleteBehavior.Restrict);
+            #endregion
         }
 
         private void ApplyEntityConfigurations(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new TenantUserConfiguration());
+            builder.ApplyConfiguration(new EmployeeTimeConfiguration());
+            builder.ApplyConfiguration(new DepartmentLocationConfiguration());
+            builder.ApplyConfiguration(new DepartmentEmployeeConfiguration());
+            builder.ApplyConfiguration(new TenantLocationConfiguration());
         }
     }
 }

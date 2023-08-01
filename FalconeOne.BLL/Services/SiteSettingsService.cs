@@ -29,7 +29,7 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> AddNewSetting(AddSiteSettingDto model)
         {
-            SiteSetting setting = new SiteSetting
+            SiteSetting setting = new()
             {
                 Name = model.Name,
                 Value = model.Value,
@@ -40,16 +40,16 @@ namespace FalconeOne.BLL.Services
                 TenantId = await _tenantService.GetTenantId(),
             };
 
-            await _unitOfWork.ApplicationSettingRepository.AddAsync(setting);
+            await _unitOfWork.ApplicationSettingRepository.AddAsync(setting, CancellationToken.None);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.Created, MessageHelper.SUCESSFULL));
         }
 
         public async Task<ApiResponse> DeleteSetting(Guid id)
         {
-            SiteSetting setting = await _unitOfWork.ApplicationSettingRepository.FindAsync(x => x.Id == id);
+            SiteSetting setting = await _unitOfWork.ApplicationSettingRepository.FindAsync(x => x.Id == id, CancellationToken.None);
 
             _unitOfWork.ApplicationSettingRepository.Remove(setting);
 
@@ -58,7 +58,7 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> GetSettings(SystemSettingTypeEnum settingType)
         {
-            IEnumerable<SiteSetting> settings = await _unitOfWork.ApplicationSettingRepository.GetTenantSiteSettingsByTypeAsync(settingType, await _tenantService.GetTenantId());
+            IEnumerable<SiteSetting> settings = await _unitOfWork.ApplicationSettingRepository.GetTenantSiteSettingsByTypeAsync(settingType, await _tenantService.GetTenantId(), CancellationToken.None);
 
             List<SiteSettingDto> result = new();
 
@@ -78,19 +78,19 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> GetSettingTypes()
         {
-            var settingTypes = EnumExtensions.GetEnumKeyValuePairList<SystemSettingTypeEnum, string, int>();
+            List<KeyValuePair<string, int>> settingTypes = EnumExtensions.GetEnumKeyValuePairList<SystemSettingTypeEnum, string, int>();
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, settingTypes));
         }
 
         public async Task<ApiResponse> GetTenantSettings()
         {
-            var tenantSettings = await _unitOfWork.ApplicationSettingRepository.GetSiteSettingsByTenantIdAsync(await _tenantService.GetTenantId());
+            var tenantSettings = await _unitOfWork.ApplicationSettingRepository.GetSiteSettingsByTenantIdAsync(await _tenantService.GetTenantId(), CancellationToken.None);
 
             var settings = tenantSettings.GroupBy(x => x.SettingType.GetDescription()).Select(x => new TenantSettingsResponse
             {
                 SettingType = x.Key,
-                Settings = x.Select(x => new TenantSettingDto { Key = x.Name, Type = (int) x.SettingType, Value = x.Value, DisplayName = x.DisplayName, Id = x.Id }).ToList()
+                Settings = x.Select(x => new TenantSettingDto { Key = x.Name, Type = (int)x.SettingType, Value = x.Value, DisplayName = x.DisplayName, Id = x.Id }).ToList()
             }).ToList();
 
             return new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, settings);
@@ -102,7 +102,7 @@ namespace FalconeOne.BLL.Services
 
             _unitOfWork.ApplicationSettingRepository.UpdateRange(result);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.Accepted, MessageHelper.SUCESSFULL));
         }
@@ -111,13 +111,13 @@ namespace FalconeOne.BLL.Services
         {
             foreach (UpdateSiteSettingDto setting in settings)
             {
-                SiteSetting settingToUpdate = await _unitOfWork.ApplicationSettingRepository.GetTenantSiteSettingByNameAsync(setting.Name, await _tenantService.GetTenantId());
+                SiteSetting settingToUpdate = await _unitOfWork.ApplicationSettingRepository.GetTenantSiteSettingByNameAsync(setting.Name, await _tenantService.GetTenantId(), CancellationToken.None);
 
                 if (settingToUpdate != null)
                 {
                     settingToUpdate.Value = setting.Value;
                     _unitOfWork.ApplicationSettingRepository.Update(settingToUpdate);
-                    await _unitOfWork.SaveChangesAsync();
+                    await _unitOfWork.SaveChangesAsync(CancellationToken.None);
                 }
             }
             return await Task.FromResult(new ApiResponse(HttpStatusCode.Accepted, MessageHelper.SUCESSFULL));

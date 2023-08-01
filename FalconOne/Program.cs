@@ -5,7 +5,11 @@ using FalconOne.API.DependencyConfig;
 using FalconOne.API.Filters;
 using FalconOne.API.SwaggerConfig;
 using FalconOne.DAL;
+using IdenticonSharp.Identicons;
+using IdenticonSharp.Identicons.Defaults.GitHub;
+using KE.IdenticonSharp.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -23,6 +27,32 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddMemoryCache(o =>
+{
+    o.TrackStatistics = true;
+});
+
+builder.Services.AddRateLimiter(rateLimiterOptionns =>
+{
+    rateLimiterOptionns.AddTokenBucketLimiter("Token", options =>
+    {
+        options.TokenLimit = 5;
+        options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        options.QueueLimit = 5;
+        options.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
+        options.TokensPerPeriod = 1;
+        options.AutoReplenishment = true;
+    });
+});
+
+builder.Services.AddIdenticonSharp<GitHubIdenticonProvider, GitHubIdenticonOptions>(options =>
+{
+    // Configuring parameters of default IdenticonProvider 
+    options.SpriteSize = 10;
+    options.Size = 256;
+    options.HashAlgorithm = HashProvider.SHA512;
+});
 
 builder.Services.AddCors(options =>
 {
@@ -70,13 +100,21 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
+app.UseRateLimiter();
 //app.UseMiddleware<DebugAuthorizationMiddleware>();
 
 app.UseSwagger();
-app.UseSwaggerUI(o => o.DefaultModelsExpandDepth(-1));
+
+app.UseSwaggerUI(o =>
+{
+    o.DefaultModelsExpandDepth(-1);
+    o.DisplayRequestDuration();
+    o.DocumentTitle = "FalconOne APIs";
+});
 app.UseCors("ReactAppOrigin");
 
 app.UseHttpsRedirection();
+
 
 app.UseAuthentication();
 

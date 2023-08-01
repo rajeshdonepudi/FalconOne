@@ -31,12 +31,12 @@ namespace FalconeOne.BLL.Services
 
             if (newPost.TenantId != null && newPost.DepartmentId is null)
             {
-                tenant = await _unitOfWork.TenantRepository.GetByIdAsync(newPost.TenantId.GetValueOrDefault());
+                tenant = await _unitOfWork.TenantRepository.GetByIdAsync(newPost.TenantId.GetValueOrDefault(), CancellationToken.None);
             }
 
             if (newPost.DepartmentId != null && newPost.TenantId is null)
             {
-                department = await _unitOfWork.DepartmentRepository.GetByIdAsync(newPost.DepartmentId.GetValueOrDefault());
+                department = await _unitOfWork.DepartmentRepository.GetByIdAsync(newPost.DepartmentId.GetValueOrDefault(), CancellationToken.None);
             }
 
             await _unitOfWork.PostRepository.AddAsync(new Post
@@ -46,17 +46,17 @@ namespace FalconeOne.BLL.Services
                 PostedOn = newPost.PostedOn,
                 DepartmentId = department?.Id,
                 TenantId = tenant?.Id,
-                PostedBy = user
-            });
+                PostedBy = (Employee) user
+            }, CancellationToken.None);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.Created, MessageHelper.SUCESSFULL));
         }
 
         public async Task<ApiResponse> GetAllPosts()
         {
-            IEnumerable<Post> posts = await _unitOfWork.PostRepository.GetAllAsync();
+            IEnumerable<Post> posts = await _unitOfWork.PostRepository.GetAllAsync(CancellationToken.None);
 
             List<PostDto> result = new();
 

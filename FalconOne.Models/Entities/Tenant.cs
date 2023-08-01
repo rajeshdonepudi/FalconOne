@@ -11,20 +11,25 @@ namespace FalconOne.Models.Entities
             Posts = new HashSet<Post>();
             Departments = new HashSet<Department>();
             Users = new HashSet<TenantUser>();
+            Locations = new HashSet<Location>();
+            BusinessUnits = new HashSet<BusinessUnit>();
         }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string AccountId { get; set; }
         public string Host { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public DateTime CreatedOn { get; set; }
-        public Guid LocationId { get; set; }
-        public virtual Location Location { get; set; }
+        public Image? ProfilePicture { get; set; }
+        public virtual ICollection<Location> Locations { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
         public virtual ICollection<Department> Departments { get; set; }
-        public Image? ProfilePicture { get; set; }
         public virtual ICollection<TenantUser> Users { get; set; }
+        public virtual ICollection<TenantLocation> TenantLocations { get; set; }
+        public virtual ICollection<BusinessUnit> BusinessUnits { get; set; }
+        public virtual ICollection<Designation> Designations { get; set; }
     }
 }

@@ -6,6 +6,7 @@
         public static string SOMETHING_WENT_WRONG = "Something went wrong! Please contact administrator.";
         public static string USER_CREATED_SUCCESSFULLY = "Successfully created the user.";
         public static string USER_NOT_FOUND = "User not found.";
+        public static string USER_CREATION_FAILED = "User creation failed.";
         public static string LOGIN_SUCCESSFULL = "Login successfull.";
         public static string FAILED_TO_CREATE_USER = "Failed to create the user.";
         public static string FORGOT_PASSWORD_SUCCESS = "Password reset instructions sent to your registered email.";

@@ -5,6 +5,7 @@ using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
 using FalconOne.Models.Entities;
 using System.Net;
+using System.Threading;
 
 namespace FalconeOne.BLL.Services
 {
@@ -36,14 +37,14 @@ namespace FalconeOne.BLL.Services
                 Path = model.Path
             };
 
-            await _unitOfWork.RequestInformationRepository.AddAsync(requestInformation);
+            await _unitOfWork.RequestInformationRepository.AddAsync(requestInformation, CancellationToken.None);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
         }
 
         public async Task<ApiResponse> GetAllAsync(PageParams pageParams)
         {
-            PagedList<SystemLog> res = await _unitOfWork.RequestInformationRepository.GetAllRequestInfoPaginatedAsync(pageParams);
+            PagedList<SystemLog> res = await _unitOfWork.RequestInformationRepository.GetAllRequestInfoPaginatedAsync(pageParams, CancellationToken.None);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, res));
         }

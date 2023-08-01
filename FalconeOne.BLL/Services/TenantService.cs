@@ -21,12 +21,12 @@ namespace FalconeOne.BLL.Services
         {
             string referer = _httpContextAccessor.HttpContext.Request.Headers["Referer"].ToString();
 
-            var uri = new Uri(referer);
-            var host = uri.Host;
+            Uri uri = new(referer);
+            string host = uri.Host;
 
             if (!string.IsNullOrEmpty(host))
             {
-                var useLocalTenantId = Convert.ToBoolean(await _appConfigService.GetValue("useLocalTenantId"));
+                bool useLocalTenantId = Convert.ToBoolean(await _appConfigService.GetValue("useLocalTenantId"));
 
                 if (useLocalTenantId)
                 {
@@ -36,21 +36,21 @@ namespace FalconeOne.BLL.Services
                 {
                     try
                     {
-                        foreach (var item in await _unitOfWork.TenantRepository.GetAllAsync())
+                        foreach (FalconOne.Models.Entities.Tenant item in await _unitOfWork.TenantRepository.GetAllAsync(CancellationToken.None))
                         {
                             await Console.Out.WriteLineAsync(item.Host);
                         }
 
-                        var s = await _unitOfWork.TenantRepository.FindAsync(x => x.Host.Equals(host));
+                        FalconOne.Models.Entities.Tenant s = await _unitOfWork.TenantRepository.FindAsync(x => x.Host.Equals(host), CancellationToken.None);
 
-                        FalconOne.Models.Entities.Tenant? tenant = await _unitOfWork.TenantRepository.FindAsync(x => x.Host.Trim().ToLower() == host.Trim().ToLower());
+                        FalconOne.Models.Entities.Tenant? tenant = await _unitOfWork.TenantRepository.FindAsync(x => x.Host.Trim().ToLower() == host.Trim().ToLower(), CancellationToken.None);
                         if (tenant is null)
                         {
                             throw new AppException("Unable to determine the tenant information.");
                         }
                         return tenant.Id;
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         throw;
                     }

@@ -3,6 +3,7 @@ using FalconeOne.BLL.Interfaces;
 using FalconOne.DAL.Contracts;
 using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
+using FalconOne.Models.DTOs.Users;
 using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -14,14 +15,14 @@ namespace FalconeOne.BLL.Services
     public class UserService : BaseService, IUserService
     {
         #region Fields
-        private readonly RoleManager<UserRole> _roleManager;
-        private readonly ITenantService _tenantService;        
+        private readonly RoleManager<SecurityRole> _roleManager;
+        private readonly ITenantService _tenantService;
         #endregion
 
         #region Constructor
         public UserService(UserManager<User> userManager,
             IUnitOfWork unitOfWork,
-            RoleManager<UserRole> roleManager,
+            RoleManager<SecurityRole> roleManager,
             ITenantService tenantService,
             IHttpContextAccessor httpContextAccessor,
             IConfiguration configuration) : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
@@ -58,7 +59,7 @@ namespace FalconeOne.BLL.Services
         {
             List<UserDto> result = new();
 
-            PagedList<User> users = await _unitOfWork.UserRepository.GetAllUsersByTenantIdPaginatedAsync(await _tenantService.GetTenantId(), model);
+            PagedList<User> users = await _unitOfWork.UserRepository.GetAllUsersByTenantIdPaginatedAsync(await _tenantService.GetTenantId(), model, CancellationToken.None);
 
             if (!users.Any())
             {
@@ -136,7 +137,7 @@ namespace FalconeOne.BLL.Services
                 return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
             }
 
-            UserRole? role = await _roleManager.FindByIdAsync(addToRoleDTO.RoleId);
+            SecurityRole? role = await _roleManager.FindByIdAsync(addToRoleDTO.RoleId);
 
             if (role is null)
             {
@@ -167,6 +168,50 @@ namespace FalconeOne.BLL.Services
             await _userManager.UpdateAsync(user);
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
+        }
+
+        public async Task<ApiResponse> AddUser(AddUserDto model)
+        {
+            User newUser = new()
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                CreatedOn = DateTime.UtcNow,
+                EmailConfirmed = model.IsEmailConfirmed,
+                PhoneNumberConfirmed = model.IsPhoneConfirmed,
+                PhoneNumber = model.Phone,
+                LockoutEnabled = model.IsLockoutEnabled,
+                UserName = model.UserName,
+                Tenants = model.Tenants.Select(x => new TenantUser { TenantId = x }).ToList()
+            };
+
+            try
+            {
+                IdentityResult userCreation = await _userManager.CreateAsync(newUser, model.ConfirmPassword);
+
+                if (userCreation.Succeeded)
+                {
+                    foreach (Guid roleId in model.Roles)
+                    {
+                        SecurityRole? role = await _roleManager.FindByIdAsync(roleId.ToString());
+
+                        IdentityResult roleAddition = await _userManager.AddToRoleAsync(newUser, role.Name);
+                    }
+
+                    foreach (Guid permissionId in model.Permissions)
+                    {
+                        var claim = await _unitOfWork.SecurityClaimsRepository.GetSecurityClaimByIdAsync(permissionId, await _tenantService.GetTenantId(), CancellationToken.None);
+
+                        var claimAddition = await _userManager.AddClaimAsync(newUser, new System.Security.Claims.Claim(claim.Type, claim.Value));
+                    }
+                }
+                return new ApiResponse(HttpStatusCode.Created, MessageHelper.USER_CREATED_SUCCESSFULLY);
+            }
+            catch (Exception)
+            {
+                return new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.USER_CREATION_FAILED);
+            }
         }
     }
 }
