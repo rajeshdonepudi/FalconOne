@@ -1,6 +1,4 @@
 ﻿using FalconOne.Enumerations.Employee;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FalconOne.Models.Entities
 {

@@ -71,7 +71,7 @@ namespace FalconOne.Models.EntityConfiguration
                 .HasForeignKey(tu => tu.TenantId);
 
             builder.HasOne(tu => tu.User)
-                .WithMany(u => u.Tenants)
+                .WithMany(u => u.TenantUsers)
                 .HasForeignKey(tu => tu.UserId);
         }
     }

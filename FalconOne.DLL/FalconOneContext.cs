@@ -75,28 +75,30 @@ namespace FalconOne.DAL
         private static void EntityConfiguration(ModelBuilder builder)
         {
             #region Tenants
+            
             builder.Entity<Tenant>()
-                   .Property(a => a.AccountId)
-                   .HasComputedColumnSql("CONCAT('FONE', IDENTITY(1,1))");
+       .Property(a => a.AccountAlias)
+       .HasComputedColumnSql("'FOTEN' + CAST([AccountId] AS nvarchar(max))");
+
             #endregion
 
-            #region Employees
-
+            #region User
             builder.Entity<User>()
                    .HasDiscriminator<string>("Discriminator")
                    .HasValue<Employee>("Employee");
-
-            builder.Entity<Employee>()
-                   .Property(p => p.OrganizationIssuedId)
-                   .ValueGeneratedNever();
 
             builder.Entity<User>()
                    .HasAlternateKey(x => x.ResourceId);
 
             builder.Entity<User>()
-                   .Property(x => x.ResourceId)
-                   .ValueGeneratedNever()
-                   .HasComputedColumnSql("CONCAT('USR', IDENTITY(1,1))");
+                   .Property(x => x.ResourceAlias)
+                   .HasComputedColumnSql("'FOUSR' + CAST([ResourceId] AS nvarchar(max))");
+            #endregion
+
+            #region Employees
+            builder.Entity<Employee>()
+                   .Property(p => p.OrganizationIssuedId)
+                   .ValueGeneratedNever();
             #endregion
 
             #region Policies

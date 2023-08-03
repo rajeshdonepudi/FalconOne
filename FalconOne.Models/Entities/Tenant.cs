@@ -19,7 +19,10 @@ namespace FalconOne.Models.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string AccountId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int AccountId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public string AccountAlias { get; private set; }
         public string Host { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public DateTime CreatedOn { get; set; }

@@ -183,7 +183,7 @@ namespace FalconeOne.BLL.Services
                 PhoneNumber = model.Phone,
                 LockoutEnabled = model.IsLockoutEnabled,
                 UserName = model.UserName,
-                Tenants = model.Tenants.Select(x => new TenantUser { TenantId = x }).ToList()
+                TenantUsers = model.Tenants.Select(x => new TenantUser { TenantId = x }).ToList()
             };
 
             try

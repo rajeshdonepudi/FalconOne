@@ -71,7 +71,7 @@ namespace FalconeOne.BLL.Services
 
             if (user is not null && tenant is not null)
             {
-                bool result = user.Tenants.Any(x => x.TenantId == tenant.Id);
+                bool result = user.TenantUsers.Any(x => x.TenantId == tenant.Id);
 
                 if (!result)
                 {

@@ -21,7 +21,7 @@ namespace FalconOne.Models.DTOs
             TwoFactorEnabled = user.TwoFactorEnabled;
             LockoutEnabled = user.LockoutEnabled;
             CreatedOn = user.CreatedOn;
-            Tenants = user.Tenants.Any() ? user.Tenants.Select(x => x.UserId).ToList() : new List<Guid> { };
+            Tenants = user.TenantUsers.Any() ? user.TenantUsers.Select(x => x.UserId).ToList() : new List<Guid> { };
         }
         public Guid Id { get; set; }
         public string FirstName { get; set; }
