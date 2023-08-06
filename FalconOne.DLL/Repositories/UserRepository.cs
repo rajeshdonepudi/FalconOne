@@ -13,11 +13,15 @@ namespace FalconOne.DAL.Repositories
         public async Task<PagedList<User>> GetAllUsersByTenantIdPaginatedAsync(Guid tenantId, PageParams pageParams, CancellationToken cancellationToken)
         {
             List<User> records = await _context.Users.Where(x => x.TenantUsers.Any(x => x.TenantId == tenantId))
+                                                     .OrderByDescending(x => x.CreatedOn)
                                                      .Skip((pageParams.PageIndex - 1) * pageParams.PageSize)
                                                      .Take(pageParams.PageSize)
+                                                     .AsNoTracking()
                                                      .ToListAsync(cancellationToken);
 
-            return new PagedList<User>(records, await _context.Users.LongCountAsync(cancellationToken), pageParams.PageIndex, pageParams.PageSize);
+            var totalUsersCount = await _context.Users.Where(x => x.TenantUsers.Any(x => x.TenantId == tenantId)).LongCountAsync(cancellationToken);
+
+            return new PagedList<User>(records, totalUsersCount, pageParams.PageIndex, pageParams.PageSize);
         }
 
         public async Task<User> GetTenantUserInfoByEmail(Guid tenantId, string email, CancellationToken cancellationToken)

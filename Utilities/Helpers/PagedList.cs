@@ -4,7 +4,7 @@
     {
         public PagedList(List<T> source, long count, int index, int pageSize)
         {
-            TotalCount = source.Count();
+            TotalCount = count;
             PageSize = pageSize;
             PageIndex = index;
             AddRange(source);

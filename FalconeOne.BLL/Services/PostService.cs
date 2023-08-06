@@ -1,6 +1,7 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
 using FalconOne.DAL.Contracts;
+using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
 using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
@@ -21,29 +22,39 @@ namespace FalconeOne.BLL.Services
         {
         }
 
-        public async Task<ApiResponse> CreateAsync(NewPostDto newPost)
+        public async Task<ApiResponse> CreateAsync(NewPostDto model)
         {
-            User user = await _userManager.FindByIdAsync(newPost.PostedBy.ToString());
+            if(model is null || model.PostedBy == Guid.Empty)
+            {
+                throw new AppException(MessageHelper.INVALID_REQUEST);
+            }
+
+            User? user = await _userManager.FindByIdAsync(Convert.ToString(model.PostedBy) ?? string.Empty);
+
+            if(user is null)
+            {
+                throw new AppException(MessageHelper.INVALID_REQUEST);
+            }
 
             Tenant tenant = new();
 
             Department department = new();
 
-            if (newPost.TenantId != null && newPost.DepartmentId is null)
+            if (model.TenantId != null && model.DepartmentId is null)
             {
-                tenant = await _unitOfWork.TenantRepository.GetByIdAsync(newPost.TenantId.GetValueOrDefault(), CancellationToken.None);
+                tenant = await _unitOfWork.TenantRepository.GetByIdAsync(model.TenantId.GetValueOrDefault(), CancellationToken.None);
             }
 
-            if (newPost.DepartmentId != null && newPost.TenantId is null)
+            if (model.DepartmentId != null && model.TenantId is null)
             {
-                department = await _unitOfWork.DepartmentRepository.GetByIdAsync(newPost.DepartmentId.GetValueOrDefault(), CancellationToken.None);
+                department = await _unitOfWork.DepartmentRepository.GetByIdAsync(model.DepartmentId.GetValueOrDefault(), CancellationToken.None);
             }
 
             await _unitOfWork.PostRepository.AddAsync(new Post
             {
-                Content = newPost.Content,
+                Content = model.Content ?? string.Empty,
                 CreatedOn = DateTime.UtcNow,
-                PostedOn = newPost.PostedOn,
+                PostedOn = model.PostedOn,
                 DepartmentId = department?.Id,
                 TenantId = tenant?.Id,
                 PostedBy = (Employee) user

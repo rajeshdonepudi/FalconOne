@@ -21,7 +21,6 @@ namespace FalconOne.Models.DTOs
             TwoFactorEnabled = user.TwoFactorEnabled;
             LockoutEnabled = user.LockoutEnabled;
             CreatedOn = user.CreatedOn;
-            Tenants = user.TenantUsers.Any() ? user.TenantUsers.Select(x => x.UserId).ToList() : new List<Guid> { };
         }
         public Guid Id { get; set; }
         public string FirstName { get; set; }
@@ -33,7 +32,8 @@ namespace FalconOne.Models.DTOs
         public bool PhoneNumberConfirmed { get; set; }
         public bool TwoFactorEnabled { get; set; }
         public bool LockoutEnabled { get; set; }
+        public string Password { get; set; }
+        public string ConfirmPassword { get; set; }
         public DateTime CreatedOn { get; set; }
-        public List<Guid> Tenants { get; set; }
     }
 }

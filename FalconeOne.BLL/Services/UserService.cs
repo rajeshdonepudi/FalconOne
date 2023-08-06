@@ -183,27 +183,42 @@ namespace FalconeOne.BLL.Services
                 PhoneNumber = model.Phone,
                 LockoutEnabled = model.IsLockoutEnabled,
                 UserName = model.UserName,
-                TenantUsers = model.Tenants.Select(x => new TenantUser { TenantId = x }).ToList()
+                TenantUsers = new List<TenantUser> { new TenantUser { TenantId = await _tenantService.GetTenantId() } }
             };
 
             try
             {
+
+
+
                 IdentityResult userCreation = await _userManager.CreateAsync(newUser, model.ConfirmPassword);
 
                 if (userCreation.Succeeded)
                 {
-                    foreach (Guid roleId in model.Roles)
+                    if(model.Roles is not null && model.Roles.Any())
                     {
-                        SecurityRole? role = await _roleManager.FindByIdAsync(roleId.ToString());
+                        foreach (Guid roleId in model.Roles)
+                        {
+                            SecurityRole? role = await _roleManager.FindByIdAsync(roleId.ToString());
 
-                        IdentityResult roleAddition = await _userManager.AddToRoleAsync(newUser, role.Name);
+                            if(role is not null)
+                            {
+                                IdentityResult roleAddition = await _userManager.AddToRoleAsync(newUser, role?.Name!);
+                            }
+                        }
                     }
 
-                    foreach (Guid permissionId in model.Permissions)
+                    if(model.Permissions is not null && model.Permissions.Any())
                     {
-                        var claim = await _unitOfWork.SecurityClaimsRepository.GetSecurityClaimByIdAsync(permissionId, await _tenantService.GetTenantId(), CancellationToken.None);
+                        foreach (Guid permissionId in model.Permissions)
+                        {
+                            var claim = await _unitOfWork.SecurityClaimsRepository.GetSecurityClaimByIdAsync(permissionId, await _tenantService.GetTenantId(), CancellationToken.None);
 
-                        var claimAddition = await _userManager.AddClaimAsync(newUser, new System.Security.Claims.Claim(claim.Type, claim.Value));
+                            if(claim is not null)
+                            {
+                                var claimAddition = await _userManager.AddClaimAsync(newUser, new System.Security.Claims.Claim(claim.Type, claim.Value));
+                            }
+                        }
                     }
                 }
                 return new ApiResponse(HttpStatusCode.Created, MessageHelper.USER_CREATED_SUCCESSFULLY);

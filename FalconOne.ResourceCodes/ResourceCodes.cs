@@ -14,6 +14,11 @@
             public const string REFRESH_TOKEN = "REFRESH_TOKEN";
             public const string AAC_UPDATE_EMAIL_CONFIRMED = "AAC_UPDATE_EMAIL_CONFIRMED";
         }
+        public static class  User 
+        {
+            public const string ADD_NEW_USER = "ADD_NEW_USER";
+        }
+
         public static class Settings
         {
             public const string GET_SETTING_BY_TYPE = "GET_SETTING_BY_TYPE";

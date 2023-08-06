@@ -38,6 +38,7 @@ namespace FalconOne.API.Controllers
         }
 
         [HttpPost("add-user")]
+        [ResourceIdentifier(AppResourceCodes.User.ADD_NEW_USER)]
         public async Task<IActionResult> AddUser(AddUserDto model)
         {
             FalconeOne.BLL.Helpers.ApiResponse result = await _userService.AddUser(model);
