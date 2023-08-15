@@ -28,7 +28,9 @@ namespace FalconOne.Models.DTOs.Users
         public string ConfirmPassword { get; set; }
         public bool IsEmailConfirmed { get; set; } = false;
         public bool IsPhoneConfirmed { get; set; } = false;
-        public bool IsLockoutEnabled { get; set; } = true;
+        public bool IsLockoutEnabled { get; set; } = false;
+        public bool IsTwoFactorEnabled { get; set; } = false;
+        public bool IsActive { get; set; } = false;
         public List<Guid>? Roles { get; set; }
         public List<Guid>? Permissions { get; set; }
         public List<Guid>? Tenants { get; set; }

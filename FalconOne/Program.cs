@@ -33,16 +33,16 @@ builder.Services.AddMemoryCache(o =>
     o.TrackStatistics = true;
 });
 
-builder.Services.AddRateLimiter(rateLimiterOptionns =>
+builder.Services.AddRateLimiter(rlOptions =>
 {
-    rateLimiterOptionns.AddTokenBucketLimiter("Token", options =>
+    rlOptions.AddTokenBucketLimiter("Token", blOptions =>
     {
-        options.TokenLimit = 5;
-        options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
-        options.QueueLimit = 5;
-        options.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
-        options.TokensPerPeriod = 1;
-        options.AutoReplenishment = true;
+        blOptions.TokenLimit = 5;
+        blOptions.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        blOptions.QueueLimit = 5;
+        blOptions.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
+        blOptions.TokensPerPeriod = 1;
+        blOptions.AutoReplenishment = true;
     });
 });
 
@@ -60,17 +60,19 @@ builder.Services.AddCors(options =>
     builder =>
     {
         builder.AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials()
-        .SetIsOriginAllowed((host) => true)
-        .WithOrigins("http://localhost:3000",
-        "http://app.falconone.com:5173",
-        "http://localhost:5173",
-        "https://localhost:5173",
-        "https://falcone-one.web.app",
-        "https://localhost:3000");
+               .AllowAnyHeader()
+               .AllowCredentials()
+               .SetIsOriginAllowed((host) => true)
+               .WithOrigins("http://localhost:3000",
+                            "http://app.falconone.com:5173",
+                            "http://localhost:5173",
+                            "https://localhost:5173",
+                            "https://falcone-one.web.app",
+                            "https://localhost:3000");
     });
 });
+
+builder.Services.AddHealthChecks();
 
 builder.Services.AddControllers(c =>
 {
@@ -105,6 +107,8 @@ app.UseRateLimiter();
 
 app.UseSwagger();
 
+app.UseHealthChecks("/status");
+
 app.UseSwaggerUI(o =>
 {
     o.DefaultModelsExpandDepth(-1);
@@ -115,7 +119,6 @@ app.UseCors("ReactAppOrigin");
 
 app.UseHttpsRedirection();
 
-
 app.UseAuthentication();
 
 app.UseAuthorization();
@@ -123,3 +126,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

@@ -1,5 +1,6 @@
 ﻿using FalconOne.Helpers.Helpers;
 using FalconOne.Models.Contracts;
+using FalconOne.Models.DTOs;
 using FalconOne.Models.Entities;
 
 namespace FalconOne.DAL.Contracts
@@ -11,5 +12,7 @@ namespace FalconOne.DAL.Contracts
         Task<bool> IsUserNameAvailable(string username, CancellationToken cancellationToken);
 
         Task<User> GetTenantUserInfoByEmail(Guid tenantId, string email, CancellationToken cancellationToken);
+
+        Task<UserManagementDashboardInfo> GetUserManagementDashboardInfoByTenantId(Guid tenantId, CancellationToken cancellationToken);
     }
 }

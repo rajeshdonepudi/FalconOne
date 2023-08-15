@@ -22,6 +22,14 @@ namespace FalconOne.API.Controllers
             _appClaimService = appClaimService;
         }
 
+        [HttpGet("dashboard-info")]
+        [AllowAnonymous]
+        [ResourceIdentifier(AppResourceCodes.User.USER_MANAGMENT_DASHBOARD)]
+        public async Task<IActionResult> Dashboard()
+        {
+            return ReturnResponse(await _userService.GetDashboardInfo());
+        }
+
         [HttpPost("add-user-to-role")]
         public async Task<IActionResult> AddUserToRole(AddToRoleDto model)
         {

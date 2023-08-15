@@ -3,9 +3,9 @@
     public class PageParams
     {
         const int maxPageSize = 50;
-        private int _pageIndex = 1;
+        private int _pageIndex = 0;
 
-        public int PageIndex
+        public int Page
         {
             get
             {
@@ -13,7 +13,7 @@
             }
             set
             {
-                _pageIndex = value == default ? 1 : value;
+                _pageIndex = value;
             }
         }
         private int _pageSize = 10;

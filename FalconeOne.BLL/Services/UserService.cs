@@ -178,19 +178,24 @@ namespace FalconeOne.BLL.Services
                 LastName = model.LastName,
                 Email = model.Email,
                 CreatedOn = DateTime.UtcNow,
+                IsActive = model.IsActive,
                 EmailConfirmed = model.IsEmailConfirmed,
                 PhoneNumberConfirmed = model.IsPhoneConfirmed,
-                PhoneNumber = model.Phone,
                 LockoutEnabled = model.IsLockoutEnabled,
+                TwoFactorEnabled = model.IsTwoFactorEnabled,
+                PhoneNumber = model.Phone,
                 UserName = model.UserName,
-                TenantUsers = new List<TenantUser> { new TenantUser { TenantId = await _tenantService.GetTenantId() } }
+                TenantUsers = new List<TenantUser>
+                { 
+                    new TenantUser
+                    {
+                        TenantId = await _tenantService.GetTenantId()
+                    }
+                }
             };
 
             try
             {
-
-
-
                 IdentityResult userCreation = await _userManager.CreateAsync(newUser, model.ConfirmPassword);
 
                 if (userCreation.Succeeded)
@@ -226,6 +231,20 @@ namespace FalconeOne.BLL.Services
             catch (Exception)
             {
                 return new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.USER_CREATION_FAILED);
+            }
+        }
+
+        public async Task<ApiResponse> GetDashboardInfo()
+        {
+            var result = await _unitOfWork.UserRepository.GetUserManagementDashboardInfoByTenantId(await _tenantService.GetTenantId(), CancellationToken.None);
+
+            try
+            {
+                return new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result);
+            }
+            catch (Exception)
+            {
+                return new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG);
             }
         }
     }

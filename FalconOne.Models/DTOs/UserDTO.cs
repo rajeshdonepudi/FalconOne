@@ -13,9 +13,9 @@ namespace FalconOne.Models.DTOs
             Id = user.Id;
             FirstName = user.FirstName;
             LastName = user.LastName;
-            UserName = user.UserName;
-            Email = user.Email;
-            PhoneNumber = user.PhoneNumber;
+            UserName = user.UserName!;
+            Email = user.Email!;
+            Phone = user.PhoneNumber!;
             EmailConfirmed = user.EmailConfirmed;
             PhoneNumberConfirmed = user.PhoneNumberConfirmed;
             TwoFactorEnabled = user.TwoFactorEnabled;
@@ -27,7 +27,7 @@ namespace FalconOne.Models.DTOs
         public string LastName { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
-        public string PhoneNumber { get; set; }
+        public string Phone { get; set; }
         public bool EmailConfirmed { get; set; }
         public bool PhoneNumberConfirmed { get; set; }
         public bool TwoFactorEnabled { get; set; }
