@@ -4,6 +4,12 @@ namespace FalconOne.Models.Entities
 {
     public class ShiftAllowancePolicy
     {
+        public ShiftAllowancePolicy()
+        {
+            EmployeeTimes = new HashSet<EmployeeTime>();
+            Shifts = new HashSet<EmployeeShift>();
+        }
+
         [Key]
         public Guid Id { get; set; }
         /// <summary>
