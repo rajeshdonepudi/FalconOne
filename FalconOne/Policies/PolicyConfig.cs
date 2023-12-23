@@ -6,7 +6,7 @@ namespace FalconOne.API.Policies
 {
     public static class PolicyConfig
     {
-        public static void Configure(AuthorizationOptions authorizationOptions, ServiceProvider provider)
+        public static void Configure(AuthorizationOptions options, ServiceProvider provider)
         {
             using (IServiceScope serviceScope = provider.CreateScope())
             {
@@ -34,7 +34,7 @@ namespace FalconOne.API.Policies
                     {
                         if (applicationPolicy.PolicyClaims.Any())
                         {
-                            authorizationOptions.AddPolicy(applicationPolicy.Name, p =>
+                            options.AddPolicy(applicationPolicy.Name, p =>
                             {
                                 foreach (SecurityClaim claim in applicationPolicy.PolicyClaims)
                                 {

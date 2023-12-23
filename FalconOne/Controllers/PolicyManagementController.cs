@@ -22,7 +22,7 @@ namespace FalconOne.API.Controllers
             {
                 FalconeOne.BLL.Helpers.ApiResponse response = await _appPolicyService.CreatePolicy(model);
 
-                return ReturnResponse(response);
+                return AppResponse(response);
             }
             else
             {
@@ -35,7 +35,7 @@ namespace FalconOne.API.Controllers
         {
             FalconeOne.BLL.Helpers.ApiResponse response = await _appPolicyService.GetAllPolicies();
 
-            return ReturnResponse(response);
+            return AppResponse(response);
         }
 
         [HttpDelete("delete-policy")]
@@ -43,7 +43,7 @@ namespace FalconOne.API.Controllers
         {
             FalconeOne.BLL.Helpers.ApiResponse response = await _appPolicyService.DeletePolicy(policyId);
 
-            return ReturnResponse(response);
+            return AppResponse(response);
         }
     }
 }

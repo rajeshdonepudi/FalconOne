@@ -22,7 +22,7 @@ namespace FalconOne.API.Controllers
             {
                 FalconeOne.BLL.Helpers.ApiResponse result = await _appClaimService.CreateClaimAsync(model);
 
-                return ReturnResponse(result);
+                return AppResponse(result);
             }
             else
             {
@@ -35,7 +35,7 @@ namespace FalconOne.API.Controllers
         {
             FalconeOne.BLL.Helpers.ApiResponse response = await _appClaimService.GetAllClaimsAsync();
 
-            return ReturnResponse(response);
+            return AppResponse(response);
         }
 
         [HttpDelete("delete-claim")]
@@ -43,7 +43,7 @@ namespace FalconOne.API.Controllers
         {
             FalconeOne.BLL.Helpers.ApiResponse response = await _appClaimService.DeleteClaimAsync(claimId);
 
-            return ReturnResponse(response);
+            return AppResponse(response);
         }
     }
 }

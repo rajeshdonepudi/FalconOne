@@ -6,12 +6,12 @@ namespace FalconOne.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoleManagement : BaseController
+    public class RoleManagementController : BaseController
     {
         private readonly IAppRoleService _appRoleService;
         private readonly IAppClaimService _appClaimService;
 
-        public RoleManagement(IAppRoleService appRoleService, IAppClaimService appClaimService)
+        public RoleManagementController(IAppRoleService appRoleService, IAppClaimService appClaimService)
         {
             _appRoleService = appRoleService;
             _appClaimService = appClaimService;
@@ -24,7 +24,7 @@ namespace FalconOne.API.Controllers
             {
                 FalconeOne.BLL.Helpers.ApiResponse result = await _appRoleService.CreateRoleAsync(role);
 
-                return ReturnResponse(result);
+                return AppResponse(result);
             }
             else
             {
@@ -39,7 +39,7 @@ namespace FalconOne.API.Controllers
             {
                 FalconeOne.BLL.Helpers.ApiResponse result = await _appClaimService.AddClaimToRoleAsync(model);
 
-                return ReturnResponse(result);
+                return AppResponse(result);
             }
             else
             {

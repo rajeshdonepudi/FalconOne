@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FalconOne.DAL.Migrations
 {
     [DbContext(typeof(FalconOneContext))]
-    [Migration("20230802161055_Initial_Migration112")]
-    partial class Initial_Migration112
+    [Migration("20231220062613_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -217,16 +217,22 @@ namespace FalconOne.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("TenantId");
+                    b.HasIndex("LegalEntityId");
 
                     b.ToTable("BusinessUnits");
                 });
@@ -331,11 +337,11 @@ namespace FalconOne.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("BusinessUnitId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("LocationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
@@ -347,61 +353,13 @@ namespace FalconOne.DAL.Migrations
                     b.Property<Guid?>("ProfilePictureId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("BusinessUnitId");
-
-                    b.HasIndex("ProfilePictureId");
-
-                    b.HasIndex("TenantId");
-
-                    b.ToTable("Departments");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("db9bba1e-4eba-4c44-9bd8-8ce0843ae458"),
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 20, DateTimeKind.Utc).AddTicks(641),
-                            Name = "Development",
-                            TenantId = new Guid("f1adbf2c-b634-4d66-8de0-d154d74a0ffc")
-                        },
-                        new
-                        {
-                            Id = new Guid("b8246268-cfb1-4833-8b64-db989c8c15e3"),
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 20, DateTimeKind.Utc).AddTicks(658),
-                            Name = ".NET",
-                            TenantId = new Guid("8eac86e2-80e0-4b47-bf46-d5f315ca47eb")
-                        });
-                });
-
-            modelBuilder.Entity("FalconOne.Models.Entities.DepartmentLocation", b =>
-                {
-                    b.Property<Guid>("DepartmentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("LocationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("DepartmentId", "LocationId");
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("DepartmentLocations");
+                    b.HasIndex("ProfilePictureId");
 
-                    b.HasData(
-                        new
-                        {
-                            DepartmentId = new Guid("db9bba1e-4eba-4c44-9bd8-8ce0843ae458"),
-                            LocationId = new Guid("35d8761a-4cf6-490e-89b6-e11ac2f02a91")
-                        },
-                        new
-                        {
-                            DepartmentId = new Guid("b8246268-cfb1-4833-8b64-db989c8c15e3"),
-                            LocationId = new Guid("402b7e41-58ae-4982-86d6-cc61c4aebdb8")
-                        });
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.Designation", b =>
@@ -414,53 +372,9 @@ namespace FalconOne.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("TenantId");
-
                     b.ToTable("Designations");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("0919346e-e179-442e-90bb-f8af0c453afa"),
-                            Name = "Trainee Engineer"
-                        },
-                        new
-                        {
-                            Id = new Guid("28c480fa-97bd-4c73-97d4-5496b1cb67c0"),
-                            Name = "Associate Software Engineer"
-                        });
-                });
-
-            modelBuilder.Entity("FalconOne.Models.Entities.EmployeeDepartment", b =>
-                {
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("DepartmentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("EmployeeId", "DepartmentId");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.ToTable("EmployeeDepartment");
-
-                    b.HasData(
-                        new
-                        {
-                            EmployeeId = new Guid("5090b588-6e3f-464a-994d-9cd2af4a0198"),
-                            DepartmentId = new Guid("db9bba1e-4eba-4c44-9bd8-8ce0843ae458")
-                        },
-                        new
-                        {
-                            EmployeeId = new Guid("6521474a-6e39-4a5e-8628-cd89b4e922bc"),
-                            DepartmentId = new Guid("b8246268-cfb1-4833-8b64-db989c8c15e3")
-                        });
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.EmployeeShift", b =>
@@ -824,62 +738,101 @@ namespace FalconOne.DAL.Migrations
                     b.ToTable("LeaveTypes");
                 });
 
+            modelBuilder.Entity("FalconOne.Models.Entities.LegalEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AddressLine1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AddressLine2")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("BusinessType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CompanyIdentificationNumber")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateOfIncorporation")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LegalName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NatureOfBusiness")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Sector")
+                        .HasColumnType("int");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ZipCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("LegalEntity");
+                });
+
             modelBuilder.Entity("FalconOne.Models.Entities.Location", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Latitude")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("BusinessUnitId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Longitude")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("TenantId");
+                    b.HasIndex("BusinessUnitId");
 
                     b.ToTable("Locations");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("ee43507e-83c3-450b-be4d-4aa172ba6cef"),
-                            Latitude = "78.4867° E",
-                            Longitude = "17.3850° N",
-                            Name = "Hyderabad"
-                        },
-                        new
-                        {
-                            Id = new Guid("feb25369-4b95-43d6-b7e3-da9bf2bf71be"),
-                            Latitude = "16.5102716",
-                            Longitude = "80.4889922",
-                            Name = "Vijayawada"
-                        },
-                        new
-                        {
-                            Id = new Guid("35d8761a-4cf6-490e-89b6-e11ac2f02a91"),
-                            Latitude = "16.5102716",
-                            Longitude = "80.4889922",
-                            Name = "Hitech City"
-                        },
-                        new
-                        {
-                            Id = new Guid("402b7e41-58ae-4982-86d6-cc61c4aebdb8"),
-                            Latitude = "16.5102716",
-                            Longitude = "80.4889922",
-                            Name = "Nidamanuru"
-                        });
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.Media", b =>
@@ -989,28 +942,6 @@ namespace FalconOne.DAL.Migrations
                     b.HasIndex("TenantId");
 
                     b.ToTable("Navigation");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("bf1c4717-ed55-4ad5-9e80-04e809244839"),
-                            ApplicationClaimId = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 225, DateTimeKind.Utc).AddTicks(7141),
-                            Description = "User login",
-                            Name = "Login",
-                            TenantId = new Guid("f1adbf2c-b634-4d66-8de0-d154d74a0ffc"),
-                            URL = "login"
-                        },
-                        new
-                        {
-                            Id = new Guid("e1e8a44d-c060-49c1-aa06-d848be7c1c5d"),
-                            ApplicationClaimId = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 225, DateTimeKind.Utc).AddTicks(7146),
-                            Description = "User signup",
-                            Name = "Singup",
-                            TenantId = new Guid("f1adbf2c-b634-4d66-8de0-d154d74a0ffc"),
-                            URL = "signup"
-                        });
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.OverTimeAuthorization", b =>
@@ -1134,17 +1065,6 @@ namespace FalconOne.DAL.Migrations
                     b.HasIndex("TenantId");
 
                     b.ToTable("Posts");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("17bc5e50-b640-419b-807f-16ace5977e51"),
-                            Content = "Hey this is new post on our site.",
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 225, DateTimeKind.Utc).AddTicks(7388),
-                            PostedById = new Guid("5090b588-6e3f-464a-994d-9cd2af4a0198"),
-                            PostedOn = new DateTime(2023, 8, 2, 16, 10, 54, 225, DateTimeKind.Utc).AddTicks(7389),
-                            TenantId = new Guid("f1adbf2c-b634-4d66-8de0-d154d74a0ffc")
-                        });
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.Reaction", b =>
@@ -1235,28 +1155,6 @@ namespace FalconOne.DAL.Migrations
                     b.HasIndex("TenantId");
 
                     b.ToTable("SecurityClaims");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("c1f09df3-5590-4ee8-9b8c-d0315369a7af"),
-                            ApplicationPolicyId = new Guid("b7538a53-d3b2-4b66-ba40-97619cda8d00"),
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 225, DateTimeKind.Utc).AddTicks(7062),
-                            Description = "Database seeded",
-                            TenantId = new Guid("f1adbf2c-b634-4d66-8de0-d154d74a0ffc"),
-                            Type = "Admin",
-                            Value = "Everything"
-                        },
-                        new
-                        {
-                            Id = new Guid("f7a9b029-13db-4a48-bac2-3143a3b143c1"),
-                            ApplicationPolicyId = new Guid("9fa14d9e-0d8e-4b51-85e4-c4bdd5873d14"),
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 225, DateTimeKind.Utc).AddTicks(7111),
-                            Description = "Database seeded",
-                            TenantId = new Guid("f1adbf2c-b634-4d66-8de0-d154d74a0ffc"),
-                            Type = "User",
-                            Value = "BasicThings"
-                        });
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.SecurityPolicy", b =>
@@ -1283,22 +1181,6 @@ namespace FalconOne.DAL.Migrations
                     b.HasIndex("TenantId");
 
                     b.ToTable("SecurityPolicies");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("9fa14d9e-0d8e-4b51-85e4-c4bdd5873d14"),
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 225, DateTimeKind.Utc).AddTicks(7015),
-                            Name = "User",
-                            TenantId = new Guid("f1adbf2c-b634-4d66-8de0-d154d74a0ffc")
-                        },
-                        new
-                        {
-                            Id = new Guid("b7538a53-d3b2-4b66-ba40-97619cda8d00"),
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 225, DateTimeKind.Utc).AddTicks(7020),
-                            Name = "Admin",
-                            TenantId = new Guid("f1adbf2c-b634-4d66-8de0-d154d74a0ffc")
-                        });
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.SecurityRole", b =>
@@ -1437,74 +1319,6 @@ namespace FalconOne.DAL.Migrations
                     b.HasIndex("TenantId");
 
                     b.ToTable("SiteSettings");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("03c3646e-4496-44e2-9868-ce98e0f7431f"),
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 225, DateTimeKind.Utc).AddTicks(7170),
-                            Description = "This is primary color",
-                            DisplayName = "Primary Color",
-                            Name = "primaryColor",
-                            SettingType = 1,
-                            TenantId = new Guid("f1adbf2c-b634-4d66-8de0-d154d74a0ffc"),
-                            Value = "#144272"
-                        },
-                        new
-                        {
-                            Id = new Guid("03402523-7761-40c6-8b1e-90637068da57"),
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 225, DateTimeKind.Utc).AddTicks(7239),
-                            Description = "This is secondary color",
-                            DisplayName = "Secondary Color",
-                            Name = "secondaryColor",
-                            SettingType = 1,
-                            TenantId = new Guid("f1adbf2c-b634-4d66-8de0-d154d74a0ffc"),
-                            Value = "#205295"
-                        },
-                        new
-                        {
-                            Id = new Guid("3dbac5ed-9834-4d03-8ae1-45298f49f585"),
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 225, DateTimeKind.Utc).AddTicks(7253),
-                            Description = "This is site theme",
-                            DisplayName = "Theme",
-                            Name = "theme",
-                            SettingType = 1,
-                            TenantId = new Guid("f1adbf2c-b634-4d66-8de0-d154d74a0ffc"),
-                            Value = "light"
-                        },
-                        new
-                        {
-                            Id = new Guid("18a035d3-385e-495f-b1af-99155fea92a1"),
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 225, DateTimeKind.Utc).AddTicks(7267),
-                            Description = "This is primary color",
-                            DisplayName = "Primary Color",
-                            Name = "primaryColor",
-                            SettingType = 1,
-                            TenantId = new Guid("8eac86e2-80e0-4b47-bf46-d5f315ca47eb"),
-                            Value = "#144272"
-                        },
-                        new
-                        {
-                            Id = new Guid("4ad80c98-cf63-401e-b355-b81e34dd2bfa"),
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 225, DateTimeKind.Utc).AddTicks(7298),
-                            Description = "This is secondary color",
-                            DisplayName = "Secondary Color",
-                            Name = "secondaryColor",
-                            SettingType = 1,
-                            TenantId = new Guid("8eac86e2-80e0-4b47-bf46-d5f315ca47eb"),
-                            Value = "#205295"
-                        },
-                        new
-                        {
-                            Id = new Guid("705a7544-b591-42e2-8763-911e6fdf88a6"),
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 225, DateTimeKind.Utc).AddTicks(7319),
-                            Description = "This is site theme",
-                            DisplayName = "Theme",
-                            Name = "theme",
-                            SettingType = 1,
-                            TenantId = new Guid("8eac86e2-80e0-4b47-bf46-d5f315ca47eb"),
-                            Value = "light"
-                        });
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.Skill", b =>
@@ -1642,51 +1456,6 @@ namespace FalconOne.DAL.Migrations
                     b.HasIndex("ProfilePictureId");
 
                     b.ToTable("Tenants");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("f1adbf2c-b634-4d66-8de0-d154d74a0ffc"),
-                            AccountId = 0,
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 224, DateTimeKind.Utc).AddTicks(6009),
-                            Host = "localhost",
-                            Name = "development"
-                        },
-                        new
-                        {
-                            Id = new Guid("8eac86e2-80e0-4b47-bf46-d5f315ca47eb"),
-                            AccountId = 0,
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 224, DateTimeKind.Utc).AddTicks(6014),
-                            Host = "api.falconone.com",
-                            Name = "FalconOne"
-                        });
-                });
-
-            modelBuilder.Entity("FalconOne.Models.Entities.TenantLocation", b =>
-                {
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("LocationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("TenantId", "LocationId");
-
-                    b.HasIndex("LocationId");
-
-                    b.ToTable("TenantLocation");
-
-                    b.HasData(
-                        new
-                        {
-                            TenantId = new Guid("f1adbf2c-b634-4d66-8de0-d154d74a0ffc"),
-                            LocationId = new Guid("ee43507e-83c3-450b-be4d-4aa172ba6cef")
-                        },
-                        new
-                        {
-                            TenantId = new Guid("8eac86e2-80e0-4b47-bf46-d5f315ca47eb"),
-                            LocationId = new Guid("feb25369-4b95-43d6-b7e3-da9bf2bf71be")
-                        });
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.TenantUser", b =>
@@ -1702,28 +1471,6 @@ namespace FalconOne.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("TenantUser");
-
-                    b.HasData(
-                        new
-                        {
-                            TenantId = new Guid("f1adbf2c-b634-4d66-8de0-d154d74a0ffc"),
-                            UserId = new Guid("5090b588-6e3f-464a-994d-9cd2af4a0198")
-                        },
-                        new
-                        {
-                            TenantId = new Guid("f1adbf2c-b634-4d66-8de0-d154d74a0ffc"),
-                            UserId = new Guid("6521474a-6e39-4a5e-8628-cd89b4e922bc")
-                        },
-                        new
-                        {
-                            TenantId = new Guid("8eac86e2-80e0-4b47-bf46-d5f315ca47eb"),
-                            UserId = new Guid("5090b588-6e3f-464a-994d-9cd2af4a0198")
-                        },
-                        new
-                        {
-                            TenantId = new Guid("8eac86e2-80e0-4b47-bf46-d5f315ca47eb"),
-                            UserId = new Guid("6521474a-6e39-4a5e-8628-cd89b4e922bc")
-                        });
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.TimeEntry", b =>
@@ -1958,22 +1705,6 @@ namespace FalconOne.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserClaims", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ClaimType = "Admin",
-                            ClaimValue = "Everything",
-                            UserId = new Guid("5090b588-6e3f-464a-994d-9cd2af4a0198")
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ClaimType = "User",
-                            ClaimValue = "BasicThings",
-                            UserId = new Guid("6521474a-6e39-4a5e-8628-cd89b4e922bc")
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
@@ -2101,66 +1832,6 @@ namespace FalconOne.DAL.Migrations
                     b.HasIndex("PostId");
 
                     b.HasDiscriminator().HasValue("Employee");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("6521474a-6e39-4a5e-8628-cd89b4e922bc"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==",
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 20, DateTimeKind.Utc).AddTicks(1116),
-                            Email = "b@b.com",
-                            EmailConfirmed = true,
-                            FirstName = "Basic",
-                            IsActive = true,
-                            LastName = "User",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "b@b.com",
-                            NormalizedUserName = "b",
-                            PasswordHash = "AQAAAAIAAYagAAAAELgEIIdOzH7XT9H3vNLLNfP7OFnaEgjnxzRDZxLjr5wu0cEB7gbqzVBYjIwbz/5Nww==",
-                            PhoneNumber = "8886014996",
-                            PhoneNumberConfirmed = false,
-                            ResourceId = 1,
-                            SecurityStamp = "UCQO32XEFNXIAZIR3LTNFDRRX7A2NHLK",
-                            TwoFactorEnabled = false,
-                            UserName = "basicuser01",
-                            BloodGroup = 0,
-                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DesignationId = new Guid("0919346e-e179-442e-90bb-f8af0c453afa"),
-                            Gender = 0,
-                            MaritalStatus = 0,
-                            OrganizationIssuedId = 1L,
-                            PhysicallyChallenged = false
-                        },
-                        new
-                        {
-                            Id = new Guid("5090b588-6e3f-464a-994d-9cd2af4a0198"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "AQAAAAEAACcQAAAAEP/x170yyX0uuRQdVFBRYelz5uo6tu1qjpJDWgKx9P0SHMyDKSl4vbXASElX+1GzDA==",
-                            CreatedOn = new DateTime(2023, 8, 2, 16, 10, 54, 20, DateTimeKind.Utc).AddTicks(1124),
-                            Email = "a@a.com",
-                            EmailConfirmed = true,
-                            FirstName = "Admin",
-                            IsActive = true,
-                            LastName = "User",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "a@a.com",
-                            NormalizedUserName = "a",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBdfLSfmZ6NMsdj3L6vjF9FBxQ/QB36bTCqoDyXCy+2lE638YfSgJCrEWO4VxDqRLA==",
-                            PhoneNumber = "8886014997",
-                            PhoneNumberConfirmed = false,
-                            ResourceId = 2,
-                            SecurityStamp = "UCQO32XEFNXIAZIR3LTNFDRRX7A2NHLK",
-                            TwoFactorEnabled = false,
-                            UserName = "adminuser01",
-                            BloodGroup = 0,
-                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DesignationId = new Guid("28c480fa-97bd-4c73-97d4-5496b1cb67c0"),
-                            Gender = 0,
-                            MaritalStatus = 0,
-                            OrganizationIssuedId = 2L,
-                            PhysicallyChallenged = false
-                        });
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.Address", b =>
@@ -2222,13 +1893,13 @@ namespace FalconOne.DAL.Migrations
 
             modelBuilder.Entity("FalconOne.Models.Entities.BusinessUnit", b =>
                 {
-                    b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
+                    b.HasOne("FalconOne.Models.Entities.LegalEntity", "LegalEntity")
                         .WithMany("BusinessUnits")
-                        .HasForeignKey("TenantId")
+                        .HasForeignKey("LegalEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Tenant");
+                    b.Navigation("LegalEntity");
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.Comment", b =>
@@ -2261,66 +1932,19 @@ namespace FalconOne.DAL.Migrations
 
             modelBuilder.Entity("FalconOne.Models.Entities.Department", b =>
                 {
-                    b.HasOne("FalconOne.Models.Entities.BusinessUnit", null)
+                    b.HasOne("FalconOne.Models.Entities.Location", "Location")
                         .WithMany("Departments")
-                        .HasForeignKey("BusinessUnitId");
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("FalconOne.Models.Entities.Image", "ProfilePicture")
                         .WithMany()
                         .HasForeignKey("ProfilePictureId");
 
-                    b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
-                        .WithMany("Departments")
-                        .HasForeignKey("TenantId");
+                    b.Navigation("Location");
 
                     b.Navigation("ProfilePicture");
-
-                    b.Navigation("Tenant");
-                });
-
-            modelBuilder.Entity("FalconOne.Models.Entities.DepartmentLocation", b =>
-                {
-                    b.HasOne("FalconOne.Models.Entities.Department", "Department")
-                        .WithMany("DepartmentLocations")
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FalconOne.Models.Entities.Location", "Location")
-                        .WithMany("DepartmentLocations")
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Department");
-
-                    b.Navigation("Location");
-                });
-
-            modelBuilder.Entity("FalconOne.Models.Entities.Designation", b =>
-                {
-                    b.HasOne("FalconOne.Models.Entities.Tenant", null)
-                        .WithMany("Designations")
-                        .HasForeignKey("TenantId");
-                });
-
-            modelBuilder.Entity("FalconOne.Models.Entities.EmployeeDepartment", b =>
-                {
-                    b.HasOne("FalconOne.Models.Entities.Department", "Department")
-                        .WithMany("EmployeeDepartments")
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FalconOne.Models.Entities.Employee", "Employee")
-                        .WithMany("EmployeeDepartments")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Department");
-
-                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.EmployeeShift", b =>
@@ -2458,11 +2082,24 @@ namespace FalconOne.DAL.Migrations
                         .HasForeignKey("AbsenceAndLeavePolicyId");
                 });
 
+            modelBuilder.Entity("FalconOne.Models.Entities.LegalEntity", b =>
+                {
+                    b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
+                        .WithMany("LegalEntities")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
             modelBuilder.Entity("FalconOne.Models.Entities.Location", b =>
                 {
-                    b.HasOne("FalconOne.Models.Entities.Tenant", null)
+                    b.HasOne("FalconOne.Models.Entities.BusinessUnit", "BusinessUnit")
                         .WithMany("Locations")
-                        .HasForeignKey("TenantId");
+                        .HasForeignKey("BusinessUnitId");
+
+                    b.Navigation("BusinessUnit");
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.Media", b =>
@@ -2554,7 +2191,7 @@ namespace FalconOne.DAL.Migrations
                         .IsRequired();
 
                     b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
-                        .WithMany("Posts")
+                        .WithMany()
                         .HasForeignKey("TenantId");
 
                     b.Navigation("Department");
@@ -2661,25 +2298,6 @@ namespace FalconOne.DAL.Migrations
                         .HasForeignKey("ProfilePictureId");
 
                     b.Navigation("ProfilePicture");
-                });
-
-            modelBuilder.Entity("FalconOne.Models.Entities.TenantLocation", b =>
-                {
-                    b.HasOne("FalconOne.Models.Entities.Location", "Location")
-                        .WithMany("TenantLocations")
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
-                        .WithMany("TenantLocations")
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Location");
-
-                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.TenantUser", b =>
@@ -2903,15 +2521,11 @@ namespace FalconOne.DAL.Migrations
 
             modelBuilder.Entity("FalconOne.Models.Entities.BusinessUnit", b =>
                 {
-                    b.Navigation("Departments");
+                    b.Navigation("Locations");
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.Department", b =>
                 {
-                    b.Navigation("DepartmentLocations");
-
-                    b.Navigation("EmployeeDepartments");
-
                     b.Navigation("Posts");
                 });
 
@@ -2953,11 +2567,14 @@ namespace FalconOne.DAL.Migrations
                     b.Navigation("EmployeeTimes");
                 });
 
+            modelBuilder.Entity("FalconOne.Models.Entities.LegalEntity", b =>
+                {
+                    b.Navigation("BusinessUnits");
+                });
+
             modelBuilder.Entity("FalconOne.Models.Entities.Location", b =>
                 {
-                    b.Navigation("DepartmentLocations");
-
-                    b.Navigation("TenantLocations");
+                    b.Navigation("Departments");
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.Media", b =>
@@ -3010,17 +2627,7 @@ namespace FalconOne.DAL.Migrations
 
             modelBuilder.Entity("FalconOne.Models.Entities.Tenant", b =>
                 {
-                    b.Navigation("BusinessUnits");
-
-                    b.Navigation("Departments");
-
-                    b.Navigation("Designations");
-
-                    b.Navigation("Locations");
-
-                    b.Navigation("Posts");
-
-                    b.Navigation("TenantLocations");
+                    b.Navigation("LegalEntities");
 
                     b.Navigation("Users");
                 });
@@ -3048,8 +2655,6 @@ namespace FalconOne.DAL.Migrations
 
                     b.Navigation("ContactDetails")
                         .IsRequired();
-
-                    b.Navigation("EmployeeDepartments");
 
                     b.Navigation("OverTimeAuthorizations");
 

@@ -4,6 +4,11 @@ namespace FalconOne.Models.Entities
 {
     public class AttendanceTrackingPolicy
     {
+        public AttendanceTrackingPolicy()
+        {
+            EmployeeTimes = new HashSet<EmployeeTime>();
+        }
+
         /// <summary>
         /// A unique identifier for the attendance tracking policy
         /// </summary>

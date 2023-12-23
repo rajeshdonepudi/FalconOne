@@ -8,24 +8,24 @@ namespace FalconOne.DAL
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private readonly FalconOneContext _falconOneContext;
+        private readonly FalconOneContext _context;
         private readonly IMemoryCache _memoryCache;
 
-        public UnitOfWork(FalconOneContext falconOneContext, IMemoryCache memoryCache)
+        public UnitOfWork(FalconOneContext context, IMemoryCache cache)
         {
-            _falconOneContext = falconOneContext;
-            _memoryCache = memoryCache;
+            _context = context;
+            _memoryCache = cache;
 
-            RefreshTokenRepository = new GenericRepository<RefreshToken>(_falconOneContext, _memoryCache);
-            RequestInformationRepository = new SystemLogsRepository(_falconOneContext, _memoryCache);
-            SecurityClaimsRepository = new SecurityClaimsRepository(_falconOneContext, _memoryCache);
-            ApplicationPolicyRepository = new SecurityPolicyRepository(_falconOneContext, _memoryCache);
-            ApplicationSettingRepository = new SiteSettingRepository(_falconOneContext, _memoryCache);
-            DepartmentRepository = new DepartmentRepository(_falconOneContext, _memoryCache);
-            TenantRepository = new GenericRepository<Tenant>(_falconOneContext, _memoryCache);
-            PostRepository = new GenericRepository<Post>(_falconOneContext, _memoryCache);
-            UserRepository = new UserRepository(_falconOneContext, _memoryCache);
-            SecurityRolesRepository = new SecurityRolesRepository(_falconOneContext, memoryCache);
+            RefreshTokenRepository = new GenericRepository<RefreshToken>(_context, _memoryCache);
+            RequestInformationRepository = new SystemLogsRepository(_context, _memoryCache);
+            SecurityClaimsRepository = new SecurityClaimsRepository(_context, _memoryCache);
+            ApplicationPolicyRepository = new SecurityPolicyRepository(_context, _memoryCache);
+            ApplicationSettingRepository = new SiteSettingRepository(_context, _memoryCache);
+            DepartmentRepository = new DepartmentRepository(_context, _memoryCache);
+            TenantRepository = new GenericRepository<Tenant>(_context, _memoryCache);
+            PostRepository = new GenericRepository<Post>(_context, _memoryCache);
+            UserRepository = new UserRepository(_context, _memoryCache);
+            SecurityRolesRepository = new SecurityRolesRepository(_context, _memoryCache);
         }
 
         public ISystemLogRepository RequestInformationRepository { get; private set; }
@@ -39,18 +39,30 @@ namespace FalconOne.DAL
         public IGenericRepository<Post> PostRepository { get; private set; }
         public IUserRepository UserRepository { get; private set; }
 
-        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+        public async Task<int> SaveChangesAsync(CancellationToken token)
         {
             Console.ForegroundColor = ConsoleColor.Green;
 
-            int added = _falconOneContext.ChangeTracker.Entries().Where(x => x.State == Microsoft.EntityFrameworkCore.EntityState.Added).Count();
-            int updated = _falconOneContext.ChangeTracker.Entries().Where(x => x.State == Microsoft.EntityFrameworkCore.EntityState.Modified).Count();
-            int deleted = _falconOneContext.ChangeTracker.Entries().Where(x => x.State == Microsoft.EntityFrameworkCore.EntityState.Detached).Count();
+            int added = _context.ChangeTracker.Entries()
+                                              .Where(x => x.State == Microsoft.EntityFrameworkCore.EntityState.Added)
+                                              .Count();
+
+            int updated = _context.ChangeTracker.Entries()
+                                                .Where(x => x.State == Microsoft.EntityFrameworkCore.EntityState.Modified)
+                                                .Count();
+
+            int deleted = _context.ChangeTracker.Entries()
+                                                .Where(x => x.State == Microsoft.EntityFrameworkCore.EntityState.Detached)
+                                                .Count();
 
             Console.WriteLine("Added: {0} Updated: {1} Deleted: {2}", added, updated, deleted);
-            int res = await _falconOneContext.SaveChangesAsync(cancellationToken);
+
+            int res = await _context.SaveChangesAsync(token);
+
             Console.WriteLine("No of records updated: {0}", res);
+
             Console.ResetColor();
+
             return res;
         }
 
@@ -63,7 +75,7 @@ namespace FalconOne.DAL
         {
             if (disposing)
             {
-                await _falconOneContext.DisposeAsync();
+                await _context.DisposeAsync();
             }
         }
     }

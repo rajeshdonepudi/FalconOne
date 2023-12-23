@@ -20,7 +20,7 @@ namespace FalconOne.API.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Admin")]
         public async Task<IActionResult> GetAll()
         {
-            return ReturnResponse(await _departmentService.GetAllDepartments());
+            return AppResponse(await _departmentService.GetAllDepartments());
         }
     }
 }

@@ -7,16 +7,16 @@ using FalconOne.ResourceCodes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FalconOne.API.Controllers
+namespace FalconOne.API.Controllers.User
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserManagement : BaseController
+    public class UserManagementController : BaseController
     {
         private readonly IUserService _userService;
         private readonly IAppClaimService _appClaimService;
 
-        public UserManagement(IUserService accountService, IAppClaimService appClaimService)
+        public UserManagementController(IUserService accountService, IAppClaimService appClaimService)
         {
             _userService = accountService;
             _appClaimService = appClaimService;
@@ -27,7 +27,7 @@ namespace FalconOne.API.Controllers
         [ResourceIdentifier(AppResourceCodes.User.USER_MANAGMENT_DASHBOARD)]
         public async Task<IActionResult> Dashboard()
         {
-            return ReturnResponse(await _userService.GetDashboardInfo());
+            return AppResponse(await _userService.GetDashboardInfo());
         }
 
         [HttpPost("add-user-to-role")]
@@ -35,9 +35,9 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                FalconeOne.BLL.Helpers.ApiResponse result = await _userService.AddUserToRoleAsync(model);
+                var result = await _userService.AddUserToRoleAsync(model);
 
-                return ReturnResponse(result);
+                return AppResponse(result);
             }
             else
             {
@@ -49,9 +49,9 @@ namespace FalconOne.API.Controllers
         [ResourceIdentifier(AppResourceCodes.User.ADD_NEW_USER)]
         public async Task<IActionResult> AddUser(AddUserDto model)
         {
-            FalconeOne.BLL.Helpers.ApiResponse result = await _userService.AddUser(model);
+            var result = await _userService.AddUser(model);
 
-            return ReturnResponse(result);
+            return AppResponse(result);
         }
 
         [HttpPost("add-claim-to-user")]
@@ -59,8 +59,8 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                FalconeOne.BLL.Helpers.ApiResponse result = await _appClaimService.AddClaimToUserAsync(model);
-                return ReturnResponse(result);
+                var result = await _appClaimService.AddClaimToUserAsync(model);
+                return AppResponse(result);
             }
             else
             {
@@ -73,18 +73,18 @@ namespace FalconOne.API.Controllers
         [ResourceIdentifier(AppResourceCodes.Account.GET_USER)]
         public async Task<IActionResult> GetAllUsers(PageParams model)
         {
-            FalconeOne.BLL.Helpers.ApiResponse response = await _userService.GetAllAsync(model);
+            var response = await _userService.GetAllAsync(model);
 
-            return ReturnResponse(response);
+            return AppResponse(response);
         }
 
         [HttpGet("get-user")]
         [ResourceIdentifier(AppResourceCodes.Account.GET_USER)]
         public async Task<IActionResult> GetByUserId(string userId)
         {
-            FalconeOne.BLL.Helpers.ApiResponse response = await _userService.GetByIdAsync(userId);
+            var response = await _userService.GetByIdAsync(userId);
 
-            return ReturnResponse(response);
+            return AppResponse(response);
         }
 
         [HttpPatch("{userId}/email-confirmed/{value}")]
@@ -93,9 +93,9 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                FalconeOne.BLL.Helpers.ApiResponse response = await _userService.UpdateEmailConfirmed(userId, value);
+                var response = await _userService.UpdateEmailConfirmed(userId, value);
 
-                return ReturnResponse(response);
+                return AppResponse(response);
             }
             else
             {

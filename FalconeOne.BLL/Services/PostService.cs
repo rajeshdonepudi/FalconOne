@@ -26,14 +26,14 @@ namespace FalconeOne.BLL.Services
         {
             if(model is null || model.PostedBy == Guid.Empty)
             {
-                throw new AppException(MessageHelper.INVALID_REQUEST);
+                throw new ApiException(MessageHelper.INVALID_REQUEST);
             }
 
             User? user = await _userManager.FindByIdAsync(Convert.ToString(model.PostedBy) ?? string.Empty);
 
             if(user is null)
             {
-                throw new AppException(MessageHelper.INVALID_REQUEST);
+                throw new ApiException(MessageHelper.INVALID_REQUEST);
             }
 
             Tenant tenant = new();

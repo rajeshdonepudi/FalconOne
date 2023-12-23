@@ -7,7 +7,6 @@ namespace FalconOne.Models.Entities
         public Employee()
         {
             TimeEntries = new HashSet<TimeEntry>();
-            EmployeeDepartments = new HashSet<EmployeeDepartment>();
             ReportingManagers = new HashSet<Employee>();
             OverTimeAuthorizations = new HashSet<OverTimeAuthorization>();
         }
@@ -24,7 +23,6 @@ namespace FalconOne.Models.Entities
         public Guid? EmployeeSummaryId { get; set; }
         public virtual EmployeeSummary EmployeeSummary { get; set; }
         public virtual JobDetail JobDetails { get; set; }
-        public virtual ICollection<EmployeeDepartment> EmployeeDepartments { get; set; }
         public virtual ICollection<TimeEntry> TimeEntries { get; set; }
         public virtual ICollection<Employee> ReportingManagers { get; set; }
         public virtual ICollection<Address> Addresses { get; set; }

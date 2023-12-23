@@ -9,18 +9,20 @@ namespace FalconOne.DAL.Repositories
 {
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
-        public UserRepository(FalconOneContext falconOneContext, IMemoryCache memoryCache) : base(falconOneContext, memoryCache) { }
+        public UserRepository(FalconOneContext context, IMemoryCache memoryCache) : base(context, memoryCache) { }
 
         public async Task<PagedList<User>> GetAllUsersByTenantIdPaginatedAsync(Guid tenantId, PageParams pageParams, CancellationToken cancellationToken)
         {
             List<User> records = await _context.Users.Where(x => x.TenantUsers.Any(x => x.TenantId == tenantId))
                                                      .OrderByDescending(x => x.CreatedOn)
-                                                     .Skip((pageParams.Page) * pageParams.PageSize)
+                                                     .Skip((pageParams.Page - 1) * pageParams.PageSize)
                                                      .Take(pageParams.PageSize)
                                                      .AsNoTracking()
                                                      .ToListAsync(cancellationToken);
 
-            var totalUsersCount = await _context.Users.Where(x => x.TenantUsers.Any(x => x.TenantId == tenantId)).LongCountAsync(cancellationToken);
+            var totalUsersCount = await _context.Users
+                                                .Where(x => x.TenantUsers.Any(x => x.TenantId == tenantId))
+                                                .LongCountAsync(cancellationToken);
 
             return new PagedList<User>(records, totalUsersCount, pageParams.Page, pageParams.PageSize);
         }

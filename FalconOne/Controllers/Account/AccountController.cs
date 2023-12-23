@@ -1,12 +1,14 @@
-﻿using FalconeOne.BLL.Interfaces;
+﻿using FalconeOne.BLL.Helpers;
+using FalconeOne.BLL.Interfaces;
 using FalconOne.API.Attributes;
 using FalconOne.Models.DTOs;
 using FalconOne.ResourceCodes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using System.Net;
 
-namespace FalconOne.API.Controllers
+namespace FalconOne.API.Controllers.Account
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -25,9 +27,9 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.SignupNewUserAsync(model);
+                var response = await _accountService.SignupNewUserAsync(model);
 
-                return ReturnResponse(response);
+                return AppResponse(response);
             }
             else
             {
@@ -43,9 +45,9 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.LoginUserAsync(model);
+                var response = await _accountService.LoginUserAsync(model);
 
-                return ReturnResponse(response);
+                return AppResponse(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, response));
             }
             else
             {
@@ -61,9 +63,9 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.ForgotPasswordAsync(model);
+                var response = await _accountService.ForgotPasswordAsync(model);
 
-                return ReturnResponse(response);
+                return AppResponse(response);
             }
             else
             {
@@ -78,9 +80,9 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.ResetPasswordAsync(model);
+                var response = await _accountService.ResetPasswordAsync(model);
 
-                return ReturnResponse(response);
+                return AppResponse(response);
             }
             else
             {
@@ -95,9 +97,9 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.RevokeRefreshTokenAsync(model.RefreshToken);
+                var response = await _accountService.RevokeRefreshTokenAsync(model.RefreshToken);
 
-                return ReturnResponse(response);
+                return AppResponse(response);
             }
             else
             {
@@ -112,9 +114,9 @@ namespace FalconOne.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.GetNewJWTByRefreshTokenAsync(model.RefreshToken);
+                var response = await _accountService.GetNewJWTByRefreshTokenAsync(model.RefreshToken);
 
-                return ReturnResponse(response);
+                return AppResponse(response);
             }
             else
             {
@@ -125,9 +127,9 @@ namespace FalconOne.API.Controllers
         [HttpPost("username-available")]
         public async Task<IActionResult> IsUserNameAvailable(string username)
         {
-            FalconeOne.BLL.Helpers.ApiResponse response = await _accountService.IsUserNameAvailable(username);
+            var response = await _accountService.IsUserNameAvailable(username);
 
-            return ReturnResponse(response);
+            return AppResponse(response);
         }
     }
 }

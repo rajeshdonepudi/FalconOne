@@ -101,7 +101,7 @@ namespace FalconeOne.BLL.Services
 
             return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result));
         }
-        public Task<AuthenticateResponseDto> UpdateUserAsync(int id, SignupRequestDto model)
+        public Task<LoginResponseDto> UpdateUserAsync(int id, SignupRequestDto model)
         {
             throw new NotImplementedException();
         }

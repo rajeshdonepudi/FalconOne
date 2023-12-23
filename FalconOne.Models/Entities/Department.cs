@@ -1,15 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FalconOne.Models.Contracts;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FalconOne.Models.Entities
 {
-    public class Department : MultiTenantEntity
+    public class Department : ITrackableEntity
     {
         public Department()
         {
-            EmployeeDepartments = new HashSet<EmployeeDepartment>();
             Posts = new HashSet<Post>();
-            DepartmentLocations = new HashSet<DepartmentLocation>();
         }
 
         [Key]
@@ -19,7 +18,9 @@ namespace FalconOne.Models.Entities
         public Guid? ProfilePictureId { get; set; }
         public virtual Image ProfilePicture { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
-        public virtual ICollection<EmployeeDepartment> EmployeeDepartments { get; set; }
-        public virtual ICollection<DepartmentLocation> DepartmentLocations { get; set; }
+        public Guid LocationId { get; set; }
+        public virtual Location Location { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 }

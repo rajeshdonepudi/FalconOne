@@ -23,7 +23,7 @@ namespace FalconOne.API.Controllers
         {
             FalconeOne.BLL.Helpers.ApiResponse response = await _securityService.GetTenantSecurityClaimsForLookup();
 
-            return ReturnResponse(response);
+            return AppResponse(response);
         }
 
         [HttpGet("roles/lookup")]
@@ -33,7 +33,7 @@ namespace FalconOne.API.Controllers
         {
             FalconeOne.BLL.Helpers.ApiResponse response = await _securityService.GetTenantSecurityRolesForLookup();
 
-            return ReturnResponse(response);
+            return AppResponse(response);
         }
     }
 }

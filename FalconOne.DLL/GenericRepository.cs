@@ -10,10 +10,10 @@ namespace FalconOne.DAL
         protected readonly FalconOneContext _context;
         protected readonly IMemoryCache _memoryCache;
 
-        public GenericRepository(FalconOneContext falconOneContext, IMemoryCache memoryCache)
+        public GenericRepository(FalconOneContext context, IMemoryCache cache)
         {
-            _context = falconOneContext;
-            _memoryCache = memoryCache;
+            _context = context;
+            _memoryCache = cache;
         }
 
         public async Task AddAsync(T entity, CancellationToken cancellationToken)

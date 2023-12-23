@@ -10,7 +10,7 @@ namespace FalconeOne.BLL.Interfaces
         Task<ApiResponse> GetAllAsync(PageParams model);
         Task<ApiResponse> GetDashboardInfo();
         Task<ApiResponse> GetByIdAsync(string userId);
-        Task<AuthenticateResponseDto> UpdateUserAsync(int id, SignupRequestDto model);
+        Task<LoginResponseDto> UpdateUserAsync(int id, SignupRequestDto model);
         Task<ApiResponse> DeleteAsync(string userId);
         Task<ApiResponse> AddUserToRoleAsync(AddToRoleDto model);
         Task<ApiResponse> UpdateEmailConfirmed(string userId, bool value);

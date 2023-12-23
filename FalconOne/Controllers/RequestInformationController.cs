@@ -11,11 +11,11 @@ namespace FalconOne.API.Controllers
     [ApiController]
     public class RequestInformationController : BaseController
     {
-        private readonly ISystemLogsService _requestInformationService;
+        private readonly ISystemLogsService _sysLogService;
 
-        public RequestInformationController(ISystemLogsService requestInformationService)
+        public RequestInformationController(ISystemLogsService logService)
         {
-            _requestInformationService = requestInformationService;
+            _sysLogService = logService;
         }
 
         [HttpGet("get-all")]
@@ -23,7 +23,7 @@ namespace FalconOne.API.Controllers
         [ResourceIdentifier(AppResourceCodes.Account.NEW_USER_SIGNUP)]
         public async Task<IActionResult> GetAll([FromQuery] PageParams model)
         {
-            return ReturnResponse(await _requestInformationService.GetAllAsync(model));
+            return AppResponse(await _sysLogService.GetAllAsync(model));
         }
     }
 }

@@ -25,7 +25,7 @@ namespace FalconOne.API.Controllers.Posts
         {
             var result = await _postService.CreateAsync(model);
 
-            return ReturnResponse(result);
+            return AppResponse(result);
         }
     }
 }

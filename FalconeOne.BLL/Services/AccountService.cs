@@ -2,6 +2,7 @@
 using FalconeOne.BLL.Interfaces;
 using FalconOne.DAL.Contracts;
 using FalconOne.Extensions.Http;
+using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
 using FalconOne.Models.Entities;
 using IdenticonSharp.Helpers;
@@ -59,20 +60,21 @@ namespace FalconeOne.BLL.Services
 
         #region Implementation
 
-        public async Task<ApiResponse> LoginUserAsync(LoginRequestDto model)
+        public async Task<LoginResponseDto> LoginUserAsync(LoginRequestDto model)
         {
-            User? user = await _unitOfWork.UserRepository.GetTenantUserInfoByEmail(await _tenantService.GetTenantId(), model.Email, CancellationToken.None);
+            User? user = await _unitOfWork.UserRepository
+                                          .GetTenantUserInfoByEmail(await _tenantService.GetTenantId(), model.Email, CancellationToken.None);
 
             if (user is null)
             {
-                return new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND);
+                throw new ApiException(MessageHelper.LOGIN_FAILED);
             }
 
             SignInResult result = await _signInManager.PasswordSignInAsync(user, model.Password, false, true);
 
             if (!result.Succeeded)
             {
-                return new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.LOGIN_FAILED, model);
+                throw new ApiException(result.ToString());
             }
 
             string jwtToken = await GenerateJWTToken(user);
@@ -87,7 +89,7 @@ namespace FalconeOne.BLL.Services
 
             await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
-            AuthenticateResponseDto authResponse = new()
+            var authResponse = new LoginResponseDto()
             {
                 Email = user.Email!,
                 FirstName = user.FirstName,
@@ -103,14 +105,14 @@ namespace FalconeOne.BLL.Services
 
             authResponse.RefreshToken = refreshToken?.Token!;
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.LOGIN_SUCCESSFULL, authResponse));
+            return authResponse;
         }
 
         public async Task<ApiResponse> SignupNewUserAsync(SignupRequestDto model)
         {
             var res = identiconProvider.Create($"{model.FirstName} {model.LastName}");
 
-            User newUser = new()
+            var newUser = new User()
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
@@ -143,7 +145,7 @@ namespace FalconeOne.BLL.Services
 
         public async Task<ApiResponse> ForgotPasswordAsync(ForgotPasswordRequestDto model)
         {
-            User? user = await _userManager.FindByEmailAsync(model.Email);
+            User? user = await _unitOfWork.UserRepository.GetTenantUserInfoByEmail(await _tenantService.GetTenantId(), model.Email, CancellationToken.None);
 
             if (user is null) return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
 
@@ -194,7 +196,7 @@ namespace FalconeOne.BLL.Services
 
             string jwtToken = await GenerateJWTToken(account);
 
-            AuthenticateResponseDto response = new()
+            LoginResponseDto response = new()
             {
                 JWTToken = jwtToken,
                 RefreshToken = newRefreshToken.Token!
@@ -375,11 +377,6 @@ namespace FalconeOne.BLL.Services
             RefreshToken newRefreshToken = await GenerateRefreshToken();
             UpdateRefreshTokenSettings(refreshToken, ipAddress, MessageHelper.REPLACED_WITH_NEW_TOKEN, newRefreshToken.Token!);
             return newRefreshToken;
-        }
-
-        private void ValidateUserSignupInfo(SignupRequestDto info)
-        {
-
         }
         #endregion
     }

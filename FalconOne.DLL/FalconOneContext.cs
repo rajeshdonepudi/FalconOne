@@ -51,8 +51,7 @@ namespace FalconOne.DAL
         public DbSet<Interest> Interests { get; set; }
         public DbSet<Hobby> Hobbies { get; set; }
         public DbSet<LeavePlan> LeavePlans { get; set; }
-        public DbSet<Designation> Designations { get; set; }
-        public DbSet<DepartmentLocation> DepartmentLocations { get; set; }
+        public DbSet<Designation> Designations { get; set; } 
 
         public FalconOneContext()
         {
@@ -66,7 +65,7 @@ namespace FalconOne.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            DatabaseSeed.Seed(modelBuilder);
+          //  DatabaseSeed.Seed(modelBuilder);
             ApplyEntityConfigurations(modelBuilder);
             EntityConfiguration(modelBuilder);
             base.OnModelCreating(modelBuilder);
@@ -114,9 +113,7 @@ namespace FalconOne.DAL
         {
             builder.ApplyConfiguration(new TenantUserConfiguration());
             builder.ApplyConfiguration(new EmployeeTimeConfiguration());
-            builder.ApplyConfiguration(new DepartmentLocationConfiguration());
-            builder.ApplyConfiguration(new DepartmentEmployeeConfiguration());
-            builder.ApplyConfiguration(new TenantLocationConfiguration());
+            
         }
     }
 }

@@ -5,7 +5,7 @@ namespace FalconeOne.BLL.Interfaces
 {
     public interface IAccountService
     {
-        Task<ApiResponse> LoginUserAsync(LoginRequestDto model);
+        Task<LoginResponseDto> LoginUserAsync(LoginRequestDto model);
         Task<ApiResponse> GetNewJWTByRefreshTokenAsync(string refreshToken);
         Task<ApiResponse> RevokeRefreshTokenAsync(string refreshToken);
         Task<ApiResponse> SignupNewUserAsync(SignupRequestDto model);

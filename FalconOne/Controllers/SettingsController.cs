@@ -52,7 +52,7 @@ namespace FalconOne.API.Controllers
             if (ModelState.IsValid)
             {
                 ApiResponse response = await _settingsService.AddNewSetting(model);
-                return ReturnResponse(response);
+                return AppResponse(response);
             }
             else
             {
@@ -65,7 +65,7 @@ namespace FalconOne.API.Controllers
         [ResourceIdentifier(AppResourceCodes.Settings.UPDATE_SETTINGS)]
         public async Task<IActionResult> UpdateSettings(List<UpdateSiteSettingDto> settings)
         {
-            return ReturnResponse(await _settingsService.UpdateSettingsByName(settings));
+            return AppResponse(await _settingsService.UpdateSettingsByName(settings));
         }
 
         [HttpDelete("delete")]
@@ -78,7 +78,7 @@ namespace FalconOne.API.Controllers
             if (validId)
             {
                 ApiResponse response = await _settingsService.DeleteSetting(settingId);
-                return ReturnResponse(response);
+                return AppResponse(response);
             }
             else
             {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
+using System.Text.Json;
 
 namespace FalconOne.Middleware.Error
 {
@@ -9,7 +10,6 @@ namespace FalconOne.Middleware.Error
     {
         private readonly RequestDelegate _next;
         private readonly ILogger _logger;
-        private object _errors;
         public ErrorHandlerMiddleware(RequestDelegate next, ILogger<ErrorHandlerMiddleware> logger)
         {
             _next = next;
@@ -18,6 +18,8 @@ namespace FalconOne.Middleware.Error
 
         public async Task Invoke(HttpContext context)
         {
+            string result = string.Empty;
+
             try
             {
                 await _next(context);
@@ -29,24 +31,19 @@ namespace FalconOne.Middleware.Error
 
                 switch (error)
                 {
-                    case AppException e:
-                        // custom application error
+                    case ApiException e:
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        _errors = e.Errors;
+                        result = JsonSerializer.Serialize(new { message = error?.Message });
                         break;
                     case KeyNotFoundException e:
-                        // not found error
                         response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
                     default:
-                        // unhandled error
                         _logger.LogError(error, error.Message);
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;
                 }
-
-                // var result = JsonSerializer.Serialize(new { message = error?.Message, errors = _errors });
-                await response.WriteAsync("Something went wrong!!!");
+                await response.WriteAsync(result);
             }
         }
     }

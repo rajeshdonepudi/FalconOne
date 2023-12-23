@@ -46,7 +46,7 @@ namespace FalconeOne.BLL.Services
                         FalconOne.Models.Entities.Tenant? tenant = await _unitOfWork.TenantRepository.FindAsync(x => x.Host.Trim().ToLower() == host.Trim().ToLower(), CancellationToken.None);
                         if (tenant is null)
                         {
-                            throw new AppException("Unable to determine the tenant information.");
+                            throw new ApiException("Unable to determine the tenant information.");
                         }
                         return tenant.Id;
                     }
@@ -56,7 +56,7 @@ namespace FalconeOne.BLL.Services
                     }
                 }
             }
-            throw new AppException("Invalid request.");
+            throw new ApiException("Invalid request.");
         }
     }
 }

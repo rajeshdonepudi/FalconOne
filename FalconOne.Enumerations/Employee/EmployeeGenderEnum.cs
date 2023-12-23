@@ -1,10 +1,107 @@
-﻿
-
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace FalconOne.Enumerations.Employee
 {
+    public enum NatureOfBusinessEnum
+    {
+        [Display(Name = "IT Services")]
+        ITServices,
+
+        [Display(Name = "Consultancy Services")]
+        ConsultancyServices,
+
+        [Display(Name = "Manufacturing")]
+        Manufacturing,
+
+        [Display(Name = "Healthcare")]
+        Healthcare,
+
+        [Display(Name = "Financial Services")]
+        FinancialServices,
+
+        [Display(Name = "Retail")]
+        Retail,
+
+        [Display(Name = "Education")]
+        Education,
+
+        [Display(Name = "Construction")]
+        Construction,
+
+        [Display(Name = "Hospitality")]
+        Hospitality,
+
+        [Display(Name = "Agriculture")]
+        Agriculture,
+
+        [Display(Name = "Transportation")]
+        Transportation
+    }
+    public enum BusinessTypeEnum
+    {
+        [Display(Name = "Sole Proprietorship")]
+        SoleProprietorship,
+
+        [Display(Name = "Partnership")]
+        Partnership,
+
+        [Display(Name = "Private Limited Company")]
+        PrivateLimited,
+
+        [Display(Name = "Public Limited Company")]
+        PublicLimited,
+
+        [Display(Name = "Limited Liability Company (LLC)")]
+        LLC,
+
+        [Display(Name = "Nonprofit Organization")]
+        Nonprofit,
+
+        [Display(Name = "Cooperative")]
+        Cooperative
+    }
+    public enum ServiceSectorEnum
+    {
+        [Display(Name = "Professional Services")]
+        ProfessionalServices,
+
+        [Display(Name = "Manufacturing Sector")]
+        Manufacturing,
+
+        [Display(Name = "Financial Sector")]
+        Financial,
+
+        [Display(Name = "Healthcare Sector")]
+        Healthcare,
+
+        [Display(Name = "Technology Sector")]
+        Technology,
+
+        [Display(Name = "Real Estate Sector")]
+        RealEstate,
+
+        [Display(Name = "Retail Sector")]
+        Retail,
+
+        [Display(Name = "Energy Sector")]
+        Energy,
+
+        [Display(Name = "Transportation Sector")]
+        Transportation,
+
+        [Display(Name = "Telecommunications Sector")]
+        Telecommunications,
+
+        [Display(Name = "Agriculture Sector")]
+        Agriculture,
+
+        [Display(Name = "Nonprofit Sector")]
+        Nonprofit,
+
+        [Display(Name = "Government Sector")]
+        Government
+    }
     public enum EmployeeGenderEnum
     {
         NotSpecified = 0,

@@ -2,6 +2,7 @@
 using FalconOne.API.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 namespace FalconOne.API.Controllers
@@ -26,7 +27,7 @@ namespace FalconOne.API.Controllers
             }
         }
 
-        protected IActionResult ReturnResponse(ApiResponse response)
+        protected IActionResult AppResponse(ApiResponse response)
         {
             switch (response.StatusCode)
             {
@@ -43,10 +44,17 @@ namespace FalconOne.API.Controllers
                 case HttpStatusCode.BadRequest:
                     return BadRequest();
                 case HttpStatusCode.Created:
-                    return Created(string.Empty, null);
+                    return Created(GetRequestURI(), null);
                 default:
                     return NoContent();
             }
+        }
+
+        private string GetRequestURI()
+        {
+            var uri = HttpContext.Request.GetDisplayUrl();
+
+            return uri ?? HttpContext.Request.Path;
         }
     }
 }

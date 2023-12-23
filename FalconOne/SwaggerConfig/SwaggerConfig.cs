@@ -13,7 +13,19 @@ namespace FalconOne.API.SwaggerConfig
                     Title = "FalconOne API",
                     Version = "v1"
                 });
+                c.SwaggerDoc("v2", new OpenApiInfo
+                {
+                    Title = "FalconOne API",
+                    Version = "v2"
+                });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please insert JWT with Bearer into field",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                });
+                c.AddSecurityDefinition("Bearer1", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
                     Description = "Please insert JWT with Bearer into field",

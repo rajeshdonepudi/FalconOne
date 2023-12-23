@@ -1,12 +1,38 @@
 ﻿using FalconeOne.BLL.Interfaces;
 using FalconOne.API.Attributes;
 using FalconOne.Extensions.Http;
+using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Reflection;
 
 namespace FalconOne.API.Filters
 {
+    public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
+    {
+        public override void OnException(ExceptionContext context)
+        {
+            // Log the exception if needed
+            // You can use a logging framework like Serilog, NLog, etc.
+
+            switch (context.Exception)
+            {
+                case ApiException:
+                    var errorResponse = new
+                    {
+                        error = new
+                        {
+                            message = context.Exception.Message
+                        }
+                    };
+                    context.Result = new BadRequestObjectResult(errorResponse);
+                    context.ExceptionHandled = true;
+                break;
+            }
+        }
+    }
+
     public class AsyncActionFilter : IAsyncActionFilter
     {
         private const string CONTROLLER_KEY = "controller";
