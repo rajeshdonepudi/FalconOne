@@ -7,6 +7,7 @@ namespace FalconOne.Models.Entities
         public WeekOffPolicy()
         {
             PolicyDays = new HashSet<PolicyDay>();
+            EmployeeTimes = new HashSet<EmployeeTime>();
         }
         [Key]
         public Guid Id { get; set; }

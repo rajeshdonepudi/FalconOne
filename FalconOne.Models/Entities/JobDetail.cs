@@ -6,8 +6,8 @@ namespace FalconOne.Models.Entities
     {
         public JobDetail()
         {
-            Employees = new HashSet<Employee>();
         }
+
         public Guid Id { get; set; }
         public DateTime DateOfJoining { get; set; }
         public EmploymentTypeEnum EmploymentType { get; set; } = EmploymentTypeEnum.NotSpecified;
@@ -15,6 +15,7 @@ namespace FalconOne.Models.Entities
         public TimeTypeEnum TimeType { get; set; } = TimeTypeEnum.NotSpecified;
         public EmployeeBandEnum EmployeeBand { get; set; } = EmployeeBandEnum.NotSpecified;
         public EmployeePayGradeEnum PayGrade { get; set; } = EmployeePayGradeEnum.NotSpecified;
-        public virtual ICollection<Employee> Employees { get; set; }
+        public Guid EmployeeId { get; set; }
+        public virtual User Employee { get; set; }
     }
 }

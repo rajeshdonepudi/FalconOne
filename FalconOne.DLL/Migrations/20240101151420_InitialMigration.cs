@@ -69,18 +69,6 @@ namespace FalconOne.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Designations",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Designations", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "EmployeeSummaries",
                 columns: table => new
                 {
@@ -323,7 +311,6 @@ namespace FalconOne.DAL.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ExperiennceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ExperienceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -585,7 +572,6 @@ namespace FalconOne.DAL.Migrations
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ProfilePictureId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrganizationIssuedId = table.Column<long>(type: "bigint", nullable: true),
                     DesignationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Gender = table.Column<int>(type: "int", nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -621,12 +607,6 @@ namespace FalconOne.DAL.Migrations
                         column: x => x.EmployeeId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_Designations_DesignationId",
-                        column: x => x.DesignationId,
-                        principalTable: "Designations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AspNetUsers_EmployeeSummaries_EmployeeSummaryId",
                         column: x => x.EmployeeSummaryId,
@@ -675,11 +655,10 @@ namespace FalconOne.DAL.Migrations
                 {
                     table.PrimaryKey("PK_ContactDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ContactDetails_AspNetUsers_EmployeeId",
-                        column: x => x.EmployeeId,
+                        name: "FK_ContactDetails_AspNetUsers_Id",
+                        column: x => x.Id,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -1003,6 +982,19 @@ namespace FalconOne.DAL.Migrations
                         principalTable: "Locations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Designations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LegalEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Designations", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -1433,12 +1425,6 @@ namespace FalconOne.DAL.Migrations
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ContactDetails_EmployeeId",
-                table: "ContactDetails",
-                column: "EmployeeId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Departments_LocationId",
                 table: "Departments",
                 column: "LocationId");
@@ -1447,6 +1433,11 @@ namespace FalconOne.DAL.Migrations
                 name: "IX_Departments_ProfilePictureId",
                 table: "Departments",
                 column: "ProfilePictureId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Designations_LegalEntityId",
+                table: "Designations",
+                column: "LegalEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmployeeShifts_ShiftAllowancePolicyId",
@@ -1711,6 +1702,14 @@ namespace FalconOne.DAL.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUsers_Designations_DesignationId",
+                table: "AspNetUsers",
+                column: "DesignationId",
+                principalTable: "Designations",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
                 name: "FK_AspNetUsers_Images_ProfilePictureId",
                 table: "AspNetUsers",
                 column: "ProfilePictureId",
@@ -1751,6 +1750,13 @@ namespace FalconOne.DAL.Migrations
                 table: "Departments",
                 column: "ProfilePictureId",
                 principalTable: "Images",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Designations_LegalEntity_LegalEntityId",
+                table: "Designations",
+                column: "LegalEntityId",
+                principalTable: "LegalEntity",
                 principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(

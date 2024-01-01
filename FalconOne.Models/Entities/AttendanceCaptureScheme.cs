@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FalconOne.Models.Contracts;
+using System.ComponentModel.DataAnnotations;
 
 namespace FalconOne.Models.Entities
 {
-    public class AttendanceCaptureScheme
+    public class AttendanceCaptureScheme : ITrackableEntity
     {
         [Key]
         public Guid Id { get; set; }
@@ -31,5 +32,7 @@ namespace FalconOne.Models.Entities
         public virtual ICollection<AttendanceCaptureMethod> CaptureMethods { get; set; }
 
         public virtual ICollection<EmployeeTime> EmployeeTimes { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 }

@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FalconOne.Models.Contracts;
+using System.ComponentModel.DataAnnotations;
 
 namespace FalconOne.Models.Entities
 {
-    public class AttendanceTrackingPolicy
+    public class AttendanceTrackingPolicy : ITrackableEntity
     {
         public AttendanceTrackingPolicy()
         {
@@ -54,5 +55,7 @@ namespace FalconOne.Models.Entities
         public virtual BreakAndMealPeriod BreakAndMealPeriods { get; set; }
         public virtual AbsenceAndLeavePolicy AbsenceAndLeavePolicies { get; set; }
         public virtual ICollection<EmployeeTime> EmployeeTimes { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 }

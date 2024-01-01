@@ -57,7 +57,7 @@ namespace FalconeOne.BLL.Services
                 PostedOn = model.PostedOn,
                 DepartmentId = department?.Id,
                 TenantId = tenant?.Id,
-                PostedBy = (Employee) user
+                PostedBy = user
             }, CancellationToken.None);
 
             await _unitOfWork.SaveChangesAsync(CancellationToken.None);

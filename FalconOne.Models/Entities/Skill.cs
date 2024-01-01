@@ -4,7 +4,7 @@
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public Guid ExperiennceId { get; set; }
+        public Guid ExperienceId { get; set; }
         public virtual Experience Experience { get; set; }
     }
 }

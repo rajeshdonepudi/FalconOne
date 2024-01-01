@@ -26,11 +26,11 @@
         /// capture the names or identifiers of the individuals involved in the request.
         /// </summary>
         public Guid RequestedById { get; set; }
-        public virtual Employee RequestedBy { get; set; }
+        public virtual User RequestedBy { get; set; }
         /// <summary>
         /// capture the names or identifiers of the individuals involved in the approval processes.
         /// </summary>
         public Guid ApprovedById { get; set; }
-        public virtual Employee ApprovedBy{ get; set; }
+        public virtual User ApprovedBy{ get; set; }
     }
 }

@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FalconOne.Models.Contracts;
+using System.ComponentModel.DataAnnotations;
 
 namespace FalconOne.Models.Entities
 {
-    public class EmployeeTime
+    public class EmployeeTime : ITrackableEntity
     {
         [Key]
         public Guid Id { get; set; }
@@ -25,5 +26,7 @@ namespace FalconOne.Models.Entities
         public virtual AttendanceCaptureScheme AttendanceCaptureScheme { get; set; }
         public virtual ShiftAllowancePolicy ShiftAllowancePolicy { get; set; }
         public virtual LeavePlan LeavePlan { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 }

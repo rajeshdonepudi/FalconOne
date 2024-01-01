@@ -271,7 +271,6 @@ namespace FalconOne.DAL.Migrations
             modelBuilder.Entity("FalconOne.Models.Entities.ContactDetail", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("EmployeeId")
@@ -298,9 +297,6 @@ namespace FalconOne.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId")
-                        .IsUnique();
 
                     b.ToTable("ContactDetails");
                 });
@@ -365,11 +361,16 @@ namespace FalconOne.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("LegalEntityId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LegalEntityId");
 
                     b.ToTable("Designations");
                 });
@@ -1327,9 +1328,6 @@ namespace FalconOne.DAL.Migrations
                     b.Property<Guid>("ExperienceId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ExperiennceId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1806,9 +1804,6 @@ namespace FalconOne.DAL.Migrations
                     b.Property<int>("MaritalStatus")
                         .HasColumnType("int");
 
-                    b.Property<long>("OrganizationIssuedId")
-                        .HasColumnType("bigint");
-
                     b.Property<bool>("PhysicallyChallenged")
                         .HasColumnType("bit");
 
@@ -1920,9 +1915,7 @@ namespace FalconOne.DAL.Migrations
                 {
                     b.HasOne("FalconOne.Models.Entities.Employee", "Employee")
                         .WithOne("ContactDetails")
-                        .HasForeignKey("FalconOne.Models.Entities.ContactDetail", "EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FalconOne.Models.Entities.ContactDetail", "Id");
 
                     b.Navigation("Employee");
                 });
@@ -1942,6 +1935,13 @@ namespace FalconOne.DAL.Migrations
                     b.Navigation("Location");
 
                     b.Navigation("ProfilePicture");
+                });
+
+            modelBuilder.Entity("FalconOne.Models.Entities.Designation", b =>
+                {
+                    b.HasOne("FalconOne.Models.Entities.LegalEntity", null)
+                        .WithMany("Designations")
+                        .HasForeignKey("LegalEntityId");
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.EmployeeShift", b =>
@@ -2567,6 +2567,8 @@ namespace FalconOne.DAL.Migrations
             modelBuilder.Entity("FalconOne.Models.Entities.LegalEntity", b =>
                 {
                     b.Navigation("BusinessUnits");
+
+                    b.Navigation("Designations");
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.Location", b =>

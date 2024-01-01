@@ -10,7 +10,7 @@ namespace FalconOne.Models.Entities
             Reactions = new HashSet<Reaction>();
             Comments = new HashSet<Comment>();
             Images = new HashSet<Image>();
-            TaggedEmployees = new HashSet<Employee>();
+            TaggedEmployees = new HashSet<User>();
         }
 
         [Key]
@@ -20,11 +20,11 @@ namespace FalconOne.Models.Entities
         public Guid? DepartmentId { get; set; }
         public Guid PostedById { get; set; }
         public DateTime PostedOn { get; set; }
-        public virtual Employee PostedBy { get; set; }
+        public virtual User PostedBy { get; set; }
         public virtual Department Department { get; set; }
         public virtual ICollection<Reaction> Reactions { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Image> Images { get; set; }
-        public virtual ICollection<Employee> TaggedEmployees { get; set; }
+        public virtual ICollection<User> TaggedEmployees { get; set; }
     }
 }

@@ -1,6 +1,8 @@
-﻿namespace FalconOne.Models.Entities
+﻿using FalconOne.Models.Contracts;
+
+namespace FalconOne.Models.Entities
 {
-    public class Comment
+    public class Comment : ITrackableEntity
     {
         public Guid Id { get; set; }
         public string Content { get; set; }

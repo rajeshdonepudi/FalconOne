@@ -75,9 +75,9 @@ namespace FalconOne.DAL
         {
             var userFaker = new Faker<User>()
                             .RuleFor(u => u.UserName, f => f.Person.UserName)
-                            .RuleFor(u => u.NormalizedUserName, (f, u) => u.UserName.ToUpper())
+                            .RuleFor(u => u.NormalizedUserName, (f, u) => u?.UserName?.ToUpper())
                             .RuleFor(u => u.Email, (f, u) => f.Person.Email)
-                            .RuleFor(u => u.NormalizedEmail, (f, u) => u.Email.ToUpper())
+                            .RuleFor(u => u.NormalizedEmail, (f, u) => u?.Email?.ToUpper())
                             .RuleFor(u => u.EmailConfirmed, f => f.Random.Bool())
                             .RuleFor(u => u.PasswordHash, f => f.Internet.Password())
                             .RuleFor(u => u.SecurityStamp, f => f.Random.Guid().ToString())
@@ -91,10 +91,18 @@ namespace FalconOne.DAL
                             .RuleFor(u => u.FirstName, f => f.Person.FirstName)
                             .RuleFor(u => u.LastName, f => f.Person.LastName)
                             .RuleFor(u => u.MiddleName, f => f.Person.FirstName)
+                            .RuleFor(u => u.Gender, f => f.PickRandom<EmployeeGenderEnum>())
+                            .RuleFor(u => u.MaritalStatus, f => f.PickRandom<MaritalStatusEnum>())
+                            .RuleFor(u => u.BloodGroup, f => f.PickRandom<BloodGroupTypeEnum>())
+                            .RuleFor(u => u.PhysicallyChallenged, f => f.PickRandom<bool>())
+                            .RuleFor(u => u.ProfessionalSummary, f => f.Lorem.Paragraph(1))
+                            .RuleFor(u => u.DateOfBirth, f => f.Date.Past())
                             .RuleFor(u => u.IsActive, f => f.Random.Bool())
                             .RuleFor(u => u.ModifiedOn, f => f.Date.Past())
                             .RuleFor(u => u.CreatedOn, f => f.Date.Past())
                             .RuleFor(u => u.ProfilePictureId, f => f.Random.Guid())
+                            .RuleFor(u => u.JobDetails, f => GetJobDetail())
+                            .RuleFor(u => u.EmployeeSummary, f => GetEmployeeSummary())
                             .RuleFor(t => t.ProfilePicture, (f, p) => new Image
                             {
                                 Data = Encoding.UTF8.GetBytes(f.Image.LoremPixelUrl(LoremPixelCategory.People)),
@@ -121,6 +129,8 @@ namespace FalconOne.DAL
 
         public static List<LegalEntity> GenerateLegalEntities(int count = 1)
         {
+            var random = new Random();
+
             var legalEntityFaker = new Faker<LegalEntity>()
                                     .RuleFor(x => x.Name, f => f.Company.CompanyName())
                                     .RuleFor(x => x.LegalName, f => f.Company.CompanyName())
@@ -134,11 +144,38 @@ namespace FalconOne.DAL
                                     .RuleFor(x => x.AddressLine1, f => f.Address.StreetAddress())
                                     .RuleFor(x => x.AddressLine2, f => f.Address.SecondaryAddress())
                                     .RuleFor(x => x.City, f => f.Address.City())
+                                    .RuleFor(x => x.Designations, f => GenerateDesignations(random.Next(1, 10)))
                                     .RuleFor(x => x.State, f => f.Address.State())
                                     .RuleFor(x => x.BusinessUnits, f => GenerateBusinessUnits(5))
                                     .RuleFor(x => x.ZipCode, f => f.Address.ZipCode());
 
             return legalEntityFaker.Generate(count);
+        }
+
+        public static JobDetail GetJobDetail()
+        {
+            var jobDetailFaker = new Faker<JobDetail>()
+                                 .RuleFor(j => j.Id, f => f.Random.Guid())
+                                 .RuleFor(j => j.DateOfJoining, f => f.Date.Past())
+                                 .RuleFor(j => j.EmploymentType, f => f.PickRandom<EmploymentTypeEnum>())
+                                 .RuleFor(j => j.WorkerType, f => f.PickRandom<WorkerTypeEnum>())
+                                 .RuleFor(j => j.TimeType, f => f.PickRandom<TimeTypeEnum>())
+                                 .RuleFor(j => j.EmployeeBand, f => f.PickRandom<EmployeeBandEnum>())
+                                 .RuleFor(j => j.PayGrade, f => f.PickRandom<EmployeePayGradeEnum>());
+
+            return jobDetailFaker.Generate();
+        }
+
+        public static EmployeeSummary GetEmployeeSummary()
+        {
+            var employeeSummaryFaker = new Faker<EmployeeSummary>()
+                                           .RuleFor(e => e.Id, f => f.Random.Guid())
+                                           .RuleFor(e => e.Description, f => f.Lorem.Sentence())
+                                           .RuleFor(e => e.AboutJob, f => f.Lorem.Paragraph())
+                                           .RuleFor(e => e.EmployeeInterests, f => new HashSet<Interest>())
+                                           .RuleFor(e => e.EmployeeHobbies, f => new HashSet<Hobby>());
+
+            return employeeSummaryFaker.Generate();
         }
 
         public static List<BusinessUnit> GenerateBusinessUnits(int count = 1)
@@ -148,10 +185,10 @@ namespace FalconOne.DAL
             var random = new Random();
 
             var businessUnitfaker = new Faker<BusinessUnit>()
-                 .RuleFor(u => u.ModifiedOn, f => f.Date.Past())
-            .RuleFor(u => u.CreatedOn, f => f.Date.Past())
-                     .RuleFor(b => b.Locations, f => GenerateLocatios(random.Next(1, 5)))
-                     .RuleFor(b => b.Name, f => f.PickRandom(DivisionNames));
+                                       .RuleFor(u => u.ModifiedOn, f => f.Date.Past())
+                                       .RuleFor(u => u.CreatedOn, f => f.Date.Past())
+                                       .RuleFor(b => b.Locations, f => GenerateLocatios(random.Next(1, 5)))
+                                       .RuleFor(b => b.Name, f => f.PickRandom(DivisionNames));
 
             return businessUnitfaker.Generate(count);
         }
@@ -214,8 +251,8 @@ namespace FalconOne.DAL
         public static List<Designation> GenerateDesignations(int count = 1)
         {
             var faker = new Faker<Designation>()
-           .RuleFor(d => d.Id, f => f.Random.Guid())
-           .RuleFor(d => d.Name, f => f.Name.JobTitle());
+                           .RuleFor(d => d.Id, f => f.Random.Guid())
+                           .RuleFor(d => d.Name, f => f.Name.JobTitle());
 
             return faker.Generate(count);
         }

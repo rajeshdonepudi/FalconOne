@@ -2,6 +2,7 @@
 using FalconOne.Models.EntityConfiguration;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace FalconOne.DAL
 {
@@ -76,15 +77,12 @@ namespace FalconOne.DAL
             #region Tenants
             
             builder.Entity<Tenant>()
-       .Property(a => a.AccountAlias)
-       .HasComputedColumnSql("'FOTEN' + CAST([AccountId] AS nvarchar(max))");
+                   .Property(a => a.AccountAlias)
+                   .HasComputedColumnSql("'FOTEN' + CAST([AccountId] AS nvarchar(max))");
 
             #endregion
 
             #region User
-            builder.Entity<User>()
-                   .HasDiscriminator<string>("Discriminator")
-                   .HasValue<Employee>("Employee");
 
             builder.Entity<User>()
                    .HasAlternateKey(x => x.ResourceId);
@@ -95,10 +93,7 @@ namespace FalconOne.DAL
             #endregion
 
             #region Employees
-            builder.Entity<Employee>()
-                   .Property(p => p.OrganizationIssuedId)
-                   .ValueGeneratedNever();
-            #endregion
+                        #endregion
 
             #region Policies
             builder.Entity<OverTimeAuthorization>()
