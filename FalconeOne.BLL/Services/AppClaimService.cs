@@ -1,29 +1,34 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
 using FalconOne.DAL.Contracts;
+using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
 using FalconOne.Models.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using System.Net;
+using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 
 namespace FalconeOne.BLL.Services
 {
-    public class AppClaimService : IAppClaimService
+    public class AppClaimService : BaseService, IAppClaimService
     {
-        private readonly UserManager<User> _userManager;
         private readonly RoleManager<SecurityRole> _roleManager;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public AppClaimService(UserManager<User> userManager, RoleManager<SecurityRole> roleManager, IUnitOfWork unitOfWork)
+        public AppClaimService(UserManager<User> userManager, RoleManager<SecurityRole> roleManager, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor,
+            IConfiguration configuration, ITenantService tenantService)
+            : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
         {
-            _userManager = userManager;
             _roleManager = roleManager;
-            _unitOfWork = unitOfWork;
         }
 
-        public async Task<ApiResponse> CreateClaimAsync(UserClaimDto model)
+        public async Task<bool> CreateClaimAsync(UserClaimDto model)
         {
+            if (model is null)
+            {
+                throw new ApiException(MessageHelper.INVALID_REQUEST);
+            }
+
             await _unitOfWork.SecurityClaimsRepository.AddAsync(new SecurityClaim
             {
                 Type = model.Type,
@@ -32,67 +37,119 @@ namespace FalconeOne.BLL.Services
                 Description = model.Description,
                 ApplicationPolicyId = model.PolicyId is null ? Guid.Empty : Guid.Parse(model.PolicyId)
             }, CancellationToken.None);
-            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
-        }
+            var result = await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
-        public async Task<ApiResponse> AddClaimToRoleAsync(AddClaimToRoleDto model)
-        {
-            SecurityRole role = await _roleManager.FindByIdAsync(model.RoleId);
-
-            SecurityClaim res = await _unitOfWork.SecurityClaimsRepository.FindAsync(x => x.Id == model.ClaimId, CancellationToken.None);
-
-            await _roleManager.AddClaimAsync(role, new Claim(res.Type, res.Value));
-
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
-        }
-
-        public async Task<ApiResponse> AddClaimToUserAsync(AddClaimToUserDto model)
-        {
-            User user = await _userManager.FindByIdAsync(model.UserId);
-
-            SecurityClaim res = await _unitOfWork.SecurityClaimsRepository.FindAsync(x => x.Id == model.ClaimId, CancellationToken.None);
-
-            await _userManager.AddClaimAsync(user, new Claim(res.Type, res.Value));
-
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
-        }
-
-        public async Task<ApiResponse> AddClaimsToUserAsync(AddClaimsToUserDto model)
-        {
-            User user = await _userManager.FindByIdAsync(model.UserId);
-
-            List<Claim> claims = new();
-
-            foreach (Guid claim in model.Claims)
+            if (result > 0)
             {
-                SecurityClaim r = await _unitOfWork.SecurityClaimsRepository.FindAsync(x => x.Id == claim, CancellationToken.None);
+                return true;
+            }
+            return false;
+        }
 
-                claims.Add(new Claim(r.Type, r.Value));
+        public async Task<bool> AddClaimToRoleAsync(AddClaimToRoleDto model)
+        {
+            if (model is null)
+            {
+                throw new ApiException(MessageHelper.INVALID_REQUEST);
             }
 
-            await _userManager.AddClaimsAsync(user, claims);
+            var role = await _roleManager.FindByIdAsync(model.RoleId);
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
+            var claim = await _unitOfWork.SecurityClaimsRepository.FindAsync(x => x.Id == model.ClaimId, CancellationToken.None);
+
+            if (role is null || claim is null)
+            {
+                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
+            }
+
+            var result = await _roleManager.AddClaimAsync(role, new Claim(claim.Type, claim.Value));
+
+            if (!result.Succeeded)
+            {
+                throw new ApiException(FormatIdentityErrors(result.Errors));
+            }
+            return result.Succeeded;
         }
 
-        public async Task<ApiResponse> GetAllClaimsAsync()
+        public async Task<bool> AddClaimToUserAsync(AddClaimToUserDto model)
         {
-            IEnumerable<SecurityClaim> result = await _unitOfWork.SecurityClaimsRepository.GetAllAsync(CancellationToken.None);
+            if (model is null)
+            {
+                throw new ApiException(MessageHelper.INVALID_REQUEST);
+            }
 
-            List<string> claims = result.Select(x => x.Type).ToList();
+            var user = await _userManager.FindByIdAsync(model.UserId);
+            var claim = await _unitOfWork.SecurityClaimsRepository.FindAsync(x => x.Id == model.ClaimId, CancellationToken.None);
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, claims));
+            if (user is null || claim is null)
+            {
+                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
+            }
+
+            var result = await _userManager.AddClaimAsync(user, new Claim(claim.Type, claim.Value));
+
+            if (!result.Succeeded)
+            {
+                throw new ApiException(FormatIdentityErrors(result.Errors));
+            }
+            return result.Succeeded;
         }
 
-        public async Task<ApiResponse> DeleteClaimAsync(Guid guid)
+        public async Task<bool> AddClaimsToUserAsync(AddClaimsToUserDto model)
         {
-            SecurityClaim claim = await _unitOfWork.SecurityClaimsRepository.GetByIdAsync(guid, CancellationToken.None);
+            if (model is null)
+            {
+                throw new ApiException(MessageHelper.INVALID_REQUEST);
+            }
+
+            var user = await _userManager.FindByIdAsync(model.UserId);
+
+            if (user is null)
+            {
+                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
+            }
+
+            var claims = new List<Claim>();
+
+            foreach (Guid claimId in model.Claims)
+            {
+                var claim = await _unitOfWork.SecurityClaimsRepository.FindAsync(x => x.Id == claimId, CancellationToken.None);
+
+                claims.Add(new Claim(claim.Type, claim.Value));
+            }
+
+            var result = await _userManager.AddClaimsAsync(user, claims);
+
+            if (!result.Succeeded)
+            {
+                throw new ApiException(FormatIdentityErrors(result.Errors));
+            }
+            return result.Succeeded;
+        }
+
+        public async Task<IEnumerable<string>> GetAllClaimsAsync()
+        {
+            var result = await _unitOfWork.SecurityClaimsRepository.GetAllAsync(CancellationToken.None);
+
+            var claims = result.Select(x => x.Type).ToList();
+
+            return claims;
+        }
+
+        public async Task<bool> DeleteClaimAsync(Guid guid)
+        {
+            var claim = await _unitOfWork.SecurityClaimsRepository.GetByIdAsync(guid, CancellationToken.None);
 
             _unitOfWork.SecurityClaimsRepository.Remove(claim);
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
+            var result = await _unitOfWork.SaveChangesAsync(CancellationToken.None);
+
+            if (result > 0)
+            {
+                return true;
+            }
+            return false;
         }
     }
 

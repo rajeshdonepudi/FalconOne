@@ -23,7 +23,7 @@ namespace FalconOne.API.Controllers
         [ResourceIdentifier(AppResourceCodes.Account.NEW_USER_SIGNUP)]
         public async Task<IActionResult> GetAll([FromQuery] PageParams model)
         {
-            return AppResponse(await _sysLogService.GetAllAsync(model));
+            return Ok(await _sysLogService.GetAllAsync(model));
         }
     }
 }

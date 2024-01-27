@@ -7,7 +7,6 @@ namespace FalconOne.Models.Entities
     {
         public SecurityClaim()
         {
-            Navigations = new List<Navigation>();
         }
 
         [Key]
@@ -18,6 +17,5 @@ namespace FalconOne.Models.Entities
         public string Value { get; set; }
         public Guid? ApplicationPolicyId { get; set; }
         public virtual SecurityPolicy ApplicationPolicy { get; set; }
-        public virtual List<Navigation> Navigations { get; set; }
     }
 }

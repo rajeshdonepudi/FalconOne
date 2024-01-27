@@ -10,7 +10,5 @@ namespace FalconOne.Models.Entities
         public Guid Id { get; set; }
         public string Title { get; set; }
         public byte[] Data { get; set; }
-        public Guid? PostId { get; set; }
-        public virtual Post Post { get; set; }
     }
 }

@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
@@ -23,7 +22,7 @@ namespace FalconeOne.BLL.Services
         private readonly SignInManager<User> _signInManager;
         private readonly ITokenService _tokenService;
         private readonly IAppConfigService _appConfigService;
-        private readonly IIdenticonProvider identiconProvider;
+        private readonly IIdenticonProvider _identiconProvider;
 
         /// <summary>
         /// The data protection purpose used for the reset password related methods.
@@ -54,13 +53,13 @@ namespace FalconeOne.BLL.Services
             _signInManager = signInManager;
             _tokenService = tokenService;
             _appConfigService = appConfigService;
-            this.identiconProvider = identiconProvider;
+            _identiconProvider = identiconProvider;
         }
         #endregion
 
         #region Implementation
 
-        public async Task<LoginResponseDto> LoginUserAsync(LoginRequestDto model)
+        public async Task<LoginResponseDto> LoginAsync(LoginRequestDto model)
         {
             User? user = await _unitOfWork.UserRepository
                                           .GetTenantUserInfoByEmail(await _tenantService.GetTenantId(), model.Email, CancellationToken.None);
@@ -69,6 +68,8 @@ namespace FalconeOne.BLL.Services
             {
                 throw new ApiException(MessageHelper.LOGIN_FAILED);
             }
+
+            await EmailVerificationCheck(user);
 
             SignInResult result = await _signInManager.PasswordSignInAsync(user, model.Password, false, true);
 
@@ -98,7 +99,7 @@ namespace FalconeOne.BLL.Services
                 JWTToken = jwtToken,
                 RefreshToken = refreshToken?.Token!,
                 TenantId = await _tenantService.GetTenantId(),
-                ProfilePicture = user.ProfilePicture is not null ? identiconProvider.Create(user?.ProfilePicture?.Data).ToBase64() : string.Empty,
+                ProfilePicture = user.ProfilePicture is not null ? _identiconProvider.Create(user?.ProfilePicture?.Data).ToBase64() : string.Empty,
             };
 
             authResponse.JWTToken = jwtToken;
@@ -108,9 +109,9 @@ namespace FalconeOne.BLL.Services
             return authResponse;
         }
 
-        public async Task<ApiResponse> SignupNewUserAsync(SignupRequestDto model)
+        public async Task<RegisterResponse> RegisterAsync(SignupRequestDto model)
         {
-            var res = identiconProvider.Create($"{model.FirstName} {model.LastName}");
+            var res = _identiconProvider.Create($"{model.FirstName} {model.LastName}");
 
             var newUser = new User()
             {
@@ -127,47 +128,49 @@ namespace FalconeOne.BLL.Services
                 }
             };
 
-            IdentityResult result = await _userManager.CreateAsync(newUser, model.ConfirmPassword);
+            var result = await _userManager.CreateAsync(newUser, model.ConfirmPassword);
 
             if (!result.Succeeded)
             {
-                return new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.FAILED_TO_CREATE_USER, model, result.Errors);
+                throw new ApiException(FormatIdentityErrors(result.Errors));
             }
 
             User? user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user is null)
             {
-                return new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG);
+                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
             }
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.Created, MessageHelper.USER_CREATED_SUCCESSFULLY, new RegisterResponse(user.FirstName, user.LastName, user.Email)));
+            return new RegisterResponse(user.FirstName, user.LastName, user.Email);
         }
 
-        public async Task<ApiResponse> ForgotPasswordAsync(ForgotPasswordRequestDto model)
+        public async Task<bool> SendForgotPasswordResetTokenAsync(ForgotPasswordRequestDto model)
         {
             User? user = await _unitOfWork.UserRepository.GetTenantUserInfoByEmail(await _tenantService.GetTenantId(), model.Email, CancellationToken.None);
 
-            if (user is null) return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
-
-            bool result = await _userManager.IsEmailConfirmedAsync(user);
-
-            if (!result)
+            if (user is null)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.PLEASE_CONFIRM_EMAIL, result));
+                throw new ApiException(MessageHelper.INVALID_REQUEST);
             }
+
+            await EmailVerificationCheck(user);
 
             string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.FORGOT_PASSWORD_SUCCESS, resetToken));
+            if (!string.IsNullOrEmpty(resetToken))
+            {
+                return true;
+            }
+            return false;
         }
 
-        public async Task<ApiResponse> GetNewJWTByRefreshTokenAsync(string refreshToken)
+        public async Task<RefreshAccessTokenResponse> GetJWTByRefreshTokenAsync(string refreshToken)
         {
             User? account = await _userManager.Users.Include(x => x.RefreshTokens).FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
 
             if (account is null)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.INVALID_REFRESH_TOKEN));
+                throw new ApiException(MessageHelper.INVALID_REFRESH_TOKEN);
             }
 
             RefreshToken? token = account.RefreshTokens.FirstOrDefault(x => x.Token == refreshToken);
@@ -176,9 +179,9 @@ namespace FalconeOne.BLL.Services
             {
                 await RevokeDescendantRefreshTokens(token, account, "", MessageHelper.REUSE_OF_REVOKED_ANCESTOR_TOKEN);
 
-                IdentityResult updateResult = await _userManager.UpdateAsync(account);
+                var updateResult = await _userManager.UpdateAsync(account);
 
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG));
+                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
             }
 
             RefreshToken newRefreshToken = await RotateRefreshToken(token, "");
@@ -187,42 +190,45 @@ namespace FalconeOne.BLL.Services
 
             await RemoveExpiredRefreshTokens(account);
 
-            IdentityResult result = await _userManager.UpdateAsync(account);
+            var result = await _userManager.UpdateAsync(account);
 
             if (!result.Succeeded)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG));
+                throw new ApiException(FormatIdentityErrors(result.Errors));
             }
 
             string jwtToken = await GenerateJWTToken(account);
 
-            LoginResponseDto response = new()
+            var response = new RefreshAccessTokenResponse()
             {
                 JWTToken = jwtToken,
                 RefreshToken = newRefreshToken.Token!
             };
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, response));
+            return response;
         }
-        public async Task<ApiResponse> ResetPasswordAsync(ResetPasswordRequestDto model)
+        public async Task<bool> ResetPasswordAsync(ResetPasswordRequestDto model)
         {
-            User? user = await _userManager.FindByIdAsync(model.UserId);
+            var user = await _userManager.FindByIdAsync(model.UserId);
+
 
             if (user is null)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
+                throw new ApiException(MessageHelper.USER_NOT_FOUND);
             }
 
-            IdentityResult result = await _userManager.ResetPasswordAsync(user, model.ResetToken, model.ConfirmNewPassword);
+            await EmailVerificationCheck(user);
+
+            var result = await _userManager.ResetPasswordAsync(user, model.ResetToken, model.ConfirmNewPassword);
 
             if (!result.Succeeded)
             {
-                return new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.RESET_PASSWORD_FAILED, model);
+                throw new ApiException(FormatIdentityErrors(result.Errors));
             }
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.RESET_PASSWORD_SUCESS, model));
+            return result.Succeeded;
         }
 
-        public async Task<ApiResponse> RevokeRefreshTokenAsync(string refreshToken)
+        public async Task<bool> RevokeRefreshTokenAsync(string refreshToken)
         {
             User? account = await _userManager.Users.FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
 
@@ -230,63 +236,58 @@ namespace FalconeOne.BLL.Services
 
             if (account is null)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REFRESH_TOKEN));
+                throw new ApiException(MessageHelper.INVALID_REFRESH_TOKEN);
             }
 
             if (!token.IsActive)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.REFRESH_TOKEN_EXPIRED));
+                throw new ApiException(MessageHelper.REFRESH_TOKEN_EXPIRED);
             }
 
             UpdateRefreshTokenSettings(token, string.Empty, MessageHelper.REFRESH_TOKEN_REVOKED, string.Empty);
 
-            await _userManager.UpdateAsync(account);
+            var result = await _userManager.UpdateAsync(account);
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.Accepted, MessageHelper.SUCESSFULL));
+            if (!result.Succeeded)
+            {
+                throw new ApiException(FormatIdentityErrors(result.Errors));
+            }
+
+            return result.Succeeded;
         }
 
-        public async Task<ApiResponse> ConfirmEmailAsync(ConfirmEmailRequestDto model)
+        public async Task<bool> ConfirmEmailAsync(ConfirmEmailRequestDto model)
         {
             User? user = await _userManager.FindByIdAsync(model.UserId);
 
             if (user is null)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
+                throw new ApiException(MessageHelper.INVALID_REQUEST);
             }
-            IdentityResult result = await _userManager.ConfirmEmailAsync(user, model.EmailConfirmationToken);
+
+            if (await _userManager.IsEmailConfirmedAsync(user))
+            {
+                throw new ApiException(MessageHelper.INVALID_REQUEST);
+            }
+
+            var result = await _userManager.ConfirmEmailAsync(user, model.EmailConfirmationToken);
 
             if (!result.Succeeded)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.EMAIL_CONFIRM_FAILED, result.Errors));
+                throw new ApiException(FormatIdentityErrors(result.Errors));
             }
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.EMAIL_CONFIRM_SUCCESS));
+            return result.Succeeded;
         }
 
-        public async Task<ApiResponse> UpdateEmailConfirmed(string userId, bool value)
-        {
-            User? user = await _userManager.FindByIdAsync(userId);
-
-            if (user is null)
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
-            }
-
-            user.EmailConfirmed = value;
-
-            await _userManager.UpdateAsync(user);
-
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
-        }
-
-        public async Task<ApiResponse> IsUserNameAvailable(string username)
+        public async Task<bool> IsUserNameAvailable(string username)
         {
             if (!string.IsNullOrEmpty(username))
             {
-                Task<bool> result = _unitOfWork.UserRepository.IsUserNameAvailable(username, CancellationToken.None);
+                var result = await _unitOfWork.UserRepository.IsUserNameAvailable(username, CancellationToken.None);
 
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, new { UserNameAvailable = result }));
+                return result;
             }
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REQUEST, new { UserNameAvailable = false }));
+            return false;
         }
 
         #endregion

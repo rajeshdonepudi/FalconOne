@@ -1,11 +1,8 @@
-﻿using FalconeOne.BLL.Helpers;
-using FalconeOne.BLL.Interfaces;
+﻿using FalconeOne.BLL.Interfaces;
 using FalconOne.DAL.Contracts;
 using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
 using FalconOne.Models.Entities;
-using System.Net;
-using System.Threading;
 
 namespace FalconeOne.BLL.Services
 {
@@ -20,7 +17,7 @@ namespace FalconeOne.BLL.Services
 
         public async Task SaveRequestInfoAsync(RequestInformationDto model)
         {
-            SystemLog requestInformation = new()
+            var requestInformation = new SystemLog()
             {
                 Method = model.Method,
                 Scheme = model.Scheme,
@@ -42,11 +39,11 @@ namespace FalconeOne.BLL.Services
             await _unitOfWork.SaveChangesAsync(CancellationToken.None);
         }
 
-        public async Task<ApiResponse> GetAllAsync(PageParams pageParams)
+        public async Task<PagedList<SystemLog>> GetAllAsync(PageParams pageParams)
         {
-            PagedList<SystemLog> res = await _unitOfWork.RequestInformationRepository.GetAllRequestInfoPaginatedAsync(pageParams, CancellationToken.None);
+            var res = await _unitOfWork.RequestInformationRepository.GetAllRequestInfoPaginatedAsync(pageParams, CancellationToken.None);
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, res));
+            return res;
         }
     }
 }

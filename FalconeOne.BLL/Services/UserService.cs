@@ -32,47 +32,48 @@ namespace FalconeOne.BLL.Services
         }
         #endregion
 
-        public async Task<ApiResponse> DeleteAsync(string userId)
+        public async Task<bool> DeleteAsync(string userId)
         {
-            if (!string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(userId))
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_USER_ID));
+                throw new ApiException(MessageHelper.INVALID_REQUEST);
             }
 
             User? user = await _userManager.FindByIdAsync(userId);
 
             if (user is null)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
+                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
             }
 
-            IdentityResult result = await _userManager.DeleteAsync(user);
+            var result = await _userManager.DeleteAsync(user);
 
             if (!result.Succeeded)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.USER_DELETION_FAILED));
+                throw new ApiException(FormatIdentityErrors(result.Errors));
             }
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.NoContent, MessageHelper.USER_DELETED_SUCCESSFULLY));
+            return result.Succeeded;
         }
 
-        public async Task<ApiResponse> GetAllAsync(PageParams model)
+        public async Task<PagedListDTO> GetAllAsync(PageParams model)
         {
-            List<UserDto> result = new();
-
-            PagedList<User> users = await _unitOfWork.UserRepository.GetAllUsersByTenantIdPaginatedAsync(await _tenantService.GetTenantId(), model, CancellationToken.None);
-
-            if (!users.Any())
+            if (model is null)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.NO_USERS_FOUND));
+                throw new ApiException(MessageHelper.INVALID_REQUEST);
             }
+
+            var result = new List<UserDto>();
+
+            var users = await _unitOfWork.UserRepository.GetAllUsersByTenantIdPaginatedAsync(await _tenantService.GetTenantId(), model, CancellationToken.None);
 
             foreach (User user in users)
             {
-                UserDto res = new(user);
+                var res = new UserDto(user);
+
                 result.Add(res);
             }
 
-            PagedListDTO pagedList = new()
+            var pagedList = new PagedListDTO()
             {
                 TotalCount = users.TotalCount,
                 PageIndex = users.PageIndex,
@@ -80,99 +81,60 @@ namespace FalconeOne.BLL.Services
                 Records = result
             };
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, pagedList));
+            return pagedList;
         }
 
-        public async Task<ApiResponse> GetByIdAsync(string userId)
+        public async Task<UserDto> GetByIdAsync(string userId)
         {
             if (string.IsNullOrEmpty(userId))
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_USER_ID));
+                throw new ApiException(MessageHelper.INVALID_REQUEST);
             }
 
             User? user = await _userManager.FindByIdAsync(userId);
 
             if (user is null)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
+                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
             }
 
-            UserDto result = new();
+            var result = new UserDto();
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result));
-        }
-        public Task<LoginResponseDto> UpdateUserAsync(int id, SignupRequestDto model)
-        {
-            throw new NotImplementedException();
+            return result;
         }
 
-        public async Task<ApiResponse> ConfirmEmailAsync(ConfirmEmailRequestDto model)
+        public async Task<bool> UpdateUserAsync(int id, SignupRequestDto model)
         {
-            User? user = await _userManager.FindByIdAsync(model.UserId);
+            return await Task.FromResult(false);
+        }
 
-            if (user is null)
+        public async Task<bool> AddUserToRoleAsync(AddToRoleDto model)
+        {
+            if (model is null)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
+                throw new ApiException(MessageHelper.INVALID_REQUEST);
             }
-            IdentityResult result = await _userManager.ConfirmEmailAsync(user, model.EmailConfirmationToken);
+
+            var user = await _userManager.FindByIdAsync(model.UserId);
+            var role = await _roleManager.FindByIdAsync(model.RoleId);
+
+            if (user is null || user is null)
+            {
+                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, role.Name);
 
             if (!result.Succeeded)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.EMAIL_CONFIRM_FAILED, result.Errors));
+                throw new ApiException(FormatIdentityErrors(result.Errors));
             }
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.EMAIL_CONFIRM_SUCCESS));
+            return result.Succeeded;
         }
 
-        public async Task<ApiResponse> AddUserToRoleAsync(AddToRoleDto addToRoleDTO)
+        public async Task<bool> AddUser(AddUserDto model)
         {
-            if (addToRoleDTO is null)
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REQUEST));
-            }
-
-            User? user = await _userManager.FindByIdAsync(addToRoleDTO.UserId);
-
-            if (user is null)
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
-            }
-
-            SecurityRole? role = await _roleManager.FindByIdAsync(addToRoleDTO.RoleId);
-
-            if (role is null)
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.ROLE_NOT_FOUND));
-            }
-
-            IdentityResult result = await _userManager.AddToRoleAsync(user, role.Name);
-
-            if (!result.Succeeded)
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG, null, result.Errors));
-            }
-
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
-        }
-
-        public async Task<ApiResponse> UpdateEmailConfirmed(string userId, bool value)
-        {
-            User? user = await _userManager.FindByIdAsync(userId);
-
-            if (user is null)
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.NotFound, MessageHelper.USER_NOT_FOUND));
-            }
-
-            user.EmailConfirmed = value;
-
-            await _userManager.UpdateAsync(user);
-
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
-        }
-
-        public async Task<ApiResponse> AddUser(AddUserDto model)
-        {
-            User newUser = new()
+            var newUser = new User()
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
@@ -185,8 +147,8 @@ namespace FalconeOne.BLL.Services
                 TwoFactorEnabled = model.IsTwoFactorEnabled,
                 PhoneNumber = model.Phone,
                 UserName = model.UserName,
-                TenantUsers = new List<TenantUser>
-                { 
+                Tenants = new List<TenantUser>
+                {
                     new TenantUser
                     {
                         TenantId = await _tenantService.GetTenantId()
@@ -194,44 +156,13 @@ namespace FalconeOne.BLL.Services
                 }
             };
 
-            try
+            var userCreation = await _userManager.CreateAsync(newUser, model.ConfirmPassword);
+
+            if (!userCreation.Succeeded)
             {
-                IdentityResult userCreation = await _userManager.CreateAsync(newUser, model.ConfirmPassword);
-
-                if (userCreation.Succeeded)
-                {
-                    if(model.Roles is not null && model.Roles.Any())
-                    {
-                        foreach (Guid roleId in model.Roles)
-                        {
-                            SecurityRole? role = await _roleManager.FindByIdAsync(roleId.ToString());
-
-                            if(role is not null)
-                            {
-                                IdentityResult roleAddition = await _userManager.AddToRoleAsync(newUser, role?.Name!);
-                            }
-                        }
-                    }
-
-                    if(model.Permissions is not null && model.Permissions.Any())
-                    {
-                        foreach (Guid permissionId in model.Permissions)
-                        {
-                            var claim = await _unitOfWork.SecurityClaimsRepository.GetSecurityClaimByIdAsync(permissionId, await _tenantService.GetTenantId(), CancellationToken.None);
-
-                            if(claim is not null)
-                            {
-                                var claimAddition = await _userManager.AddClaimAsync(newUser, new System.Security.Claims.Claim(claim.Type, claim.Value));
-                            }
-                        }
-                    }
-                }
-                return new ApiResponse(HttpStatusCode.Created, MessageHelper.USER_CREATED_SUCCESSFULLY);
+                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
             }
-            catch (Exception)
-            {
-                return new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.USER_CREATION_FAILED);
-            }
+            return userCreation.Succeeded;
         }
 
         public async Task<ApiResponse> GetDashboardInfo()

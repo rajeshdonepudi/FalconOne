@@ -1,10 +1,8 @@
-﻿using FalconeOne.BLL.Helpers;
-
-namespace FalconeOne.BLL.Interfaces
+﻿namespace FalconeOne.BLL.Interfaces
 {
     public interface ISecurityService
     {
-        Task<ApiResponse> GetTenantSecurityClaimsForLookup();
-        Task<ApiResponse> GetTenantSecurityRolesForLookup();
+        Task<IEnumerable<KeyValuePair<Guid, string>>> GetTenantSecurityClaimsForLookup();
+        Task<IEnumerable<KeyValuePair<Guid, string>>> GetTenantSecurityRolesForLookup();
     }
 }

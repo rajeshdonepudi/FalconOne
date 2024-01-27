@@ -1,6 +1,7 @@
-﻿using FalconeOne.BLL.Interfaces;
+﻿using FalconeOne.BLL.Helpers;
+using FalconeOne.BLL.Interfaces;
 using FalconOne.DAL.Contracts;
-using FalconOne.Models.DTOs;
+using FalconOne.Helpers.Helpers;
 using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -58,9 +59,9 @@ namespace FalconeOne.BLL.Services
             throw new ArgumentNullException("Invalid token or token not found.");
         }
 
-        protected List<BusinessError> PrepareErrors(IEnumerable<IdentityError> identityErrors)
+        protected string FormatIdentityErrors(IEnumerable<IdentityError> identityErrors)
         {
-            return identityErrors.Select(x => new BusinessError { Code = x.Code, Description = x.Description }).ToList();
+            return string.Join(',', identityErrors.Select(x => x.Description).ToArray());
         }
 
         private async Task<bool> IsValidTenant(Guid tenantId, Guid userId)
@@ -71,7 +72,7 @@ namespace FalconeOne.BLL.Services
 
             if (user is not null && tenant is not null)
             {
-                bool result = user.TenantUsers.Any(x => x.TenantId == tenant.Id);
+                bool result = user.Tenants.Any(x => x.TenantId == tenant.Id);
 
                 if (!result)
                 {
@@ -83,6 +84,16 @@ namespace FalconeOne.BLL.Services
             else
             {
                 throw new Exception("Invalid request.");
+            }
+        }
+
+        protected async Task EmailVerificationCheck(User user)
+        {
+            bool isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+
+            if (!isEmailConfirmed)
+            {
+                throw new ApiException(MessageHelper.PLEASE_CONFIRM_EMAIL);
             }
         }
     }

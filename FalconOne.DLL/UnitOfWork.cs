@@ -20,10 +20,7 @@ namespace FalconOne.DAL
             RequestInformationRepository = new SystemLogsRepository(_context, _memoryCache);
             SecurityClaimsRepository = new SecurityClaimsRepository(_context, _memoryCache);
             ApplicationPolicyRepository = new SecurityPolicyRepository(_context, _memoryCache);
-            ApplicationSettingRepository = new SiteSettingRepository(_context, _memoryCache);
-            DepartmentRepository = new DepartmentRepository(_context, _memoryCache);
             TenantRepository = new GenericRepository<Tenant>(_context, _memoryCache);
-            PostRepository = new GenericRepository<Post>(_context, _memoryCache);
             UserRepository = new UserRepository(_context, _memoryCache);
             SecurityRolesRepository = new SecurityRolesRepository(_context, _memoryCache);
         }
@@ -32,11 +29,8 @@ namespace FalconOne.DAL
         public IGenericRepository<RefreshToken> RefreshTokenRepository { get; private set; }
         public ISecurityClaimsRepository SecurityClaimsRepository { get; private set; }
         public ISecurityRolesRepository SecurityRolesRepository { get; private set; }
-        public ISiteSettingRepository ApplicationSettingRepository { get; private set; }
-        public IDepartmentRepository DepartmentRepository { get; private set; }
         public ISecurityPolicyRepository ApplicationPolicyRepository { get; private set; }
         public IGenericRepository<Tenant> TenantRepository { get; private set; }
-        public IGenericRepository<Post> PostRepository { get; private set; }
         public IUserRepository UserRepository { get; private set; }
 
         public async Task<int> SaveChangesAsync(CancellationToken token)

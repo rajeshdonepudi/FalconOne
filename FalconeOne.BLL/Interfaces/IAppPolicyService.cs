@@ -1,12 +1,12 @@
-﻿using FalconeOne.BLL.Helpers;
-using FalconOne.Models.DTOs;
+﻿using FalconOne.Models.DTOs;
+using FalconOne.Models.Entities;
 
 namespace FalconeOne.BLL.Interfaces
 {
     public interface IAppPolicyService
     {
-        Task<ApiResponse> CreatePolicy(CreatePolicyDto model);
-        Task<ApiResponse> GetAllPolicies();
-        Task<ApiResponse> DeletePolicy(Guid id);
+        Task<bool> CreatePolicy(CreatePolicyDto model);
+        Task<IEnumerable<SecurityPolicy>> GetAllPolicies();
+        Task<bool> DeletePolicy(Guid id);
     }
 }

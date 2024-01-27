@@ -7,13 +7,12 @@ namespace FalconeOne.BLL.Interfaces
 {
     public interface IUserService
     {
-        Task<ApiResponse> GetAllAsync(PageParams model);
+        Task<PagedListDTO> GetAllAsync(PageParams model);
         Task<ApiResponse> GetDashboardInfo();
-        Task<ApiResponse> GetByIdAsync(string userId);
-        Task<LoginResponseDto> UpdateUserAsync(int id, SignupRequestDto model);
-        Task<ApiResponse> DeleteAsync(string userId);
-        Task<ApiResponse> AddUserToRoleAsync(AddToRoleDto model);
-        Task<ApiResponse> UpdateEmailConfirmed(string userId, bool value);
-        Task<ApiResponse> AddUser(AddUserDto model);
+        Task<UserDto> GetByIdAsync(string userId);
+        Task<bool> UpdateUserAsync(int id, SignupRequestDto model);
+        Task<bool> DeleteAsync(string userId);
+        Task<bool> AddUserToRoleAsync(AddToRoleDto model);
+        Task<bool> AddUser(AddUserDto model);
     }
 }

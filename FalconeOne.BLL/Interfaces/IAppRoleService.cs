@@ -1,13 +1,13 @@
-﻿using FalconeOne.BLL.Helpers;
-using FalconOne.Models.DTOs;
+﻿using FalconOne.Models.DTOs;
+using FalconOne.Models.Entities;
 
 namespace FalconeOne.BLL.Interfaces
 {
     public interface IAppRoleService
     {
-        Task<ApiResponse> GetRoleAsync(string roleId);
-        Task<ApiResponse> CreateRoleAsync(UserRoleDto userRole);
-        Task<ApiResponse> DeleteRoleAsync(string roleId);
-        Task<ApiResponse> GetAllRolesAsync();
+        Task<SecurityRole> GetRoleAsync(string roleId);
+        Task<bool> CreateRoleAsync(UserRoleDto userRole);
+        Task<bool> DeleteRoleAsync(string roleId);
+        Task<IEnumerable<SecurityRole>> GetAllRolesAsync();
     }
 }

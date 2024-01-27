@@ -1,15 +1,14 @@
-﻿using FalconeOne.BLL.Helpers;
-using FalconOne.Models.DTOs;
+﻿using FalconOne.Models.DTOs;
 
 namespace FalconeOne.BLL.Interfaces
 {
     public interface IAppClaimService
     {
-        Task<ApiResponse> AddClaimToRoleAsync(AddClaimToRoleDto model);
-        Task<ApiResponse> AddClaimToUserAsync(AddClaimToUserDto model);
-        Task<ApiResponse> AddClaimsToUserAsync(AddClaimsToUserDto model);
-        Task<ApiResponse> CreateClaimAsync(UserClaimDto model);
-        Task<ApiResponse> GetAllClaimsAsync();
-        Task<ApiResponse> DeleteClaimAsync(Guid guid);
+        Task<bool> AddClaimToRoleAsync(AddClaimToRoleDto model);
+        Task<bool> AddClaimToUserAsync(AddClaimToUserDto model);
+        Task<bool> AddClaimsToUserAsync(AddClaimsToUserDto model);
+        Task<bool> CreateClaimAsync(UserClaimDto model);
+        Task<IEnumerable<string>> GetAllClaimsAsync();
+        Task<bool> DeleteClaimAsync(Guid guid);
     }
 }

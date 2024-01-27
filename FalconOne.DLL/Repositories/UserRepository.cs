@@ -13,7 +13,7 @@ namespace FalconOne.DAL.Repositories
 
         public async Task<PagedList<User>> GetAllUsersByTenantIdPaginatedAsync(Guid tenantId, PageParams pageParams, CancellationToken cancellationToken)
         {
-            List<User> records = await _context.Users.Where(x => x.TenantUsers.Any(x => x.TenantId == tenantId))
+            List<User> records = await _context.Users.Where(x => x.Tenants.Any(x => x.TenantId == tenantId))
                                                      .OrderByDescending(x => x.CreatedOn)
                                                      .Skip((pageParams.Page - 1) * pageParams.PageSize)
                                                      .Take(pageParams.PageSize)
@@ -21,7 +21,7 @@ namespace FalconOne.DAL.Repositories
                                                      .ToListAsync(cancellationToken);
 
             var totalUsersCount = await _context.Users
-                                                .Where(x => x.TenantUsers.Any(x => x.TenantId == tenantId))
+                                                .Where(x => x.Tenants.Any(x => x.TenantId == tenantId))
                                                 .LongCountAsync(cancellationToken);
 
             return new PagedList<User>(records, totalUsersCount, pageParams.Page, pageParams.PageSize);
@@ -29,7 +29,7 @@ namespace FalconOne.DAL.Repositories
 
         public async Task<User> GetTenantUserInfoByEmail(Guid tenantId, string email, CancellationToken cancellationToken)
         {
-            return await _context.Users.Where(x => x.Email == email && x.TenantUsers.Any(x => x.TenantId == tenantId))
+            return await _context.Users.Where(x => x.Email == email && x.Tenants.Any(x => x.TenantId == tenantId))
                                        .Include(x => x.ProfilePicture)
                                        .Include(x => x.RefreshTokens)
                                        .FirstOrDefaultAsync(cancellationToken)!;
@@ -37,9 +37,9 @@ namespace FalconOne.DAL.Repositories
 
         public async Task<UserManagementDashboardInfo> GetUserManagementDashboardInfoByTenantId(Guid tenantId, CancellationToken cancellationToken)
         {
-            var query = _context.Users.AsQueryable().Where(x => x.TenantUsers.Any(x => x.TenantId == tenantId));
+            var query = _context.Users.AsQueryable().Where(x => x.Tenants.Any(x => x.TenantId == tenantId));
 
-            var info = new  UserManagementDashboardInfo();
+            var info = new UserManagementDashboardInfo();
 
             info.TotalUsers = await query.CountAsync();
             info.DeactivatedUsers = await query.CountAsync(x => !x.IsActive);

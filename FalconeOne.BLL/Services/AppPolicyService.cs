@@ -1,12 +1,12 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
 using FalconOne.DAL.Contracts;
+using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
 using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using System.Net;
 
 namespace FalconeOne.BLL.Services
 {
@@ -21,39 +21,52 @@ namespace FalconeOne.BLL.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<ApiResponse> CreatePolicy(CreatePolicyDto model)
+        public async Task<bool> CreatePolicy(CreatePolicyDto model)
         {
-            SecurityPolicy policy = new()
+            if (model is null)
+            {
+                throw new ApiException(MessageHelper.INVALID_REQUEST);
+            }
+
+            var policy = new SecurityPolicy()
             {
                 Name = model.Name,
             };
 
             await _unitOfWork.ApplicationPolicyRepository.AddAsync(policy, CancellationToken.None);
 
-            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
+            var result = await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.Created, MessageHelper.SUCESSFULL));
+            if (result > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
-        public async Task<ApiResponse> DeletePolicy(Guid id)
+        public async Task<bool> DeletePolicy(Guid id)
         {
-            SecurityPolicy policy = await _unitOfWork.ApplicationPolicyRepository.FindAsync(x => x.Id == id, CancellationToken.None);
+            var policy = await _unitOfWork.ApplicationPolicyRepository.FindAsync(x => x.Id == id, CancellationToken.None);
 
             /*** Delete claims first */
             await DeleteAssociatedClaims(id);
 
             _unitOfWork.ApplicationPolicyRepository.Remove(policy);
 
-            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
+            var result = await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.Created, MessageHelper.SUCESSFULL));
+            if (result > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
-        public async Task<ApiResponse> GetAllPolicies()
+        public async Task<IEnumerable<SecurityPolicy>> GetAllPolicies()
         {
-            IEnumerable<SecurityPolicy> result = await _unitOfWork.ApplicationPolicyRepository.GetAllSecurityPoliciesWithClaimsAsync(CancellationToken.None);
+            var result = await _unitOfWork.ApplicationPolicyRepository.GetAllSecurityPoliciesWithClaimsAsync(CancellationToken.None);
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result));
+            return result;
         }
 
         #region Private
@@ -65,6 +78,7 @@ namespace FalconeOne.BLL.Services
             {
                 _unitOfWork.SecurityClaimsRepository.Remove(claim);
             }
+            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
         }
         #endregion
     }

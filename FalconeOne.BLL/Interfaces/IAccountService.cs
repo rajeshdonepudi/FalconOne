@@ -1,17 +1,56 @@
-﻿using FalconeOne.BLL.Helpers;
-using FalconOne.Models.DTOs;
+﻿using FalconOne.Models.DTOs;
 
 namespace FalconeOne.BLL.Interfaces
 {
     public interface IAccountService
     {
-        Task<LoginResponseDto> LoginUserAsync(LoginRequestDto model);
-        Task<ApiResponse> GetNewJWTByRefreshTokenAsync(string refreshToken);
-        Task<ApiResponse> RevokeRefreshTokenAsync(string refreshToken);
-        Task<ApiResponse> SignupNewUserAsync(SignupRequestDto model);
-        Task<ApiResponse> ConfirmEmailAsync(ConfirmEmailRequestDto model);
-        Task<ApiResponse> ForgotPasswordAsync(ForgotPasswordRequestDto model);
-        Task<ApiResponse> ResetPasswordAsync(ResetPasswordRequestDto model);
-        Task<ApiResponse> IsUserNameAvailable(string username);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<LoginResponseDto> LoginAsync(LoginRequestDto model);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<RegisterResponse> RegisterAsync(SignupRequestDto model);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="refreshToken"></param>
+        /// <returns></returns>
+        Task<RefreshAccessTokenResponse> GetJWTByRefreshTokenAsync(string refreshToken);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="refreshToken"></param>
+        /// <returns></returns>
+        Task<bool> RevokeRefreshTokenAsync(string refreshToken);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<bool> ConfirmEmailAsync(ConfirmEmailRequestDto model);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<bool> SendForgotPasswordResetTokenAsync(ForgotPasswordRequestDto model);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<bool> ResetPasswordAsync(ResetPasswordRequestDto model);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        Task<bool> IsUserNameAvailable(string username);
     }
 }

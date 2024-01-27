@@ -18,32 +18,33 @@ namespace FalconOne.API.Controllers
         [HttpPost("create-new-claim")]
         public async Task<IActionResult> CreateNewClaim(UserClaimDto model)
         {
-            if (ModelState.IsValid)
-            {
-                FalconeOne.BLL.Helpers.ApiResponse result = await _appClaimService.CreateClaimAsync(model);
+            var result = await _appClaimService.CreateClaimAsync(model);
 
-                return AppResponse(result);
-            }
-            else
+            if (result)
             {
-                return BadRequest(ModelState);
+                return Ok(result);
             }
+            return BadRequest();
         }
 
         [HttpGet("get-all-claims")]
         public async Task<IActionResult> GetAllClaims()
         {
-            FalconeOne.BLL.Helpers.ApiResponse response = await _appClaimService.GetAllClaimsAsync();
+            var result = await _appClaimService.GetAllClaimsAsync();
 
-            return AppResponse(response);
+            return Ok(result);
         }
 
         [HttpDelete("delete-claim")]
         public async Task<IActionResult> DeleteClaimAsync(Guid claimId)
         {
-            FalconeOne.BLL.Helpers.ApiResponse response = await _appClaimService.DeleteClaimAsync(claimId);
+            var result = await _appClaimService.DeleteClaimAsync(claimId);
 
-            return AppResponse(response);
+            if (result)
+            {
+                return Ok(result);
+            }
+            return BadRequest();
         }
     }
 }

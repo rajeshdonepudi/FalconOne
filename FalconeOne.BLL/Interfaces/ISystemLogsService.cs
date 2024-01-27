@@ -1,6 +1,6 @@
-﻿using FalconeOne.BLL.Helpers;
-using FalconOne.Helpers.Helpers;
+﻿using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
+using FalconOne.Models.Entities;
 
 namespace FalconeOne.BLL.Interfaces
 {
@@ -8,6 +8,6 @@ namespace FalconeOne.BLL.Interfaces
     {
         Task SaveRequestInfoAsync(RequestInformationDto model);
 
-        Task<ApiResponse> GetAllAsync(PageParams pageParams);
+        Task<PagedList<SystemLog>> GetAllAsync(PageParams pageParams);
     }
 }

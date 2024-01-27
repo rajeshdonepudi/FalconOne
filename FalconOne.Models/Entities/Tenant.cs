@@ -8,7 +8,6 @@ namespace FalconOne.Models.Entities
     {
         public Tenant()
         {
-            LegalEntities = new HashSet<LegalEntity>();
             Users = new HashSet<TenantUser>();
         }
 
@@ -25,7 +24,6 @@ namespace FalconOne.Models.Entities
         public DateTime? ModifiedOn { get; set; }
         public DateTime CreatedOn { get; set; }
         public Image? ProfilePicture { get; set; }
-        public virtual ICollection<LegalEntity> LegalEntities { get; set; }
         public virtual ICollection<TenantUser> Users { get; set; }
     }
 }

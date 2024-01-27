@@ -12,7 +12,7 @@ namespace FalconOne.Helpers.Helpers
         public ApiException(string message, params object[] args)
             : base(string.Format(CultureInfo.CurrentCulture, message, args))
         {
-           // Errors = args;
+            // Errors = args;
         }
     }
 }

@@ -1,12 +1,10 @@
-﻿using FalconeOne.BLL.Helpers;
-using FalconeOne.BLL.Interfaces;
+﻿using FalconeOne.BLL.Interfaces;
 using FalconOne.API.Attributes;
 using FalconOne.Models.DTOs;
 using FalconOne.ResourceCodes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using System.Net;
 
 namespace FalconOne.API.Controllers.Account
 {
@@ -25,16 +23,9 @@ namespace FalconOne.API.Controllers.Account
         [ResourceIdentifier(AppResourceCodes.Account.NEW_USER_SIGNUP)]
         public async Task<IActionResult> Signup(SignupRequestDto model)
         {
-            if (ModelState.IsValid)
-            {
-                var response = await _accountService.SignupNewUserAsync(model);
+            var response = await _accountService.RegisterAsync(model);
 
-                return AppResponse(response);
-            }
-            else
-            {
-                return BadRequest(ModelState);
-            }
+            return Ok(response);
         }
 
         [HttpPost("login")]
@@ -43,16 +34,9 @@ namespace FalconOne.API.Controllers.Account
         [ResourceIdentifier(AppResourceCodes.Account.LOGIN)]
         public async Task<IActionResult> Login(LoginRequestDto model)
         {
-            if (ModelState.IsValid)
-            {
-                var response = await _accountService.LoginUserAsync(model);
+            var response = await _accountService.LoginAsync(model);
 
-                return AppResponse(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, response));
-            }
-            else
-            {
-                return BadRequest(ModelState);
-            }
+            return Ok(response);
         }
 
 
@@ -61,16 +45,13 @@ namespace FalconOne.API.Controllers.Account
         [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordRequestDto model)
         {
-            if (ModelState.IsValid)
-            {
-                var response = await _accountService.ForgotPasswordAsync(model);
+            var response = await _accountService.SendForgotPasswordResetTokenAsync(model);
 
-                return AppResponse(response);
-            }
-            else
+            if (response)
             {
-                return BadRequest(ModelState);
+                return Ok();
             }
+            return BadRequest();
         }
 
         [HttpPost("reset-password")]
@@ -78,16 +59,13 @@ namespace FalconOne.API.Controllers.Account
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequestDto model)
         {
-            if (ModelState.IsValid)
-            {
-                var response = await _accountService.ResetPasswordAsync(model);
+            var response = await _accountService.ResetPasswordAsync(model);
 
-                return AppResponse(response);
-            }
-            else
+            if (response)
             {
-                return BadRequest(ModelState);
+                return Ok();
             }
+            return BadRequest();
         }
 
         [HttpPost("revoke-refresh-token")]
@@ -95,16 +73,13 @@ namespace FalconOne.API.Controllers.Account
         [AllowAnonymous]
         public async Task<IActionResult> RevokeRefreshToken(RevokeRefreshTokenRequestDto model)
         {
-            if (ModelState.IsValid)
-            {
-                var response = await _accountService.RevokeRefreshTokenAsync(model.RefreshToken);
+            var response = await _accountService.RevokeRefreshTokenAsync(model.RefreshToken);
 
-                return AppResponse(response);
-            }
-            else
+            if (response)
             {
-                return BadRequest(ModelState);
+                return Ok();
             }
+            return BadRequest();
         }
 
         [HttpPost("refresh-token")]
@@ -112,16 +87,9 @@ namespace FalconOne.API.Controllers.Account
         [AllowAnonymous]
         public async Task<IActionResult> RefreshToken(RefreshTokenRequestDto model)
         {
-            if (ModelState.IsValid)
-            {
-                var response = await _accountService.GetNewJWTByRefreshTokenAsync(model.RefreshToken);
+            var response = await _accountService.GetJWTByRefreshTokenAsync(model.RefreshToken);
 
-                return AppResponse(response);
-            }
-            else
-            {
-                return BadRequest(ModelState);
-            }
+            return BadRequest(response);
         }
 
         [HttpPost("username-available")]
@@ -129,7 +97,11 @@ namespace FalconOne.API.Controllers.Account
         {
             var response = await _accountService.IsUserNameAvailable(username);
 
-            return AppResponse(response);
+            if (response)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
     }
 }

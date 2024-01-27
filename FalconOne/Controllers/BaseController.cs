@@ -1,10 +1,8 @@
-﻿using FalconeOne.BLL.Helpers;
-using FalconOne.API.Filters;
+﻿using FalconOne.API.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 namespace FalconOne.API.Controllers
 {
     [ServiceFilter(typeof(AsyncActionFilter))]
@@ -27,30 +25,7 @@ namespace FalconOne.API.Controllers
             }
         }
 
-        protected IActionResult AppResponse(ApiResponse response)
-        {
-            switch (response.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                    return Ok(response);
-                case HttpStatusCode.NoContent:
-                    return NoContent();
-                case HttpStatusCode.NotFound:
-                    return NotFound(response);
-                case HttpStatusCode.Accepted:
-                    return Accepted(response);
-                case HttpStatusCode.InternalServerError:
-                    return BadRequest();
-                case HttpStatusCode.BadRequest:
-                    return BadRequest();
-                case HttpStatusCode.Created:
-                    return Created(GetRequestURI(), null);
-                default:
-                    return NoContent();
-            }
-        }
-
-        private string GetRequestURI()
+        protected string GetRequestURI()
         {
             var uri = HttpContext.Request.GetDisplayUrl();
 

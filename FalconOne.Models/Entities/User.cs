@@ -13,11 +13,7 @@ namespace FalconOne.Models.Entities
             LastName = string.Empty;
 
             RefreshTokens = new List<RefreshToken>();
-            TenantUsers = new HashSet<TenantUser>();
 
-            TimeEntries = new HashSet<TimeEntry>();
-            ReportingManagers = new HashSet<User>();
-            OverTimeAuthorizations = new HashSet<OverTimeAuthorization>();
         }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -34,27 +30,14 @@ namespace FalconOne.Models.Entities
         public DateTime CreatedOn { get; set; }
         public Guid? ProfilePictureId { get; set; }
         public virtual Image? ProfilePicture { get; set; }
-
-        public Guid DesignationId { get; set; }
         public EmployeeGenderEnum Gender { get; set; } = EmployeeGenderEnum.NotSpecified;
         public DateTime DateOfBirth { get; set; }
         public MaritalStatusEnum MaritalStatus { get; set; } = MaritalStatusEnum.NotSpecified;
         public BloodGroupTypeEnum BloodGroup { get; set; } = BloodGroupTypeEnum.NotSpecified;
         public bool PhysicallyChallenged { get; set; }
-        public string? ProfessionalSummary { get; set; }
-        public Guid? JobDetailsId { get; set; }
-        public Guid? EmployeeSummaryId { get; set; }
-        public virtual Designation Designation { get; set; }
-        public virtual EmployeeSummary EmployeeSummary { get; set; }
-        public virtual JobDetail JobDetails { get; set; }
-        public virtual ContactDetail ContactDetails { get; set; }
-
-        public virtual ICollection<TenantUser> TenantUsers { get; set; }
-        public virtual ICollection<TimeEntry> TimeEntries { get; set; }
-        public virtual ICollection<User> ReportingManagers { get; set; }
         public virtual ICollection<Address> Addresses { get; set; }
-        public virtual ICollection<OverTimeAuthorization> OverTimeAuthorizations { get; set; }
-        public virtual ICollection<MetadataGroup> AdditionalInfo { get; set; }
+        public virtual ICollection<TenantUser> Tenants { get; set; }
+
         public bool OwnsToken(string token)
         {
             return RefreshTokens?.Find(x => x.Token == token) != null;

@@ -21,9 +21,9 @@ namespace FalconOne.API.Controllers
         [ResourceIdentifier(AppResourceCodes.Security.GET_SECURITY_CLAIMS_LOOKUP)]
         public async Task<IActionResult> GetSecurityClaims()
         {
-            FalconeOne.BLL.Helpers.ApiResponse response = await _securityService.GetTenantSecurityClaimsForLookup();
+            var response = await _securityService.GetTenantSecurityClaimsForLookup();
 
-            return AppResponse(response);
+            return Ok(response);
         }
 
         [HttpGet("roles/lookup")]
@@ -31,9 +31,9 @@ namespace FalconOne.API.Controllers
         [ResourceIdentifier(AppResourceCodes.Security.GET_SECURITY_ROLES_LOOKUP)]
         public async Task<IActionResult> GetSecurityRoles()
         {
-            FalconeOne.BLL.Helpers.ApiResponse response = await _securityService.GetTenantSecurityRolesForLookup();
+            var response = await _securityService.GetTenantSecurityRolesForLookup();
 
-            return AppResponse(response);
+            return Ok(response);
         }
     }
 }

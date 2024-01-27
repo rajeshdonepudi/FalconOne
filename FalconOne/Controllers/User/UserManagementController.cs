@@ -27,22 +27,21 @@ namespace FalconOne.API.Controllers.User
         [ResourceIdentifier(AppResourceCodes.User.USER_MANAGMENT_DASHBOARD)]
         public async Task<IActionResult> Dashboard()
         {
-            return AppResponse(await _userService.GetDashboardInfo());
+            var result = await _userService.GetDashboardInfo();
+
+            return Ok(result);
         }
 
         [HttpPost("add-user-to-role")]
         public async Task<IActionResult> AddUserToRole(AddToRoleDto model)
         {
-            if (ModelState.IsValid)
-            {
-                var result = await _userService.AddUserToRoleAsync(model);
+            var result = await _userService.AddUserToRoleAsync(model);
 
-                return AppResponse(result);
-            }
-            else
+            if (result)
             {
-                return BadRequest(ModelState);
+                return Ok(result);
             }
+            return BadRequest();
         }
 
         [HttpPost("add-user")]
@@ -51,21 +50,23 @@ namespace FalconOne.API.Controllers.User
         {
             var result = await _userService.AddUser(model);
 
-            return AppResponse(result);
+            if (result)
+            {
+                return Ok(result);
+            }
+            return BadRequest();
         }
 
         [HttpPost("add-claim-to-user")]
         public async Task<IActionResult> AddClaimToUser(AddClaimToUserDto model)
         {
-            if (ModelState.IsValid)
+            var result = await _appClaimService.AddClaimToUserAsync(model);
+
+            if (result)
             {
-                var result = await _appClaimService.AddClaimToUserAsync(model);
-                return AppResponse(result);
+                return Ok(result);
             }
-            else
-            {
-                return BadRequest();
-            }
+            return BadRequest();
         }
 
         [HttpPost("all-users")]
@@ -75,7 +76,7 @@ namespace FalconOne.API.Controllers.User
         {
             var response = await _userService.GetAllAsync(model);
 
-            return AppResponse(response);
+            return Ok(response);
         }
 
         [HttpGet("get-user")]
@@ -84,23 +85,7 @@ namespace FalconOne.API.Controllers.User
         {
             var response = await _userService.GetByIdAsync(userId);
 
-            return AppResponse(response);
-        }
-
-        [HttpPatch("{userId}/email-confirmed/{value}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> UpdateEmailConfirmed(string userId, bool value)
-        {
-            if (ModelState.IsValid)
-            {
-                var response = await _userService.UpdateEmailConfirmed(userId, value);
-
-                return AppResponse(response);
-            }
-            else
-            {
-                return BadRequest(ModelState);
-            }
+            return Ok(response);
         }
     }
 }

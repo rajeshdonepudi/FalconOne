@@ -4,18 +4,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FalconOne.Models.EntityConfiguration
 {
-    public class EmployeeTimeConfiguration : IEntityTypeConfiguration<EmployeeTime>
-    {
-        public void Configure(EntityTypeBuilder<EmployeeTime> builder)
-        {
-            builder.HasOne(e => e.ShiftWeeklyOffRule)
-                   .WithMany(s => s.EmployeeTimes)
-                   .HasForeignKey(e => e.ShiftWeeklyOffRuleId)
-                   .OnDelete(DeleteBehavior.Restrict);
-        }
-    } 
- 
-    
     public class TenantUserConfiguration : IEntityTypeConfiguration<TenantUser>
     {
         public void Configure(EntityTypeBuilder<TenantUser> builder)
@@ -27,7 +15,7 @@ namespace FalconOne.Models.EntityConfiguration
                 .HasForeignKey(tu => tu.TenantId);
 
             builder.HasOne(tu => tu.User)
-                .WithMany(u => u.TenantUsers)
+                .WithMany(u => u.Tenants)
                 .HasForeignKey(tu => tu.UserId);
         }
     }

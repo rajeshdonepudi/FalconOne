@@ -1,12 +1,13 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
 using FalconOne.DAL.Contracts;
+using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs;
 using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.Net;
 
 namespace FalconeOne.BLL.Services
 {
@@ -22,48 +23,51 @@ namespace FalconeOne.BLL.Services
         {
             _roleManager = roleManager;
         }
-        public async Task<ApiResponse> CreateRoleAsync(UserRoleDto userRole)
+
+        public async Task<bool> CreateRoleAsync(UserRoleDto model)
         {
-            if (userRole is null)
+            if (model is null)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.BadRequest, MessageHelper.INVALID_REQUEST));
+                throw new ApiException(MessageHelper.INVALID_REQUEST);
             }
 
-            SecurityRole? role = new()
+            var role = new SecurityRole()
             {
-                Name = userRole.Name,
+                Name = model.Name,
                 CreatedOn = DateTime.UtcNow
             };
 
-            if (role is null)
-            {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG));
-            }
-
-            IdentityResult result = await _roleManager.CreateAsync(role);
+            var result = await _roleManager.CreateAsync(role);
 
             if (!result.Succeeded)
             {
-                return await Task.FromResult(new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG, null, result.Errors));
+                throw new ApiException(FormatIdentityErrors(result.Errors));
+            }
+            return result.Succeeded;
+        }
+
+        public Task<bool> DeleteRoleAsync(string roleId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<SecurityRole>> GetAllRolesAsync()
+        {
+            var roles = await _roleManager.Roles.ToListAsync();
+
+            return roles;
+        }
+
+        public async Task<SecurityRole> GetRoleAsync(string roleId)
+        {
+            var role = await _roleManager.FindByIdAsync(roleId);
+
+            if (role is null)
+            {
+                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
             }
 
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL));
-        }
-
-        public Task<ApiResponse> DeleteRoleAsync(string roleId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<ApiResponse> GetAllRolesAsync()
-        {
-            List<SecurityRole> roles = _roleManager.Roles.ToList();
-            return await Task.FromResult(new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, roles));
-        }
-
-        public Task<ApiResponse> GetRoleAsync(string roleId)
-        {
-            throw new NotImplementedException();
+            return role;
         }
     }
 }

@@ -20,31 +20,25 @@ namespace FalconOne.API.Controllers
         [HttpPost("create-role")]
         public async Task<IActionResult> CreateRole(UserRoleDto role)
         {
-            if (ModelState.IsValid)
-            {
-                FalconeOne.BLL.Helpers.ApiResponse result = await _appRoleService.CreateRoleAsync(role);
+            var result = await _appRoleService.CreateRoleAsync(role);
 
-                return AppResponse(result);
-            }
-            else
+            if (result)
             {
-                return BadRequest(ModelState);
+                return Created(GetRequestURI(), role);
             }
+            return BadRequest();
         }
 
         [HttpPost("add-claim-to-role")]
         public async Task<IActionResult> AddClaimToRole(AddClaimToRoleDto model)
         {
-            if (ModelState.IsValid)
-            {
-                FalconeOne.BLL.Helpers.ApiResponse result = await _appClaimService.AddClaimToRoleAsync(model);
+            var result = await _appClaimService.AddClaimToRoleAsync(model);
 
-                return AppResponse(result);
-            }
-            else
+            if (result)
             {
-                return BadRequest(ModelState);
+                return Created(GetRequestURI(), model);
             }
+            return BadRequest();
         }
 
         [HttpGet("roles")]

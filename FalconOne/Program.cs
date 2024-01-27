@@ -12,7 +12,6 @@ using KE.IdenticonSharp.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -50,7 +49,6 @@ builder.Services.AddRateLimiter(rlOptions =>
 
 builder.Services.AddIdenticonSharp<GitHubIdenticonProvider, GitHubIdenticonOptions>(options =>
 {
-    // Configuring parameters of default IdenticonProvider 
     options.SpriteSize = 10;
     options.Size = 256;
     options.HashAlgorithm = HashProvider.SHA512;
@@ -92,22 +90,19 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddDbContext<FalconOneContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
-ServiceProvider providerBuilder = builder.Services.BuildServiceProvider();
-
-AuthorizationConfig.Configure(builder, providerBuilder);
+AuthorizationConfig.Configure(builder.Services);
 
 WebApplication app = builder.Build();
 
 DatabaseConfig.Configure(app.Services);
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
 
 app.UseRateLimiter();
-//app.UseMiddleware<DebugAuthorizationMiddleware>();
 
 app.UseSwagger();
 
@@ -133,5 +128,5 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 
 DbSeeder.Seed(app.Services);
 
-app.Run();
+await app.RunAsync();
 
