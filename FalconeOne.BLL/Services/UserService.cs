@@ -2,7 +2,9 @@
 using FalconeOne.BLL.Interfaces;
 using FalconOne.DAL.Contracts;
 using FalconOne.Helpers.Helpers;
-using FalconOne.Models.DTOs;
+using FalconOne.Models.Dtos.Common;
+using FalconOne.Models.DTOs.Account;
+using FalconOne.Models.DTOs.Security;
 using FalconOne.Models.DTOs.Users;
 using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
@@ -55,25 +57,31 @@ namespace FalconeOne.BLL.Services
             return result.Succeeded;
         }
 
-        public async Task<PagedListDTO> GetAllAsync(PageParams model)
+        public async Task<PagedListDto> GetAllAsync(PageParams model)
         {
             if (model is null)
             {
                 throw new ApiException(MessageHelper.INVALID_REQUEST);
             }
 
-            var result = new List<UserDto>();
+            var result = new List<UserInfoDto>();
 
             var users = await _unitOfWork.UserRepository.GetAllUsersByTenantIdPaginatedAsync(await _tenantService.GetTenantId(), model, CancellationToken.None);
 
             foreach (User user in users)
             {
-                var res = new UserDto(user);
+                var res = new UserInfoDto
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.LastName,
+                    Id = user.Id,
+                };
 
                 result.Add(res);
             }
 
-            var pagedList = new PagedListDTO()
+            var pagedList = new PagedListDto()
             {
                 TotalCount = users.TotalCount,
                 PageIndex = users.PageIndex,
@@ -84,7 +92,7 @@ namespace FalconeOne.BLL.Services
             return pagedList;
         }
 
-        public async Task<UserDto> GetByIdAsync(string userId)
+        public async Task<UserInfoDto> GetByIdAsync(string userId)
         {
             if (string.IsNullOrEmpty(userId))
             {
@@ -98,7 +106,13 @@ namespace FalconeOne.BLL.Services
                 throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
             }
 
-            var result = new UserDto();
+            var result = new UserInfoDto
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.LastName,
+                Id = user.Id,
+            };
 
             return result;
         }
@@ -165,18 +179,11 @@ namespace FalconeOne.BLL.Services
             return userCreation.Succeeded;
         }
 
-        public async Task<ApiResponse> GetDashboardInfo()
+        public async Task<UserManagementDashboardInfoDto> GetDashboardInfo()
         {
             var result = await _unitOfWork.UserRepository.GetUserManagementDashboardInfoByTenantId(await _tenantService.GetTenantId(), CancellationToken.None);
-
-            try
-            {
-                return new ApiResponse(HttpStatusCode.OK, MessageHelper.SUCESSFULL, result);
-            }
-            catch (Exception)
-            {
-                return new ApiResponse(HttpStatusCode.InternalServerError, MessageHelper.SOMETHING_WENT_WRONG);
-            }
+            
+            return result;
         }
     }
 }

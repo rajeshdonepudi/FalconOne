@@ -1,4 +1,4 @@
-﻿using FalconOne.Models.DTOs;
+﻿using FalconOne.Models.DTOs.Account;
 
 namespace FalconeOne.BLL.Interfaces
 {
@@ -21,7 +21,7 @@ namespace FalconeOne.BLL.Interfaces
         /// </summary>
         /// <param name="refreshToken"></param>
         /// <returns></returns>
-        Task<RefreshAccessTokenResponse> GetJWTByRefreshTokenAsync(string refreshToken);
+        Task<RefreshAccessTokenResponseDto> GetJWTByRefreshTokenAsync(string refreshToken);
         /// <summary>
         /// 
         /// </summary>

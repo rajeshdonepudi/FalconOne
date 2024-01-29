@@ -1,26 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FalconOne.Models.DTOs
+namespace FalconOne.Models.DTOs.Account
 {
     public class SignupRequestDto
     {
         [Required(AllowEmptyStrings = false, ErrorMessage = "First name is required.")]
-        public string FirstName { get; set; }
+        public required string FirstName { get; set; }
         [Required(AllowEmptyStrings = false, ErrorMessage = "Last name is required.")]
-        public string LastName { get; set; }
-        public string UserName { get; set; }
+        public required string LastName { get; set; }
+        public required string UserName { get; set; }
         [Required(AllowEmptyStrings = false, ErrorMessage = "Email is required.")]
         [EmailAddress]
         [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+        public required string Email { get; set; }
         [Phone]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Phone number is required.")]
-        public string PhoneNumber { get; set; }
+        public required string PhoneNumber { get; set; }
         [Required]
         [DataType(DataType.Password, ErrorMessage = "Password is required.")]
-        public string Password { get; set; }
+        public required string Password { get; set; }
         [DataType(DataType.Password, ErrorMessage = "Confirm password is required.")]
         [Compare("Password", ErrorMessage = "Confirm password should be same as password.")]
-        public string ConfirmPassword { get; set; }
+        public required string ConfirmPassword { get; set; }
     }
 }

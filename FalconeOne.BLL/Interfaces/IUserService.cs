@@ -1,15 +1,17 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconOne.Helpers.Helpers;
-using FalconOne.Models.DTOs;
+using FalconOne.Models.Dtos.Common;
+using FalconOne.Models.DTOs.Account;
+using FalconOne.Models.DTOs.Security;
 using FalconOne.Models.DTOs.Users;
 
 namespace FalconeOne.BLL.Interfaces
 {
     public interface IUserService
     {
-        Task<PagedListDTO> GetAllAsync(PageParams model);
-        Task<ApiResponse> GetDashboardInfo();
-        Task<UserDto> GetByIdAsync(string userId);
+        Task<PagedListDto> GetAllAsync(PageParams model);
+        Task<UserManagementDashboardInfoDto> GetDashboardInfo();
+        Task<UserInfoDto> GetByIdAsync(string userId);
         Task<bool> UpdateUserAsync(int id, SignupRequestDto model);
         Task<bool> DeleteAsync(string userId);
         Task<bool> AddUserToRoleAsync(AddToRoleDto model);

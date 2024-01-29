@@ -1,7 +1,7 @@
 ﻿using FalconeOne.BLL.Interfaces;
 using FalconOne.API.Attributes;
 using FalconOne.Helpers.Helpers;
-using FalconOne.Models.DTOs;
+using FalconOne.Models.DTOs.Security;
 using FalconOne.Models.DTOs.Users;
 using FalconOne.ResourceCodes;
 using Microsoft.AspNetCore.Authorization;
@@ -24,7 +24,7 @@ namespace FalconOne.API.Controllers.User
 
         [HttpGet("dashboard-info")]
         [AllowAnonymous]
-        [ResourceIdentifier(AppResourceCodes.User.USER_MANAGMENT_DASHBOARD)]
+        [ResourceIdentifier(ResourceIdentifier.User.USER_MANAGMENT_DASHBOARD)]
         public async Task<IActionResult> Dashboard()
         {
             var result = await _userService.GetDashboardInfo();
@@ -45,7 +45,7 @@ namespace FalconOne.API.Controllers.User
         }
 
         [HttpPost("add-user")]
-        [ResourceIdentifier(AppResourceCodes.User.ADD_NEW_USER)]
+        [ResourceIdentifier(ResourceIdentifier.User.ADD_NEW_USER)]
         public async Task<IActionResult> AddUser(AddUserDto model)
         {
             var result = await _userService.AddUser(model);
@@ -71,7 +71,7 @@ namespace FalconOne.API.Controllers.User
 
         [HttpPost("all-users")]
         [AllowAnonymous]
-        [ResourceIdentifier(AppResourceCodes.Account.GET_USER)]
+        [ResourceIdentifier(ResourceIdentifier.Account.GET_USER)]
         public async Task<IActionResult> GetAllUsers(PageParams model)
         {
             var response = await _userService.GetAllAsync(model);
@@ -80,7 +80,7 @@ namespace FalconOne.API.Controllers.User
         }
 
         [HttpGet("get-user")]
-        [ResourceIdentifier(AppResourceCodes.Account.GET_USER)]
+        [ResourceIdentifier(ResourceIdentifier.Account.GET_USER)]
         public async Task<IActionResult> GetByUserId(string userId)
         {
             var response = await _userService.GetByIdAsync(userId);

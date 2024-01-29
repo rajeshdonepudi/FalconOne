@@ -2,7 +2,7 @@
 using FalconeOne.BLL.Interfaces;
 using FalconOne.DAL.Contracts;
 using FalconOne.Helpers.Helpers;
-using FalconOne.Models.DTOs;
+using FalconOne.Models.DTOs.Security;
 using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;

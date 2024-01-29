@@ -1,5 +1,5 @@
 ﻿using FalconeOne.BLL.Interfaces;
-using FalconOne.Models.DTOs;
+using FalconOne.Models.DTOs.Account;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FalconOne.API.Controllers.Security

@@ -1,6 +1,6 @@
 ﻿namespace FalconOne.ResourceCodes
 {
-    public class AppResourceCodes
+    public class ResourceIdentifier
     {
         public static class Account
         {
@@ -14,36 +14,18 @@
             public const string REFRESH_TOKEN = "REFRESH_TOKEN";
             public const string AAC_UPDATE_EMAIL_CONFIRMED = "AAC_UPDATE_EMAIL_CONFIRMED";
         }
+
         public static class User
         {
             public const string ADD_NEW_USER = "ADD_NEW_USER";
             public const string USER_MANAGMENT_DASHBOARD = "USER_MANAGEMENT_DASHBOARD";
         }
 
-        public static class Settings
-        {
-            public const string GET_SETTING_BY_TYPE = "GET_SETTING_BY_TYPE";
-            public const string GET_SETTING_TYPES = "GET_SETTING_TYPES";
-            public const string UPDATE_SETTINGS = "UPDATE_SETTINGS";
-            public const string GET_TENANT_SETTINGS = "GET_TENANT_SETTINGS";
-            public const string ADD_NEW_SETTING = "ADD_NEW_SETTING";
-            public const string DELETE_SETTING = "DELETE_SETTING";
-        }
-
         public static class Security
         {
             public const string GET_SECURITY_CLAIMS_LOOKUP = "GET_SECURITY_CLAIMS_LOOKUP";
             public const string GET_SECURITY_ROLES_LOOKUP = "GET_SECURITY_ROLES_LOOKUP";
-        }
-
-        public static class Post
-        {
-            public const string ADD_NEW_POST = "ADD_NEW_POST";
-        }
-
-        public static class Fonts
-        {
-            public const string GET_FONT_FAMILIES = "GET_FONT_FAMILIES";
+            public const string HASH_USER_PASSWORD = "HASH_USER_PASSWORD";
         }
     }
 }

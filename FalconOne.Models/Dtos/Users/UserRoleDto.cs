@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FalconOne.Models.DTOs
+namespace FalconOne.Models.DTOs.Users
 {
     public class UserRoleDto
     {
         [Required]
-        public string Name { get; set; }
+        public required string Name { get; set; }
     }
 }

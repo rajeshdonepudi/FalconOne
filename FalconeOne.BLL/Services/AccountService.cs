@@ -1,9 +1,8 @@
 ﻿using FalconeOne.BLL.Helpers;
 using FalconeOne.BLL.Interfaces;
 using FalconOne.DAL.Contracts;
-using FalconOne.Extensions.Http;
 using FalconOne.Helpers.Helpers;
-using FalconOne.Models.DTOs;
+using FalconOne.Models.DTOs.Account;
 using FalconOne.Models.Entities;
 using IdenticonSharp.Helpers;
 using IdenticonSharp.Identicons;
@@ -164,7 +163,7 @@ namespace FalconeOne.BLL.Services
             return false;
         }
 
-        public async Task<RefreshAccessTokenResponse> GetJWTByRefreshTokenAsync(string refreshToken)
+        public async Task<RefreshAccessTokenResponseDto> GetJWTByRefreshTokenAsync(string refreshToken)
         {
             User? account = await _userManager.Users.Include(x => x.RefreshTokens).FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
 
@@ -199,7 +198,7 @@ namespace FalconeOne.BLL.Services
 
             string jwtToken = await GenerateJWTToken(account);
 
-            var response = new RefreshAccessTokenResponse()
+            var response = new RefreshAccessTokenResponseDto()
             {
                 JWTToken = jwtToken,
                 RefreshToken = newRefreshToken.Token!
@@ -330,7 +329,7 @@ namespace FalconeOne.BLL.Services
                 Token = Convert.ToHexString(GetRandomBytes(64)),
                 Expires = DateTime.UtcNow.AddDays(double.Parse(await _appConfigService.GetValue("JWT:RefreshTokenValidity"))),
                 Created = DateTime.UtcNow,
-                CreatedByIp = _httpContextAccessor.HttpContext.GetRequestIP(true)
+                CreatedByIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString(),
             });
         }
         private byte[] GetRandomBytes(int length)

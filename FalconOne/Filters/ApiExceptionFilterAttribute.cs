@@ -1,4 +1,5 @@
 ﻿using FalconOne.Helpers.Helpers;
+using FalconOne.Models.DTOs.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -14,12 +15,9 @@ namespace FalconOne.API.Filters
             switch (context.Exception)
             {
                 case ApiException:
-                    var errorResponse = new
+                    var errorResponse = new ApiErrorResponseDto
                     {
-                        error = new
-                        {
-                            message = context.Exception.Message
-                        }
+                        Message = context.Exception.Message,
                     };
                     context.Result = new BadRequestObjectResult(errorResponse);
                     context.ExceptionHandled = true;

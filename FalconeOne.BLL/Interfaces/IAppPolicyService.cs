@@ -1,4 +1,4 @@
-﻿using FalconOne.Models.DTOs;
+﻿using FalconOne.Models.DTOs.Security;
 using FalconOne.Models.Entities;
 
 namespace FalconeOne.BLL.Interfaces

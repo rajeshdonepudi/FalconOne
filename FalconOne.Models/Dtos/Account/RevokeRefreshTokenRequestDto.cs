@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FalconOne.Models.DTOs
+namespace FalconOne.Models.DTOs.Account
 {
     public class RevokeRefreshTokenRequestDto
     {
         [Required]
-        public string RefreshToken { get; set; }
+        public required string RefreshToken { get; set; }
     }
 }

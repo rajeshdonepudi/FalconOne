@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
-namespace FalconOne.Models.DTOs
+namespace FalconOne.Models.DTOs.Security
 {
-    public class AddClaimsToRoleDto
+    public record AddClaimsToRoleDto
     {
         [Required]
         public string RoleId { get; set; }

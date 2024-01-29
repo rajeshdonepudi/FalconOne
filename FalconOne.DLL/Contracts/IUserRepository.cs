@@ -1,6 +1,6 @@
 ﻿using FalconOne.Helpers.Helpers;
 using FalconOne.Models.Contracts;
-using FalconOne.Models.DTOs;
+using FalconOne.Models.DTOs.Security;
 using FalconOne.Models.Entities;
 
 namespace FalconOne.DAL.Contracts
@@ -13,6 +13,6 @@ namespace FalconOne.DAL.Contracts
 
         Task<User> GetTenantUserInfoByEmail(Guid tenantId, string email, CancellationToken cancellationToken);
 
-        Task<UserManagementDashboardInfo> GetUserManagementDashboardInfoByTenantId(Guid tenantId, CancellationToken cancellationToken);
+        Task<UserManagementDashboardInfoDto> GetUserManagementDashboardInfoByTenantId(Guid tenantId, CancellationToken cancellationToken);
     }
 }

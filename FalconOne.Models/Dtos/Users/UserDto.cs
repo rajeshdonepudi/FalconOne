@@ -1,6 +1,6 @@
 ﻿using FalconOne.Models.Entities;
 
-namespace FalconOne.Models.DTOs
+namespace FalconOne.Models.DTOs.Users
 {
     public class UserDto
     {
@@ -23,17 +23,17 @@ namespace FalconOne.Models.DTOs
             CreatedOn = user.CreatedOn;
         }
         public Guid Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string UserName { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
+        public required string FirstName { get; set; }
+        public required string LastName { get; set; }
+        public required string UserName { get; set; }
+        public required string Email { get; set; }
+        public required string Phone { get; set; }
         public bool EmailConfirmed { get; set; }
         public bool PhoneNumberConfirmed { get; set; }
         public bool TwoFactorEnabled { get; set; }
         public bool LockoutEnabled { get; set; }
-        public string Password { get; set; }
-        public string ConfirmPassword { get; set; }
+        public required string Password { get; set; }
+        public required string ConfirmPassword { get; set; }
         public DateTime CreatedOn { get; set; }
     }
 }

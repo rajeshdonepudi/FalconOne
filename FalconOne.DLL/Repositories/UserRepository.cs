@@ -1,6 +1,6 @@
 ﻿using FalconOne.DAL.Contracts;
 using FalconOne.Helpers.Helpers;
-using FalconOne.Models.DTOs;
+using FalconOne.Models.DTOs.Security;
 using FalconOne.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -35,11 +35,11 @@ namespace FalconOne.DAL.Repositories
                                        .FirstOrDefaultAsync(cancellationToken)!;
         }
 
-        public async Task<UserManagementDashboardInfo> GetUserManagementDashboardInfoByTenantId(Guid tenantId, CancellationToken cancellationToken)
+        public async Task<UserManagementDashboardInfoDto> GetUserManagementDashboardInfoByTenantId(Guid tenantId, CancellationToken cancellationToken)
         {
             var query = _context.Users.AsQueryable().Where(x => x.Tenants.Any(x => x.TenantId == tenantId));
 
-            var info = new UserManagementDashboardInfo();
+            var info = new UserManagementDashboardInfoDto();
 
             info.TotalUsers = await query.CountAsync();
             info.DeactivatedUsers = await query.CountAsync(x => !x.IsActive);

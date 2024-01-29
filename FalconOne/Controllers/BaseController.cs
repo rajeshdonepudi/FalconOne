@@ -1,4 +1,5 @@
 ﻿using FalconOne.API.Filters;
+using FalconOne.Models.DTOs.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -7,6 +8,7 @@ namespace FalconOne.API.Controllers
 {
     [ServiceFilter(typeof(AsyncActionFilter))]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [ProducesResponseType(typeof(ApiErrorResponseDto), StatusCodes.Status400BadRequest)]
     public class BaseController : ControllerBase
     {
         public BaseController() : base()

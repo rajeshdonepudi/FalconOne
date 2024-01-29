@@ -5,7 +5,6 @@ using FalconOne.API.DependencyConfig;
 using FalconOne.API.Filters;
 using FalconOne.API.SwaggerConfig;
 using FalconOne.DAL;
-using FalconOne.Middleware.Error;
 using IdenticonSharp.Identicons;
 using IdenticonSharp.Identicons.Defaults.GitHub;
 using KE.IdenticonSharp.AspNetCore;
@@ -78,12 +77,6 @@ builder.Services.AddControllers(c =>
 {
     c.Filters.Add(new AsyncActionFilter());
     c.Filters.Add<ApiExceptionFilterAttribute>();
-
-    c.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
-    c.OutputFormatters.Add(new SystemTextJsonOutputFormatter(new JsonSerializerOptions(JsonSerializerDefaults.Web)
-    {
-        ReferenceHandler = ReferenceHandler.IgnoreCycles,
-    }));
 });
 
 builder.Services.AddHttpClient();
@@ -95,7 +88,6 @@ AuthorizationConfig.Configure(builder.Services);
 WebApplication app = builder.Build();
 
 DatabaseConfig.Configure(app.Services);
-
 
 if (app.Environment.IsDevelopment())
 {
@@ -123,8 +115,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseMiddleware<ErrorHandlerMiddleware>();
 
 DbSeeder.Seed(app.Services);
 

@@ -1,14 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FalconOne.Models.DTOs
+namespace FalconOne.Models.DTOs.Account
 {
-    public class LoginRequestDto
+    public record LoginRequestDto
     {
         [Required(AllowEmptyStrings = false, ErrorMessage = "Email is required.")]
         [EmailAddress]
-        public string Email { get; set; }
+        public required string Email { get; set; }
+
         [Required(ErrorMessage = "Password is required.")]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public required string Password { get; set; }
     }
 }
