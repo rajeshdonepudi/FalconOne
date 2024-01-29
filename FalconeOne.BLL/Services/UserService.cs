@@ -38,14 +38,14 @@ namespace FalconeOne.BLL.Services
         {
             if (string.IsNullOrEmpty(userId))
             {
-                throw new ApiException(MessageHelper.INVALID_REQUEST);
+                throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }
 
             User? user = await _userManager.FindByIdAsync(userId);
 
             if (user is null)
             {
-                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
+                throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
             }
 
             var result = await _userManager.DeleteAsync(user);
@@ -61,7 +61,7 @@ namespace FalconeOne.BLL.Services
         {
             if (model is null)
             {
-                throw new ApiException(MessageHelper.INVALID_REQUEST);
+                throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }
 
             var result = new List<UserInfoDto>();
@@ -96,14 +96,14 @@ namespace FalconeOne.BLL.Services
         {
             if (string.IsNullOrEmpty(userId))
             {
-                throw new ApiException(MessageHelper.INVALID_REQUEST);
+                throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }
 
             User? user = await _userManager.FindByIdAsync(userId);
 
             if (user is null)
             {
-                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
+                throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
             }
 
             var result = new UserInfoDto
@@ -126,7 +126,7 @@ namespace FalconeOne.BLL.Services
         {
             if (model is null)
             {
-                throw new ApiException(MessageHelper.INVALID_REQUEST);
+                throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }
 
             var user = await _userManager.FindByIdAsync(model.UserId);
@@ -134,7 +134,7 @@ namespace FalconeOne.BLL.Services
 
             if (user is null || user is null)
             {
-                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
+                throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
             }
 
             var result = await _userManager.AddToRoleAsync(user, role.Name);
@@ -174,7 +174,7 @@ namespace FalconeOne.BLL.Services
 
             if (!userCreation.Succeeded)
             {
-                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
+                throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
             }
             return userCreation.Succeeded;
         }

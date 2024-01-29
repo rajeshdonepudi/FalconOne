@@ -93,7 +93,7 @@ namespace FalconeOne.BLL.Services
 
             if (!isEmailConfirmed)
             {
-                throw new ApiException(MessageHelper.PLEASE_CONFIRM_EMAIL);
+                throw new ApiException(ErrorMessages.PLEASE_CONFIRM_EMAIL);
             }
         }
     }

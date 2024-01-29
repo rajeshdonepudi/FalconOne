@@ -28,7 +28,7 @@ namespace FalconeOne.BLL.Services
         {
             if (model is null)
             {
-                throw new ApiException(MessageHelper.INVALID_REQUEST);
+                throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }
 
             var role = new SecurityRole()
@@ -64,7 +64,7 @@ namespace FalconeOne.BLL.Services
 
             if (role is null)
             {
-                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
+                throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
             }
 
             return role;

@@ -35,18 +35,18 @@ namespace FalconeOne.BLL.Services
 
                 if (string.IsNullOrEmpty(uri.Host))
                 {
-                    throw new ApiException(MessageHelper.INVALID_REQUEST);
+                    throw new ApiException(ErrorMessages.INVALID_REQUEST);
                 }
 
                 var tenant = await _unitOfWork.TenantRepository.FindAsync(x => x.Host.Equals(uri.Host), CancellationToken.None);
 
                 if (tenant is null)
                 {
-                    throw new ApiException(MessageHelper.INVALID_REQUEST);
+                    throw new ApiException(ErrorMessages.INVALID_REQUEST);
                 }
                 return tenant.Id;
             }
-            throw new ApiException(MessageHelper.INVALID_REQUEST);
+            throw new ApiException(ErrorMessages.INVALID_REQUEST);
         }
     }
 }

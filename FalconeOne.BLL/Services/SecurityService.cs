@@ -12,9 +12,6 @@ namespace FalconeOne.BLL.Services
 {
     public class SecurityService : BaseService, ISecurityService
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly ITokenService _tokenService;
-        private readonly IAppConfigService _appConfigService;
         private readonly IPasswordHasher<User> _passwordHasher;
 
         public SecurityService(UserManager<User> userManager,
@@ -26,9 +23,6 @@ namespace FalconeOne.BLL.Services
             IHttpContextAccessor httpContextAccessor,
             IConfiguration configuration, IPasswordHasher<User> passwordHasher) : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
         {
-            _signInManager = signInManager;
-            _tokenService = tokenService;
-            _appConfigService = appConfigService;
             _passwordHasher = passwordHasher;
         }
 
@@ -50,14 +44,14 @@ namespace FalconeOne.BLL.Services
         {
             if(model is null || model.UserId is null || model.UserId is null)
             {
-                throw new ApiException(MessageHelper.INVALID_REQUEST);
+                throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }
 
             var user = await _userManager.FindByIdAsync(model.UserId);
 
             if(user is null)
             {
-                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
+                throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
             }
 
             var hashedPassword = await Task.FromResult(_passwordHasher.HashPassword(user, model.Password));

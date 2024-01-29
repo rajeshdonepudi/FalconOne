@@ -25,7 +25,7 @@ namespace FalconeOne.BLL.Services
         {
             if (model is null)
             {
-                throw new ApiException(MessageHelper.INVALID_REQUEST);
+                throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }
 
             var policy = new SecurityPolicy()

@@ -65,7 +65,7 @@ namespace FalconeOne.BLL.Services
 
             if (user is null)
             {
-                throw new ApiException(MessageHelper.LOGIN_FAILED);
+                throw new ApiException(ErrorMessages.LOGIN_FAILED);
             }
 
             await EmailVerificationCheck(user);
@@ -138,7 +138,7 @@ namespace FalconeOne.BLL.Services
 
             if (user is null)
             {
-                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
+                throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
             }
             return new RegisterResponse(user.FirstName, user.LastName, user.Email);
         }
@@ -149,7 +149,7 @@ namespace FalconeOne.BLL.Services
 
             if (user is null)
             {
-                throw new ApiException(MessageHelper.INVALID_REQUEST);
+                throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }
 
             await EmailVerificationCheck(user);
@@ -169,18 +169,18 @@ namespace FalconeOne.BLL.Services
 
             if (account is null)
             {
-                throw new ApiException(MessageHelper.INVALID_REFRESH_TOKEN);
+                throw new ApiException(ErrorMessages.INVALID_REFRESH_TOKEN);
             }
 
             RefreshToken? token = account.RefreshTokens.FirstOrDefault(x => x.Token == refreshToken);
 
             if (token!.IsRevoked)
             {
-                await RevokeDescendantRefreshTokens(token, account, "", MessageHelper.REUSE_OF_REVOKED_ANCESTOR_TOKEN);
+                await RevokeDescendantRefreshTokens(token, account, "", ErrorMessages.REUSE_OF_REVOKED_ANCESTOR_TOKEN);
 
                 var updateResult = await _userManager.UpdateAsync(account);
 
-                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
+                throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
             }
 
             RefreshToken newRefreshToken = await RotateRefreshToken(token, "");
@@ -213,7 +213,7 @@ namespace FalconeOne.BLL.Services
 
             if (user is null)
             {
-                throw new ApiException(MessageHelper.USER_NOT_FOUND);
+                throw new ApiException(ErrorMessages.USER_NOT_FOUND);
             }
 
             await EmailVerificationCheck(user);
@@ -235,15 +235,15 @@ namespace FalconeOne.BLL.Services
 
             if (account is null)
             {
-                throw new ApiException(MessageHelper.INVALID_REFRESH_TOKEN);
+                throw new ApiException(ErrorMessages.INVALID_REFRESH_TOKEN);
             }
 
             if (!token.IsActive)
             {
-                throw new ApiException(MessageHelper.REFRESH_TOKEN_EXPIRED);
+                throw new ApiException(ErrorMessages.REFRESH_TOKEN_EXPIRED);
             }
 
-            UpdateRefreshTokenSettings(token, string.Empty, MessageHelper.REFRESH_TOKEN_REVOKED, string.Empty);
+            UpdateRefreshTokenSettings(token, string.Empty, ErrorMessages.REFRESH_TOKEN_REVOKED, string.Empty);
 
             var result = await _userManager.UpdateAsync(account);
 
@@ -261,12 +261,12 @@ namespace FalconeOne.BLL.Services
 
             if (user is null)
             {
-                throw new ApiException(MessageHelper.INVALID_REQUEST);
+                throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }
 
             if (await _userManager.IsEmailConfirmedAsync(user))
             {
-                throw new ApiException(MessageHelper.INVALID_REQUEST);
+                throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }
 
             var result = await _userManager.ConfirmEmailAsync(user, model.EmailConfirmationToken);
@@ -375,7 +375,7 @@ namespace FalconeOne.BLL.Services
         private async Task<RefreshToken> RotateRefreshToken(RefreshToken refreshToken, string ipAddress)
         {
             RefreshToken newRefreshToken = await GenerateRefreshToken();
-            UpdateRefreshTokenSettings(refreshToken, ipAddress, MessageHelper.REPLACED_WITH_NEW_TOKEN, newRefreshToken.Token!);
+            UpdateRefreshTokenSettings(refreshToken, ipAddress, ErrorMessages.REPLACED_WITH_NEW_TOKEN, newRefreshToken.Token!);
             return newRefreshToken;
         }
         #endregion

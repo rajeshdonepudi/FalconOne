@@ -8,11 +8,8 @@ using FalconOne.DAL;
 using IdenticonSharp.Identicons;
 using IdenticonSharp.Identicons.Defaults.GitHub;
 using KE.IdenticonSharp.AspNetCore;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 

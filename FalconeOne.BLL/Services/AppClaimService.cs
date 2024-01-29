@@ -27,7 +27,7 @@ namespace FalconeOne.BLL.Services
         {
             if (model is null)
             {
-                throw new ApiException(MessageHelper.INVALID_REQUEST);
+                throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }
 
             await _unitOfWork.SecurityClaimsRepository.AddAsync(new SecurityClaim
@@ -52,7 +52,7 @@ namespace FalconeOne.BLL.Services
         {
             if (model is null)
             {
-                throw new ApiException(MessageHelper.INVALID_REQUEST);
+                throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }
 
             var role = await _roleManager.FindByIdAsync(model.RoleId);
@@ -61,7 +61,7 @@ namespace FalconeOne.BLL.Services
 
             if (role is null || claim is null)
             {
-                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
+                throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
             }
 
             var result = await _roleManager.AddClaimAsync(role, new Claim(claim.Type, claim.Value));
@@ -77,7 +77,7 @@ namespace FalconeOne.BLL.Services
         {
             if (model is null)
             {
-                throw new ApiException(MessageHelper.INVALID_REQUEST);
+                throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }
 
             var user = await _userManager.FindByIdAsync(model.UserId);
@@ -85,7 +85,7 @@ namespace FalconeOne.BLL.Services
 
             if (user is null || claim is null)
             {
-                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
+                throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
             }
 
             var result = await _userManager.AddClaimAsync(user, new Claim(claim.Type, claim.Value));
@@ -101,14 +101,14 @@ namespace FalconeOne.BLL.Services
         {
             if (model is null)
             {
-                throw new ApiException(MessageHelper.INVALID_REQUEST);
+                throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }
 
             var user = await _userManager.FindByIdAsync(model.UserId);
 
             if (user is null)
             {
-                throw new ApiException(MessageHelper.SOMETHING_WENT_WRONG);
+                throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
             }
 
             var claims = new List<Claim>();
