@@ -3,7 +3,7 @@ using FalconOne.API.Attributes;
 using FalconOne.ResourceCodes;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FalconOne.API.Controllers
+namespace FalconOne.API.Controllers.Security
 {
     [Route("api/[controller]")]
     [ApiController]

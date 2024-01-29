@@ -5,7 +5,7 @@ using FalconOne.ResourceCodes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FalconOne.API.Controllers
+namespace FalconOne.API.Controllers.System
 {
     [Route("api/[controller]")]
     [ApiController]

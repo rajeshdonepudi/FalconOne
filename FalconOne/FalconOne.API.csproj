@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Policies\**" />
+    <Content Remove="Policies\**" />
+    <EmbeddedResource Remove="Policies\**" />
+    <None Remove="Policies\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="KE.IdenticonSharp.AspNetCore" Version="1.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="7.0.7" />
@@ -27,10 +34,6 @@
     <ProjectReference Include="..\FalconOne.Models\FalconOne.Models.csproj" />
     <ProjectReference Include="..\FalconOne.ResourceCodes\FalconOne.ResourceCodes.csproj" />
     <ProjectReference Include="..\Utilities\FalconOne.Helpers.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Policies\" />
   </ItemGroup>
 
 </Project>

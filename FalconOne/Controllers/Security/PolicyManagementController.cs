@@ -2,7 +2,7 @@
 using FalconOne.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FalconOne.API.Controllers
+namespace FalconOne.API.Controllers.Security
 {
     [Route("api/[controller]")]
     [ApiController]
