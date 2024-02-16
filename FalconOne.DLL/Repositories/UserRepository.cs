@@ -1,4 +1,5 @@
 ﻿using FalconOne.DAL.Contracts;
+using FalconOne.Extensions.EntityFramework;
 using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs.Security;
 using FalconOne.Models.Entities;
@@ -13,18 +14,14 @@ namespace FalconOne.DAL.Repositories
 
         public async Task<PagedList<User>> GetAllUsersByTenantIdPaginatedAsync(Guid tenantId, PageParams pageParams, CancellationToken cancellationToken)
         {
-            List<User> records = await _context.Users.Where(x => x.Tenants.Any(x => x.TenantId == tenantId))
+            var records = await _context.Users.Where(x => x.Tenants.Any(x => x.TenantId == tenantId))
                                                      .OrderByDescending(x => x.CreatedOn)
-                                                     .Skip((pageParams.Page - 1) * pageParams.PageSize)
+                                                     .Skip((pageParams.PageIndex - 1) * pageParams.PageSize)
                                                      .Take(pageParams.PageSize)
                                                      .AsNoTracking()
-                                                     .ToListAsync(cancellationToken);
+                                                     .ToPagedListAsync(pageParams);
 
-            var totalUsersCount = await _context.Users
-                                                .Where(x => x.Tenants.Any(x => x.TenantId == tenantId))
-                                                .LongCountAsync(cancellationToken);
-
-            return new PagedList<User>(records, totalUsersCount, pageParams.Page, pageParams.PageSize);
+            return records;
         }
 
         public async Task<User> GetTenantUserInfoByEmail(Guid tenantId, string email, CancellationToken cancellationToken)

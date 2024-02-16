@@ -1,4 +1,6 @@
-﻿using FalconeOne.BLL.Interfaces;
+﻿using FalconeOne.BLL.Helpers;
+using FalconeOne.BLL.Interfaces;
+using FalconOne.Helpers.Helpers;
 using Microsoft.Extensions.Configuration;
 
 namespace FalconeOne.BLL.Services
@@ -16,9 +18,16 @@ namespace FalconeOne.BLL.Services
         /// </summary>
         /// <param name="key"></param>
         /// <returns>string</returns>
-        public Task<string> GetValue(string key)
+        public async Task<string> GetValue(string key)
         {
-            return Task.FromResult(_configuration[key]);
+            var val = _configuration[key];
+
+            if(string.IsNullOrEmpty(val))
+            {
+                throw new ApiException(MessageHelper.GeneralErrors.SOMETHING_WENT_WRONG);
+            }
+            
+            return await Task.FromResult(val);
         }
     }
 }

@@ -10,6 +10,7 @@ namespace FalconeOne.BLL.Interfaces
     public interface IUserService
     {
         Task<PagedListDto> GetAllAsync(PageParams model);
+        Task<PagedList<User>> GetAllAsync(PageParams model);
         Task<UserManagementDashboardInfoDto> GetDashboardInfo();
         Task<UserInfoDto> GetByIdAsync(string userId);
         Task<bool> UpdateUserAsync(int id, SignupRequestDto model);

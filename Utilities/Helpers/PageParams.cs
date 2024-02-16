@@ -5,7 +5,7 @@
         const int maxPageSize = 50;
         private int _pageIndex = 0;
 
-        public int Page
+        public int PageIndex
         {
             get
             {

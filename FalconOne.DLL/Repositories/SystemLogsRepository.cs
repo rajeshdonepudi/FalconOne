@@ -1,8 +1,8 @@
 ﻿using FalconOne.DAL.Contracts;
 using FalconOne.Helpers.Helpers;
 using FalconOne.Models.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using FalconOne.Extensions.EntityFramework;
 
 namespace FalconOne.DAL.Repositories
 {
@@ -12,14 +12,9 @@ namespace FalconOne.DAL.Repositories
 
         public async Task<PagedList<SystemLog>> GetAllRequestInfoPaginatedAsync(PageParams pageParams, CancellationToken cancellationToken)
         {
-            long total = await _context.SystemLogs.LongCountAsync(cancellationToken);
+            var records = await _context.SystemLogs.ToPagedListAsync(pageParams);
 
-            List<SystemLog> records = await _context.SystemLogs
-                                                    .Skip((pageParams.Page - 1) * pageParams.PageSize)
-                                                    .Take(pageParams.PageSize)
-                                                    .ToListAsync(cancellationToken);
-
-            return new PagedList<SystemLog>(records, total, pageParams.Page, pageParams.PageSize);
+            return records;
         }
     }
 }

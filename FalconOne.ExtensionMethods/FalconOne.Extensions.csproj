@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Http\" />
+    <ProjectReference Include="..\Utilities\FalconOne.Helpers.csproj" />
   </ItemGroup>
 
 </Project>

@@ -10,7 +10,6 @@ using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using System.Net;
 
 namespace FalconeOne.BLL.Services
 {
@@ -57,7 +56,7 @@ namespace FalconeOne.BLL.Services
             return result.Succeeded;
         }
 
-        public async Task<PagedListDto> GetAllAsync(PageParams model)
+        public async Task<PagedList<User>> GetAllAsync(PageParams model)
         {
             if (model is null)
             {
@@ -66,9 +65,10 @@ namespace FalconeOne.BLL.Services
 
             var result = new List<UserInfoDto>();
 
-            var users = await _unitOfWork.UserRepository.GetAllUsersByTenantIdPaginatedAsync(await _tenantService.GetTenantId(), model, CancellationToken.None);
+            var users = await _unitOfWork.UserRepository
+                                         .GetAllUsersByTenantIdPaginatedAsync(await _tenantService.GetTenantId(), model, CancellationToken.None);
 
-            foreach (User user in users)
+            foreach (var user in users.Items)
             {
                 var res = new UserInfoDto
                 {
@@ -77,19 +77,9 @@ namespace FalconeOne.BLL.Services
                     Email = user.LastName,
                     Id = user.Id,
                 };
-
                 result.Add(res);
             }
-
-            var pagedList = new PagedListDto()
-            {
-                TotalCount = users.TotalCount,
-                PageIndex = users.PageIndex,
-                PageSize = users.PageSize,
-                Records = result
-            };
-
-            return pagedList;
+            return users;
         }
 
         public async Task<UserInfoDto> GetByIdAsync(string userId)

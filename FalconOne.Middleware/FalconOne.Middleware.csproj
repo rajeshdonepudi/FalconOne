@@ -14,8 +14,4 @@
     <ProjectReference Include="..\Utilities\FalconOne.Helpers.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Error\" />
-  </ItemGroup>
-
 </Project>

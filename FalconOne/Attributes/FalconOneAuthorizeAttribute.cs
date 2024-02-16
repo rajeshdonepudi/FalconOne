@@ -17,15 +17,23 @@ namespace FalconOne.API.Attributes
         {
             _policies = policies.ToList();
         }
+
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            ITenantService? tenantService = context.HttpContext.RequestServices.GetService<ITenantService>();
+            ArgumentNullException.ThrowIfNull(nameof(context));
 
-            IConfiguration? configuration = context.HttpContext.RequestServices.GetService<IConfiguration>();
+            var tenantService = context.HttpContext.RequestServices.GetService<ITenantService>();
+            var configuration = context.HttpContext.RequestServices.GetService<IConfiguration>();
 
-            Guid currentTenantId = tenantService.GetTenantId().Result;
+            if(tenantService is null || configuration is null)
+            {
+                context.Result = new UnauthorizedResult();
+                return;
+            }
 
-            string bearerToken = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var currentTenantId = await tenantService.GetTenantId();
+
+            string bearerToken = context?.HttpContext?.Request?.Headers["Authorization"].FirstOrDefault()!;
 
             if (string.IsNullOrEmpty(bearerToken) || !bearerToken.StartsWith("Bearer "))
             {
@@ -33,19 +41,21 @@ namespace FalconOne.API.Attributes
                 return;
             }
 
-            JwtSecurityTokenHandler tokenHandler = new();
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var secretKey = configuration["JWT:Secret"];
+            var issuer = configuration["JWT:Issuer"];
 
-            TokenValidationParameters tokenValidationParameters = new()
+            var validationParameters = new TokenValidationParameters()
             {
-                ValidIssuer = configuration["JWT:Issuer"],
+                ValidIssuer = issuer,
                 ValidAudience = configuration["JWT:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey
-                        (Encoding.UTF8.GetBytes(configuration["JWT:Secret"])),
+                        (Encoding.UTF8.GetBytes(secretKey!)),
                 ValidateIssuer = true,
                 ValidateAudience = false,
                 ValidateLifetime = true,
                 RequireExpirationTime = true,
-                ValidateIssuerSigningKey = false,
+                ValidateIssuerSigningKey = true,
                 ClockSkew = TimeSpan.Zero
             };
 
@@ -53,13 +63,9 @@ namespace FalconOne.API.Attributes
 
             try
             {
-                System.Security.Claims.ClaimsPrincipal claimsPrincipal = tokenHandler.ValidateToken(token, tokenValidationParameters, out _);
+                var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out _);
 
-                System.Security.Claims.Claim? tenantIdClaim = claimsPrincipal.FindFirst("tenantId");
-
-                Guid tokenTenantId;
-
-                Guid.TryParse(tenantIdClaim.Value, out tokenTenantId);
+                var tenantIdClaim = claimsPrincipal.FindFirst("tenantId");
 
                 if (tenantIdClaim == null)
                 {
@@ -67,6 +73,10 @@ namespace FalconOne.API.Attributes
                     return;
                 }
 
+                Guid tokenTenantId;
+
+                Guid.TryParse(tenantIdClaim.Value, out tokenTenantId);
+               
                 if (currentTenantId != tokenTenantId)
                 {
                     context.Result = new UnauthorizedResult();
@@ -75,9 +85,9 @@ namespace FalconOne.API.Attributes
 
                 string tenantId = tenantIdClaim.Value;
 
-                IAuthorizationService authService = context.HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
+                var authService = context.HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
 
-                List<AuthorizationResult> authorizationResults = new();
+                var authorizationResults = new List<AuthorizationResult>();
 
                 foreach (string policy in _policies)
                 {

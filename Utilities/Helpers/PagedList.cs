@@ -1,28 +1,19 @@
 ﻿namespace FalconOne.Helpers.Helpers
 {
-    public class PagedList<T> : List<T>
+    public class PagedList<T>
     {
-        public PagedList(List<T> source, long count, int index, int pageSize)
-        {
-            TotalCount = count;
-            PageSize = pageSize;
-            PageIndex = index;
-            AddRange(source);
-        }
+        public List<T> Items { get; private set; }
+        public int PageIndex { get; private set; }
+        public int PageSize { get; private set; }
+        public int TotalItems { get; private set; }
+        public int TotalPages => (int)Math.Ceiling(TotalItems / (double)PageSize);
 
-        public long TotalCount
+        public PagedList(List<T> items, PageParams model, int totalItems)
         {
-            get; set;
-        }
-
-        public int PageIndex
-        {
-            get; set;
-        }
-
-        public int PageSize
-        {
-            get; set;
+            PageIndex = model.PageIndex;
+            PageSize = model.PageSize;
+            TotalItems = totalItems;
+            Items = items;
         }
 
         public bool IsPreviousPage
@@ -32,11 +23,12 @@
                 return PageIndex > 0;
             }
         }
+
         public bool IsNextPage
         {
             get
             {
-                return PageIndex * PageSize <= TotalCount;
+                return (PageIndex + 1) * PageSize < TotalItems;
             }
         }
     }
