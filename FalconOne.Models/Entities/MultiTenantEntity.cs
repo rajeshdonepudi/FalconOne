@@ -5,6 +5,7 @@ namespace FalconOne.Models.Entities
     public class MultiTenantEntity : IMultiTenantEntity
     {
         private DateTime createdOn;
+
         public Guid? TenantId { get; set; }
         public virtual Tenant Tenant { get; set; }
         public DateTime? ModifiedOn { get; set; }

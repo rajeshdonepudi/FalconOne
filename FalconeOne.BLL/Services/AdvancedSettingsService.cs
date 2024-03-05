@@ -15,7 +15,7 @@ namespace FalconeOne.BLL.Services
             IUnitOfWork unitOfWork,
             IHttpContextAccessor httpContextAccessor,
             IConfiguration configuration,
-            ITenantService tenantService,
+            ITenantProvider tenantService,
             IPasswordHasher<object> passwordHasher) : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
         {
             _passwordHasher = passwordHasher;

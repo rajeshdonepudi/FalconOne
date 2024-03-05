@@ -7,9 +7,7 @@ namespace FalconOne.DAL.Contracts
     {
         ISystemLogRepository RequestInformationRepository { get; }
         IGenericRepository<RefreshToken> RefreshTokenRepository { get; }
-        ISecurityClaimsRepository SecurityClaimsRepository { get; }
         ISecurityRolesRepository SecurityRolesRepository { get; }
-        ISecurityPolicyRepository ApplicationPolicyRepository { get; }
         IGenericRepository<Tenant> TenantRepository { get; }
         IUserRepository UserRepository { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);

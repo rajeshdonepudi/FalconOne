@@ -1,6 +1,4 @@
-﻿using FalconOne.Helpers.Helpers;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Reflection;
 
 namespace FalconOne.Extensions.Enumerations

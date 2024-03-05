@@ -8,11 +8,9 @@ namespace FalconOne.DAL.Contracts
     public interface IUserRepository : IGenericRepository<User>
     {
         Task<PagedList<User>> GetAllUsersByTenantIdPaginatedAsync(Guid tenantId, PageParams pageParams, CancellationToken cancellationToken);
-
         Task<bool> IsUserNameAvailable(string username, CancellationToken cancellationToken);
-
         Task<User> GetTenantUserInfoByEmail(Guid tenantId, string email, CancellationToken cancellationToken);
-
+        Task<User> GetUserInfoByEmail(string email, CancellationToken cancellationToken);
         Task<UserManagementDashboardInfoDto> GetUserManagementDashboardInfoByTenantId(Guid tenantId, CancellationToken cancellationToken);
     }
 }

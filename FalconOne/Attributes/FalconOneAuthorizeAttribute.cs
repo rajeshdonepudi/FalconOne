@@ -11,7 +11,7 @@ namespace FalconOne.API.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class FalconOneAuthorizeAttribute : Attribute, IAsyncAuthorizationFilter
     {
-        private readonly List<string> _policies = new() { "FalconOneSuperAdmin" };
+        private readonly List<string> _policies = new() { "GOD" };
 
         public FalconOneAuthorizeAttribute(string[] policies)
         {
@@ -22,10 +22,10 @@ namespace FalconOne.API.Attributes
         {
             ArgumentNullException.ThrowIfNull(nameof(context));
 
-            var tenantService = context.HttpContext.RequestServices.GetService<ITenantService>();
+            var tenantService = context.HttpContext.RequestServices.GetService<ITenantProvider>();
             var configuration = context.HttpContext.RequestServices.GetService<IConfiguration>();
 
-            if(tenantService is null || configuration is null)
+            if (tenantService is null || configuration is null)
             {
                 context.Result = new UnauthorizedResult();
                 return;
@@ -38,6 +38,7 @@ namespace FalconOne.API.Attributes
             if (string.IsNullOrEmpty(bearerToken) || !bearerToken.StartsWith("Bearer "))
             {
                 context.Result = new UnauthorizedResult();
+
                 return;
             }
 
@@ -76,7 +77,7 @@ namespace FalconOne.API.Attributes
                 Guid tokenTenantId;
 
                 Guid.TryParse(tenantIdClaim.Value, out tokenTenantId);
-               
+
                 if (currentTenantId != tokenTenantId)
                 {
                     context.Result = new UnauthorizedResult();
@@ -85,17 +86,18 @@ namespace FalconOne.API.Attributes
 
                 string tenantId = tenantIdClaim.Value;
 
-                var authService = context.HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
+                var authService = context!.HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
 
                 var authorizationResults = new List<AuthorizationResult>();
 
                 foreach (string policy in _policies)
                 {
                     AuthorizationResult authorizationResult = await authService.AuthorizeAsync(claimsPrincipal, null, policy);
+
                     authorizationResults.Add(authorizationResult);
                 }
 
-                if (!authorizationResults.Any(result => result.Succeeded))
+                if (authorizationResults.Any(result => !result.Succeeded))
                 {
                     context.Result = new ForbidResult();
                     return;

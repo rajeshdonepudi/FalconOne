@@ -1,6 +1,4 @@
-﻿using FalconeOne.BLL.Interfaces;
-using FalconOne.DAL;
-using FalconOne.Models.Entities;
+﻿using FalconOne.DAL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +14,7 @@ namespace FalconOne.API.DatabaseConfig
 
                 IAppPolicyService? appPolicyService = services.GetService<IAppPolicyService>();
 
-                var policies = appPolicyService!.GetAllPolicies().Result;
+                var policies = appPolicyService!.GetAllPoliciesAsync().Result;
 
                 foreach (SecurityPolicy applicationPolicy in policies)
                 {

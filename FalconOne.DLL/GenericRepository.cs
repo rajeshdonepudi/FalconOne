@@ -26,39 +26,52 @@ namespace FalconOne.DAL
             await _context.Set<T>().AddRangeAsync(entities, cancellationToken);
         }
 
-        public void Remove(T entity)
+        public void RemoveAsync(T entity)
         {
             _context.Set<T>().Remove(entity);
         }
 
-        public void RemoveRange(List<T> entities)
+        public void RemoveRangeAsync(List<T> entities)
         {
             _context.Set<T>().RemoveRange(entities);
         }
 
         public async Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _context.Set<T>().FindAsync(id, cancellationToken);
+            var result = await _context.Set<T>().FindAsync(id, cancellationToken);
+
+            return result;
         }
 
         public async Task<T> FindAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken)
         {
-            return await _context.Set<T>().Where(expression).FirstOrDefaultAsync(cancellationToken);
+            var result = await _context.Set<T>().Where(expression)
+                                                .FirstOrDefaultAsync(cancellationToken);
+
+            return result;
         }
 
         public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await _context.Set<T>().ToListAsync(cancellationToken);
+            var result = await _context.Set<T>().ToListAsync(cancellationToken);
+
+            return result;
         }
 
-        public void Update(T entity)
+        public async void UpdateAsync(T entity)
         {
-            _context.Set<T>().Update(entity);
+            await Task.Run(() =>
+            {
+                _context.Set<T>().Update(entity);
+            });
         }
 
-        public void UpdateRange(List<T> entities)
+        public async void UpdateRangeAsync(List<T> entities)
         {
-            _context.Set<T>().UpdateRange(entities);
+            await Task.Run(() =>
+            {
+                _context.Set<T>().UpdateRange(entities);
+            });
         }
     }
 }

@@ -1,29 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\FalconOne.DLL\FalconOne.DAL.csproj" />
-    <ProjectReference Include="..\FalconOne.Enumerations\FalconOne.Enumerations.csproj" />
-    <ProjectReference Include="..\FalconOne.ExtensionMethods\FalconOne.Extensions.csproj" />
-    <ProjectReference Include="..\FalconOne.Middleware\FalconOne.Middleware.csproj" />
-    <ProjectReference Include="..\FalconOne.Models\FalconOne.Models.csproj" />
-    <ProjectReference Include="..\FalconOne.ResourceCodes\FalconOne.ResourceCodes.csproj" />
-    <ProjectReference Include="..\Utilities\FalconOne.Helpers.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\FalconOne.DLL\FalconOne.DAL.csproj" />
+		<ProjectReference Include="..\FalconOne.Enumerations\FalconOne.Enumerations.csproj" />
+		<ProjectReference Include="..\FalconOne.ExtensionMethods\FalconOne.Extensions.csproj" />
+		<ProjectReference Include="..\FalconOne.Middleware\FalconOne.Middleware.csproj" />
+		<ProjectReference Include="..\FalconOne.Models\FalconOne.Models.csproj" />
+		<ProjectReference Include="..\FalconOne.ResourceCodes\FalconOne.ResourceCodes.csproj" />
+		<ProjectReference Include="..\Utilities\FalconOne.Helpers.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="KE.IdenticonSharp" Version="1.4.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="KE.IdenticonSharp" Version="1.4.0" />
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.3.1" />
+	</ItemGroup>
 
 </Project>

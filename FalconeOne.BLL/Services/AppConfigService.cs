@@ -22,11 +22,11 @@ namespace FalconeOne.BLL.Services
         {
             var val = _configuration[key];
 
-            if(string.IsNullOrEmpty(val))
+            if (string.IsNullOrEmpty(val))
             {
                 throw new ApiException(MessageHelper.GeneralErrors.SOMETHING_WENT_WRONG);
             }
-            
+
             return await Task.FromResult(val);
         }
     }

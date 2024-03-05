@@ -28,7 +28,6 @@ namespace FalconOne.API.AuthenticationConfig
             : base(dataProtectionProvider, options, logger)
         {
         }
-
         public override Task<string> GenerateAsync(string purpose, UserManager<TUser> manager, TUser user)
         {
             return base.GenerateAsync(purpose, manager, user);
@@ -83,12 +82,6 @@ namespace FalconOne.API.AuthenticationConfig
                     ClockSkew = TimeSpan.Zero
                 };
             });
-
-            //builder.Services.AddAuthentication().AddMicrosoftAccount(opt =>
-            //{
-            //    opt.ClientId = "1234567890-abc123def456.apps.googleusercontent.com";
-            //    opt.ClientSecret = "1234567890-abc123def456.apps.googleusercontent.com";
-            //});
         }
     }
 }

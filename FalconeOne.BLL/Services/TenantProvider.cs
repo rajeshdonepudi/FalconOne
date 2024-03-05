@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace FalconeOne.BLL.Services
 {
-    public class TenantService : ITenantService
+    public class TenantProvider : ITenantProvider
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAppConfigService _appConfigService;
 
-        public TenantService(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork, IAppConfigService appConfigService)
+        public TenantProvider(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork, IAppConfigService appConfigService)
         {
             _httpContextAccessor = httpContextAccessor;
             _unitOfWork = unitOfWork;

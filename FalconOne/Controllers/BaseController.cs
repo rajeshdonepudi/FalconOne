@@ -1,18 +1,18 @@
 ﻿using FalconOne.API.Filters;
 using FalconOne.Models.DTOs.Common;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 namespace FalconOne.API.Controllers
 {
     [ServiceFilter(typeof(AsyncActionFilter))]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ProducesResponseType(typeof(ApiErrorResponseDto), StatusCodes.Status400BadRequest)]
-    public class BaseController : ControllerBase
+    public class BaseController : Controller
     {
-        public BaseController() : base()
+        protected string GetRequestURI()
         {
+            var uri = HttpContext.Request.GetDisplayUrl();
+
+            return uri ?? HttpContext.Request.Path;
         }
 
         protected void AddResponseHeader(string key, string value)
@@ -25,13 +25,6 @@ namespace FalconOne.API.Controllers
             {
                 Response.Headers.Add(key, value);
             }
-        }
-
-        protected string GetRequestURI()
-        {
-            var uri = HttpContext.Request.GetDisplayUrl();
-
-            return uri ?? HttpContext.Request.Path;
         }
     }
 }

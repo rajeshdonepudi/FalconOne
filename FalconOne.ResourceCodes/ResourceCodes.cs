@@ -26,6 +26,7 @@
             public const string GET_SECURITY_CLAIMS_LOOKUP = "GET_SECURITY_CLAIMS_LOOKUP";
             public const string GET_SECURITY_ROLES_LOOKUP = "GET_SECURITY_ROLES_LOOKUP";
             public const string HASH_USER_PASSWORD = "HASH_USER_PASSWORD";
+            public const string CREATE_NEW_POLICY = "CREATE_NEW_POLICY";
         }
     }
 }

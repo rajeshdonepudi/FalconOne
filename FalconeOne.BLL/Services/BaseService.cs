@@ -15,12 +15,12 @@ namespace FalconeOne.BLL.Services
         protected readonly IUnitOfWork _unitOfWork;
         protected readonly IHttpContextAccessor _httpContextAccessor;
         protected readonly IConfiguration _configuration;
-        protected readonly ITenantService _tenantService;
+        protected readonly ITenantProvider _tenantService;
 
         public BaseService(UserManager<User> userManager,
             IUnitOfWork unitOfWork,
             IHttpContextAccessor httpContextAccessor,
-            IConfiguration configuration, ITenantService tenantService)
+            IConfiguration configuration, ITenantProvider tenantService)
         {
             _userManager = userManager;
             _unitOfWork = unitOfWork;
@@ -34,11 +34,11 @@ namespace FalconeOne.BLL.Services
 
             if (_httpContextAccessor.HttpContext.User.Identities.Any())
             {
-                System.Security.Claims.Claim? tenant = _httpContextAccessor?.HttpContext?.User?.Identities?
+                var tenant = _httpContextAccessor?.HttpContext?.User?.Identities?
                                                     .SelectMany(x => x.Claims)
                                                     .FirstOrDefault(x => x.Type == "TenantId");
 
-                System.Security.Claims.Claim? user = _httpContextAccessor?.HttpContext?.User?.Identities?
+                var user = _httpContextAccessor?.HttpContext?.User?.Identities?
                                                     .SelectMany(x => x.Claims)
                                                     .FirstOrDefault(x => x.Type == "UserId");
 

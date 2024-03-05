@@ -19,7 +19,7 @@ namespace FalconeOne.BLL.Services
             IUnitOfWork unitOfWork,
             RoleManager<SecurityRole> roleManager,
             IHttpContextAccessor httpContextAccessor,
-            IConfiguration configuration, ITenantService tenantService) : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
+            IConfiguration configuration, ITenantProvider tenantService) : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
         {
             _roleManager = roleManager;
         }

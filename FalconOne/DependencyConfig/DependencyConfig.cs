@@ -21,7 +21,7 @@ namespace FalconOne.API.DependencyConfig
             builder.Services.AddTransient<IAppConfigService, AppConfigService>();
             builder.Services.AddTransient<IAppClaimService, AppClaimService>();
             builder.Services.AddTransient<IAppPolicyService, AppPolicyService>();
-            builder.Services.AddScoped<ITenantService, TenantService>();
+            builder.Services.AddScoped<ITenantProvider, TenantProvider>();
             builder.Services.AddTransient<IUserService, UserService>();
             builder.Services.AddTransient<ISecurityService, SecurityService>();
         }

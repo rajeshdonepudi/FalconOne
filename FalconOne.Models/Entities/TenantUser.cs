@@ -1,5 +1,9 @@
-﻿namespace FalconOne.Models.Entities
+﻿using FalconOne.Models.EntityConfiguration;
+using Microsoft.EntityFrameworkCore;
+
+namespace FalconOne.Models.Entities
 {
+    [EntityTypeConfiguration(typeof(TenantUserConfiguration))]
     public class TenantUser
     {
         public Guid TenantId { get; set; }

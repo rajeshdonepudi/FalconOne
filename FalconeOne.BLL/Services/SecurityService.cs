@@ -17,20 +17,13 @@ namespace FalconeOne.BLL.Services
         public SecurityService(UserManager<User> userManager,
             IUnitOfWork unitOfWork,
             SignInManager<User> signInManager,
-            ITenantService tenantService,
+            ITenantProvider tenantService,
             ITokenService tokenService,
             IAppConfigService appConfigService,
             IHttpContextAccessor httpContextAccessor,
             IConfiguration configuration, IPasswordHasher<User> passwordHasher) : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
         {
             _passwordHasher = passwordHasher;
-        }
-
-        public async Task<IEnumerable<KeyValuePair<Guid, string>>> GetTenantSecurityClaimsForLookup()
-        {
-            var result = await _unitOfWork.SecurityClaimsRepository.GetTenantSecurityClaimsForLookup(await _tenantService.GetTenantId(), CancellationToken.None);
-
-            return result;
         }
 
         public async Task<IEnumerable<KeyValuePair<Guid, string>>> GetTenantSecurityRolesForLookup()
@@ -42,14 +35,14 @@ namespace FalconeOne.BLL.Services
 
         public async Task<string> HashPasswordForUserAsync(HashPasswordForUserDto model)
         {
-            if(model is null || model.UserId is null || model.UserId is null)
+            if (model is null || model.UserId is null || model.UserId is null)
             {
                 throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }
 
             var user = await _userManager.FindByIdAsync(model.UserId);
 
-            if(user is null)
+            if (user is null)
             {
                 throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
             }

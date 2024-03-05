@@ -3,10 +3,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FalconOne.Models.Entities
 {
-    public class SecurityRole : IdentityRole<Guid>, IMultiTenantEntity
+    public class SecurityRole : IdentityRole<Guid>, ITrackableEntity
     {
-        public Guid? TenantId { get; set; }
-        public virtual Tenant Tenant { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public DateTime CreatedOn { get; set; }
     }

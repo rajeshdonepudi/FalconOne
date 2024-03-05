@@ -9,7 +9,7 @@ namespace FalconOne.API.Controllers.System
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RequestInformationController : BaseController
+    public class RequestInformationController : BaseSecureController
     {
         private readonly ISystemLogsService _sysLogService;
 

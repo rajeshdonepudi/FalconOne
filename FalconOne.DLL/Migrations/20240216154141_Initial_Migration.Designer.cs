@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FalconOne.DAL.Migrations
 {
     [DbContext(typeof(FalconOneContext))]
-    [Migration("20240125182751_Initial")]
-    partial class Initial
+    [Migration("20240216154141_Initial_Migration")]
+    partial class Initial_Migration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.7")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -607,7 +607,7 @@ namespace FalconOne.DAL.Migrations
                         .HasForeignKey("ApplicationPolicyId");
 
                     b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
-                        .WithMany()
+                        .WithMany("SecurityClaims")
                         .HasForeignKey("TenantId");
 
                     b.Navigation("ApplicationPolicy");
@@ -618,7 +618,7 @@ namespace FalconOne.DAL.Migrations
             modelBuilder.Entity("FalconOne.Models.Entities.SecurityPolicy", b =>
                 {
                     b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
-                        .WithMany()
+                        .WithMany("SecurityPolicies")
                         .HasForeignKey("TenantId");
 
                     b.Navigation("Tenant");
@@ -627,7 +627,7 @@ namespace FalconOne.DAL.Migrations
             modelBuilder.Entity("FalconOne.Models.Entities.SecurityRole", b =>
                 {
                     b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
-                        .WithMany()
+                        .WithMany("SecurityRoles")
                         .HasForeignKey("TenantId");
 
                     b.Navigation("Tenant");
@@ -786,6 +786,12 @@ namespace FalconOne.DAL.Migrations
 
             modelBuilder.Entity("FalconOne.Models.Entities.Tenant", b =>
                 {
+                    b.Navigation("SecurityClaims");
+
+                    b.Navigation("SecurityPolicies");
+
+                    b.Navigation("SecurityRoles");
+
                     b.Navigation("Users");
                 });
 

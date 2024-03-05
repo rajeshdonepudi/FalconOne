@@ -1,6 +1,6 @@
 ﻿namespace FalconeOne.BLL.Interfaces
 {
-    public interface ITenantService
+    public interface ITenantProvider
     {
         Task<Guid> GetTenantId();
     }

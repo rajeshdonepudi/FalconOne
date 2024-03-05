@@ -2,7 +2,6 @@
 using FalconOne.API.Attributes;
 using FalconOne.Models.DTOs.Account;
 using FalconOne.ResourceCodes;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -10,16 +9,11 @@ namespace FalconOne.API.Controllers.Account
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController : BaseController
+    public partial class AccountController : BaseAccountController
     {
-        private readonly IAccountService _accountService;
-        public AccountController(IAccountService accountService)
-        {
-            _accountService = accountService;
-        }
+        public AccountController(IAccountService accountService) : base(accountService) { }
 
         [HttpPost("signup")]
-        [AllowAnonymous]
         [ResourceIdentifier(ResourceIdentifier.Account.NEW_USER_SIGNUP)]
         [ProducesResponseType(typeof(RegisterResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> Signup(SignupRequestDto model)
@@ -30,7 +24,6 @@ namespace FalconOne.API.Controllers.Account
         }
 
         [HttpPost("login")]
-        [AllowAnonymous]
         [EnableRateLimiting("Token")]
         [ResourceIdentifier(ResourceIdentifier.Account.LOGIN)]
         [ProducesResponseType(typeof(LoginRequestDto), StatusCodes.Status200OK)]
@@ -44,7 +37,6 @@ namespace FalconOne.API.Controllers.Account
 
         [HttpPost("forgot-password")]
         [ResourceIdentifier(ResourceIdentifier.Account.FORGOT_PASSWORD)]
-        [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordRequestDto model)
         {
             var response = await _accountService.SendForgotPasswordResetTokenAsync(model);
@@ -58,7 +50,6 @@ namespace FalconOne.API.Controllers.Account
 
         [HttpPost("reset-password")]
         [ResourceIdentifier(ResourceIdentifier.Account.RESET_PASSWORD)]
-        [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequestDto model)
         {
             var response = await _accountService.ResetPasswordAsync(model);
@@ -72,7 +63,6 @@ namespace FalconOne.API.Controllers.Account
 
         [HttpPost("revoke-refresh-token")]
         [ResourceIdentifier(ResourceIdentifier.Account.REVOKE_REFRESH_TOKEN)]
-        [AllowAnonymous]
         public async Task<IActionResult> RevokeRefreshToken(RevokeRefreshTokenRequestDto model)
         {
             var response = await _accountService.RevokeRefreshTokenAsync(model.RefreshToken);
@@ -86,7 +76,6 @@ namespace FalconOne.API.Controllers.Account
 
         [HttpPost("refresh-token")]
         [ResourceIdentifier(ResourceIdentifier.Account.REFRESH_TOKEN)]
-        [AllowAnonymous]
         public async Task<IActionResult> RefreshToken(RefreshTokenRequestDto model)
         {
             var response = await _accountService.GetJWTByRefreshTokenAsync(model.RefreshToken);

@@ -18,8 +18,6 @@ namespace FalconOne.DAL
 
             RefreshTokenRepository = new GenericRepository<RefreshToken>(_context, _memoryCache);
             RequestInformationRepository = new SystemLogsRepository(_context, _memoryCache);
-            SecurityClaimsRepository = new SecurityClaimsRepository(_context, _memoryCache);
-            ApplicationPolicyRepository = new SecurityPolicyRepository(_context, _memoryCache);
             TenantRepository = new GenericRepository<Tenant>(_context, _memoryCache);
             UserRepository = new UserRepository(_context, _memoryCache);
             SecurityRolesRepository = new SecurityRolesRepository(_context, _memoryCache);
@@ -27,9 +25,7 @@ namespace FalconOne.DAL
 
         public ISystemLogRepository RequestInformationRepository { get; private set; }
         public IGenericRepository<RefreshToken> RefreshTokenRepository { get; private set; }
-        public ISecurityClaimsRepository SecurityClaimsRepository { get; private set; }
         public ISecurityRolesRepository SecurityRolesRepository { get; private set; }
-        public ISecurityPolicyRepository ApplicationPolicyRepository { get; private set; }
         public IGenericRepository<Tenant> TenantRepository { get; private set; }
         public IUserRepository UserRepository { get; private set; }
 

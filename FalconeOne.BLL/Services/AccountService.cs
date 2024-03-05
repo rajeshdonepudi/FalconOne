@@ -43,7 +43,7 @@ namespace FalconeOne.BLL.Services
         public AccountService(UserManager<User> userManager,
             IUnitOfWork unitOfWork,
             SignInManager<User> signInManager,
-            ITenantService tenantService,
+            ITenantProvider tenantService,
             ITokenService tokenService,
             IAppConfigService appConfigService,
             IHttpContextAccessor httpContextAccessor,

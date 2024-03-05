@@ -115,5 +115,7 @@ app.MapControllers();
 
 DbSeeder.Seed(app.Services);
 
+SecurityPolicyBootstrapper.Bootstrap(app.Services);
+
 await app.RunAsync();
 

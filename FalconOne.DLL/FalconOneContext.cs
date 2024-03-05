@@ -1,5 +1,4 @@
 ﻿using FalconOne.Models.Entities;
-using FalconOne.Models.EntityConfiguration;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,8 +7,6 @@ namespace FalconOne.DAL
     public class FalconOneContext : IdentityDbContext<User, SecurityRole, Guid>
     {
         public DbSet<SystemLog> SystemLogs { get; set; }
-        public DbSet<SecurityClaim> SecurityClaims { get; set; }
-        public DbSet<SecurityPolicy> SecurityPolicies { get; set; }
         public DbSet<Tenant> Tenants { get; set; }
 
         public FalconOneContext()
@@ -36,7 +33,7 @@ namespace FalconOne.DAL
 
             builder.Entity<Tenant>()
                    .Property(a => a.AccountAlias)
-                   .HasComputedColumnSql("'FOTEN' + CAST([AccountId] AS nvarchar(max))");
+                   .HasComputedColumnSql($"{GenerateTimeBasedId()}-'FOTEN' + CAST([AccountId] AS nvarchar(max))");
 
             #endregion
 
@@ -47,7 +44,7 @@ namespace FalconOne.DAL
 
             builder.Entity<User>()
                    .Property(x => x.ResourceAlias)
-                   .HasComputedColumnSql("'FOUSR' + CAST([ResourceId] AS nvarchar(max))");
+                   .HasComputedColumnSql($"{GenerateTimeBasedId()}-'FOUSR' + CAST([ResourceId] AS nvarchar(max))");
             #endregion
 
 
@@ -55,8 +52,15 @@ namespace FalconOne.DAL
 
         private void ApplyEntityConfigurations(ModelBuilder builder)
         {
-            builder.ApplyConfiguration(new TenantUserConfiguration());
+        }
 
+        public static string GenerateTimeBasedId()
+        {
+            DateTime now = DateTime.UtcNow;
+
+            string id = now.ToString("yyyyMMddHHmmssfff");
+
+            return id;
         }
     }
 }

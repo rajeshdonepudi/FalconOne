@@ -8,7 +8,7 @@ namespace FalconOne.API.Controllers.Security
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SecurityController : BaseController
+    public class SecurityController : BaseSecureController
     {
         private readonly ISecurityService _securityService;
 

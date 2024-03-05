@@ -7,7 +7,7 @@ namespace FalconOne.API.Controllers.Security
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoleManagementController : BaseController
+    public class RoleManagementController : BaseSecureController
     {
         private readonly IAppRoleService _appRoleService;
         private readonly IAppClaimService _appClaimService;

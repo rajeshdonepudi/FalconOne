@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FalconOne.Enumerations", "F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{3A921E4B-423F-4154-A6DB-8B99F9F9C798}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FalconOne.Security", "FalconOne.Security\FalconOne.Security.csproj", "{5135AF76-18E9-4D95-83AC-44B49FD8FF4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{6017AA88-5E5D-40E4-B75A-AFFD478F73A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6017AA88-5E5D-40E4-B75A-AFFD478F73A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6017AA88-5E5D-40E4-B75A-AFFD478F73A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5135AF76-18E9-4D95-83AC-44B49FD8FF4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5135AF76-18E9-4D95-83AC-44B49FD8FF4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5135AF76-18E9-4D95-83AC-44B49FD8FF4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5135AF76-18E9-4D95-83AC-44B49FD8FF4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +82,7 @@ Global
 		{EC59A262-DAB6-4A5F-8CCF-4B072FA65797} = {3A921E4B-423F-4154-A6DB-8B99F9F9C798}
 		{79EAB32C-F213-4664-ADF5-1769D23FC8B6} = {3A921E4B-423F-4154-A6DB-8B99F9F9C798}
 		{6017AA88-5E5D-40E4-B75A-AFFD478F73A4} = {3A921E4B-423F-4154-A6DB-8B99F9F9C798}
+		{5135AF76-18E9-4D95-83AC-44B49FD8FF4E} = {3A921E4B-423F-4154-A6DB-8B99F9F9C798}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {49E6AD45-90EF-4C6A-A9BD-F61A83872A12}

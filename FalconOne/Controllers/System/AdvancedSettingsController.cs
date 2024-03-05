@@ -5,7 +5,7 @@ namespace FalconOne.API.Controllers.System
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AdvancedSettingsController : BaseController
+    public class AdvancedSettingsController : BaseSecureController
     {
         private readonly IAdvancedSettingsService _advancedSettingsService;
 

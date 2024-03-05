@@ -2,7 +2,6 @@
 using FalconeOne.BLL.Interfaces;
 using FalconOne.DAL.Contracts;
 using FalconOne.Helpers.Helpers;
-using FalconOne.Models.Dtos.Common;
 using FalconOne.Models.DTOs.Account;
 using FalconOne.Models.DTOs.Security;
 using FalconOne.Models.DTOs.Users;
@@ -17,14 +16,14 @@ namespace FalconeOne.BLL.Services
     {
         #region Fields
         private readonly RoleManager<SecurityRole> _roleManager;
-        private readonly ITenantService _tenantService;
+        private readonly ITenantProvider _tenantService;
         #endregion
 
         #region Constructor
         public UserService(UserManager<User> userManager,
             IUnitOfWork unitOfWork,
             RoleManager<SecurityRole> roleManager,
-            ITenantService tenantService,
+            ITenantProvider tenantService,
             IHttpContextAccessor httpContextAccessor,
             IConfiguration configuration) : base(userManager, unitOfWork, httpContextAccessor, configuration, tenantService)
         {
@@ -172,7 +171,7 @@ namespace FalconeOne.BLL.Services
         public async Task<UserManagementDashboardInfoDto> GetDashboardInfo()
         {
             var result = await _unitOfWork.UserRepository.GetUserManagementDashboardInfoByTenantId(await _tenantService.GetTenantId(), CancellationToken.None);
-            
+
             return result;
         }
     }

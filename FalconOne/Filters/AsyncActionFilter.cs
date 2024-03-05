@@ -15,7 +15,7 @@ namespace FalconOne.API.Filters
         private async Task LogInfo(ActionExecutingContext context)
         {
             var requestInformationService = (ISystemLogsService)context.HttpContext.RequestServices.GetService(typeof(ISystemLogsService))!;
-            var tenantService = (ITenantService)context.HttpContext.RequestServices.GetService(typeof(ITenantService))!;
+            var tenantService = (ITenantProvider)context.HttpContext.RequestServices.GetService(typeof(ITenantProvider))!;
 
             var info = new RequestInformationDto
             {
@@ -50,7 +50,7 @@ namespace FalconOne.API.Filters
         {
             MethodInfo? method = context.Controller.GetType().GetMethod(context.RouteData.Values[ACTION_KEY]?.ToString() ?? string.Empty);
             ResourceIdentifierAttribute? myAttribute = method?.GetCustomAttribute<ResourceIdentifierAttribute>();
-            
+
             if (myAttribute is not null)
             {
                 string code = myAttribute.ResourceCode;

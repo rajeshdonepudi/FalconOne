@@ -11,7 +11,7 @@ namespace FalconOne.API.Controllers.User
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserManagementController : BaseController
+    public class UserManagementController : BaseSecureController
     {
         private readonly IUserService _userService;
         private readonly IAppClaimService _appClaimService;

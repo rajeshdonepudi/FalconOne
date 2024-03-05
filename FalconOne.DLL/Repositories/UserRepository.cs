@@ -14,27 +14,34 @@ namespace FalconOne.DAL.Repositories
 
         public async Task<PagedList<User>> GetAllUsersByTenantIdPaginatedAsync(Guid tenantId, PageParams pageParams, CancellationToken cancellationToken)
         {
-            var records = await _context.Users.Where(x => x.Tenants.Any(x => x.TenantId == tenantId))
-                                                     .OrderByDescending(x => x.CreatedOn)
-                                                     .Skip((pageParams.PageIndex - 1) * pageParams.PageSize)
-                                                     .Take(pageParams.PageSize)
-                                                     .AsNoTracking()
-                                                     .ToPagedListAsync(pageParams);
+            var result = await _context.Users.Where(x => x.Tenants.Any(x => x.TenantId == tenantId))
+                                              .OrderByDescending(x => x.CreatedOn)
+                                              .AsNoTracking()
+                                              .ToPagedListAsync(pageParams);
 
-            return records;
+            return result;
         }
 
         public async Task<User> GetTenantUserInfoByEmail(Guid tenantId, string email, CancellationToken cancellationToken)
         {
-            return await _context.Users.Where(x => x.Email == email && x.Tenants.Any(x => x.TenantId == tenantId))
-                                       .Include(x => x.ProfilePicture)
-                                       .Include(x => x.RefreshTokens)
-                                       .FirstOrDefaultAsync(cancellationToken)!;
+            var user = await _context.Users.Where(x => x.Email == email && x.Tenants.Any(x => x.TenantId == tenantId))
+                                           .Include(x => x.ProfilePicture)
+                                           .FirstOrDefaultAsync(cancellationToken)!;
+            return user;
+        }
+
+        public async Task<User> GetUserInfoByEmail(string email, CancellationToken cancellationToken)
+        {
+            var user = await _context.Users.Where(x => x.Email == email)
+                                           .Include(x => x.ProfilePicture)
+                                           .FirstOrDefaultAsync(cancellationToken)!;
+            return user;
         }
 
         public async Task<UserManagementDashboardInfoDto> GetUserManagementDashboardInfoByTenantId(Guid tenantId, CancellationToken cancellationToken)
         {
-            var query = _context.Users.AsQueryable().Where(x => x.Tenants.Any(x => x.TenantId == tenantId));
+            var query = _context.Users.AsQueryable()
+                                      .Where(x => x.Tenants.Any(x => x.TenantId == tenantId));
 
             var info = new UserManagementDashboardInfoDto();
 
@@ -50,7 +57,9 @@ namespace FalconOne.DAL.Repositories
 
         public async Task<bool> IsUserNameAvailable(string username, CancellationToken cancellationToken)
         {
-            return await _context.Users.AnyAsync(x => x.UserName != username, cancellationToken);
+            var result = await _context.Users.AnyAsync(x => x.UserName != username, cancellationToken);
+
+            return result;
         }
     }
 }
