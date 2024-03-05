@@ -8,7 +8,6 @@ namespace FalconOne.API.Controllers
     public class TestController : BaseSecureController
     {
         [HttpGet]
-        [FalconOneAuthorize([Policies.Test.TEST_GET])]
         [ResourceIdentifier(ResourceCodes.ResourceIdentifier.Account.LOGIN)]
         public async Task<IActionResult> Get()
         {

@@ -79,9 +79,9 @@ namespace FalconeOne.BLL.Services
 
             string jwtToken = await GenerateJWTToken(user);
 
-            RefreshToken? refreshToken = await GenerateRefreshToken();
+            RefreshToken? refreshToken = await GenerateRefreshTokenAsync();
 
-            await RemoveExpiredRefreshTokens(user);
+            await RemoveExpiredRefreshTokensAsync(user);
 
             user.RefreshTokens.Add(refreshToken);
 
@@ -176,18 +176,18 @@ namespace FalconeOne.BLL.Services
 
             if (token!.IsRevoked)
             {
-                await RevokeDescendantRefreshTokens(token, account, "", ErrorMessages.REUSE_OF_REVOKED_ANCESTOR_TOKEN);
+                await RevokeDescendantRefreshTokensAsync(token, account, "", ErrorMessages.REUSE_OF_REVOKED_ANCESTOR_TOKEN);
 
                 var updateResult = await _userManager.UpdateAsync(account);
 
                 throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
             }
 
-            RefreshToken newRefreshToken = await RotateRefreshToken(token, "");
+            RefreshToken newRefreshToken = await RotateRefreshTokenAsync(token, "");
 
             account.RefreshTokens.Add(newRefreshToken);
 
-            await RemoveExpiredRefreshTokens(account);
+            await RemoveExpiredRefreshTokensAsync(account);
 
             var result = await _userManager.UpdateAsync(account);
 
@@ -304,9 +304,9 @@ namespace FalconeOne.BLL.Services
 
             return await Task.FromResult(token);
         }
-        private async Task<RefreshToken> GenerateRefreshToken()
+        private async Task<RefreshToken> GenerateRefreshTokenAsync()
         {
-            RefreshToken refreshToken = await GetRefreshToken();
+            RefreshToken refreshToken = await GetRefreshTokenAsync();
 
             List<RefreshToken> refreshTokens = await _userManager.Users.AsNoTracking().SelectMany(x => x.RefreshTokens).ToListAsync();
 
@@ -316,13 +316,13 @@ namespace FalconeOne.BLL.Services
 
                 if (!isUniqueToken)
                 {
-                    RefreshToken newToken = await GenerateRefreshToken();
+                    RefreshToken newToken = await GenerateRefreshTokenAsync();
                     return await Task.FromResult(newToken);
                 }
             }
             return await Task.FromResult(refreshToken);
         }
-        private async Task<RefreshToken> GetRefreshToken()
+        private async Task<RefreshToken> GetRefreshTokenAsync()
         {
             return await Task.FromResult(new RefreshToken
             {
@@ -336,17 +336,22 @@ namespace FalconeOne.BLL.Services
         {
             return RandomNumberGenerator.GetBytes(length);
         }
-        private async Task RemoveExpiredRefreshTokens(User user)
+        private async Task RemoveExpiredRefreshTokensAsync(User user)
         {
             double expiry = double.Parse(await _appConfigService.GetValue("JWT:RefreshTokenValidity"));
 
-            RefreshToken? lastRefreshToken = user.RefreshTokens.LastOrDefault();
+            var lastRefreshToken = user.RefreshTokens.LastOrDefault();
 
-            int res = user.RefreshTokens.RemoveAll(x => x.Id != lastRefreshToken!.Id && !x.IsActive && x.Created.AddMinutes(expiry) <= DateTime.UtcNow);
+            var tokens = user.RefreshTokens.Where(x => x.Id != lastRefreshToken!.Id && !x.IsActive && x.Created.AddMinutes(expiry) <= DateTime.UtcNow);
+
+            foreach (var token in tokens)
+            {
+                user.RefreshTokens.Remove(token);
+            }
 
             await _userManager.UpdateAsync(user);
         }
-        private async Task RevokeDescendantRefreshTokens(RefreshToken refreshToken, User user, string ipAddress, string reason)
+        private async Task RevokeDescendantRefreshTokensAsync(RefreshToken refreshToken, User user, string ipAddress, string reason)
         {
             if (!string.IsNullOrEmpty(refreshToken.ReplacedByToken))
             {
@@ -360,7 +365,7 @@ namespace FalconeOne.BLL.Services
                     }
                     else
                     {
-                        await RevokeDescendantRefreshTokens(childRefreshToken, user, ipAddress, reason);
+                        await RevokeDescendantRefreshTokensAsync(childRefreshToken, user, ipAddress, reason);
                     }
                 }
             }
@@ -372,9 +377,9 @@ namespace FalconeOne.BLL.Services
             token.ReasonRevoked = reason;
             token.ReplacedByToken = replacedByToken;
         }
-        private async Task<RefreshToken> RotateRefreshToken(RefreshToken refreshToken, string ipAddress)
+        private async Task<RefreshToken> RotateRefreshTokenAsync(RefreshToken refreshToken, string ipAddress)
         {
-            RefreshToken newRefreshToken = await GenerateRefreshToken();
+            RefreshToken newRefreshToken = await GenerateRefreshTokenAsync();
             UpdateRefreshTokenSettings(refreshToken, ipAddress, ErrorMessages.REPLACED_WITH_NEW_TOKEN, newRefreshToken.Token!);
             return newRefreshToken;
         }

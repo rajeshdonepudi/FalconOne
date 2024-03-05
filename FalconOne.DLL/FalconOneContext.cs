@@ -21,10 +21,9 @@ namespace FalconOne.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //  DatabaseSeed.Seed(modelBuilder);
-            ApplyEntityConfigurations(modelBuilder);
+            base.OnModelCreating(modelBuilder); 
+
             EntityConfiguration(modelBuilder);
-            base.OnModelCreating(modelBuilder);
         }
 
         private static void EntityConfiguration(ModelBuilder builder)
@@ -46,12 +45,6 @@ namespace FalconOne.DAL
                    .Property(x => x.ResourceAlias)
                    .HasComputedColumnSql($"{GenerateTimeBasedId()}-'FOUSR' + CAST([ResourceId] AS nvarchar(max))");
             #endregion
-
-
-        }
-
-        private void ApplyEntityConfigurations(ModelBuilder builder)
-        {
         }
 
         public static string GenerateTimeBasedId()

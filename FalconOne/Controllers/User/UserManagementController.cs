@@ -14,12 +14,10 @@ namespace FalconOne.API.Controllers.User
     public class UserManagementController : BaseSecureController
     {
         private readonly IUserService _userService;
-        private readonly IAppClaimService _appClaimService;
 
-        public UserManagementController(IUserService accountService, IAppClaimService appClaimService)
+        public UserManagementController(IUserService accountService)
         {
             _userService = accountService;
-            _appClaimService = appClaimService;
         }
 
         [HttpGet("dashboard-info")]
@@ -49,18 +47,6 @@ namespace FalconOne.API.Controllers.User
         public async Task<IActionResult> AddUser(AddUserDto model)
         {
             var result = await _userService.AddUser(model);
-
-            if (result)
-            {
-                return Ok(result);
-            }
-            return BadRequest();
-        }
-
-        [HttpPost("add-claim-to-user")]
-        public async Task<IActionResult> AddClaimToUser(AddClaimToUserDto model)
-        {
-            var result = await _appClaimService.AddClaimToUserAsync(model);
 
             if (result)
             {

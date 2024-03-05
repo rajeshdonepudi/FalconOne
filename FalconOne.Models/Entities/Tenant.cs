@@ -9,9 +9,7 @@ namespace FalconOne.Models.Entities
         public Tenant()
         {
             Users = new HashSet<TenantUser>();
-            SecurityRoles = new HashSet<SecurityRole>();
         }
-
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -25,8 +23,6 @@ namespace FalconOne.Models.Entities
         public DateTime? ModifiedOn { get; set; }
         public DateTime CreatedOn { get; set; }
         public Image? ProfilePicture { get; set; }
-
         public virtual ICollection<TenantUser> Users { get; set; }
-        public virtual ICollection<SecurityRole> SecurityRoles { get; set; }
     }
 }

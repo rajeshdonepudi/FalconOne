@@ -118,71 +118,6 @@ namespace FalconOne.DAL.Migrations
                     b.ToTable("Image");
                 });
 
-            modelBuilder.Entity("FalconOne.Models.Entities.SecurityClaim", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ApplicationPolicyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationPolicyId");
-
-                    b.HasIndex("TenantId");
-
-                    b.ToTable("SecurityClaims");
-                });
-
-            modelBuilder.Entity("FalconOne.Models.Entities.SecurityPolicy", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TenantId");
-
-                    b.ToTable("SecurityPolicies");
-                });
-
             modelBuilder.Entity("FalconOne.Models.Entities.SecurityRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -207,17 +142,12 @@ namespace FalconOne.DAL.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.HasIndex("TenantId");
 
                     b.ToTable("AspNetRoles", (string)null);
                 });
@@ -304,7 +234,7 @@ namespace FalconOne.DAL.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("nvarchar(max)")
-                        .HasComputedColumnSql("'FOTEN' + CAST([AccountId] AS nvarchar(max))");
+                        .HasComputedColumnSql("20240305184531170-'FOTEN' + CAST([AccountId] AS nvarchar(max))");
 
                     b.Property<int>("AccountId")
                         .ValueGeneratedOnAdd()
@@ -338,17 +268,44 @@ namespace FalconOne.DAL.Migrations
 
             modelBuilder.Entity("FalconOne.Models.Entities.TenantUser", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("TenantId", "UserId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("TenantUser");
+                });
+
+            modelBuilder.Entity("FalconOne.Models.Entities.TenantUserRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SecurityRoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TenantUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SecurityRoleId");
+
+                    b.HasIndex("TenantUserId");
+
+                    b.ToTable("TenantUserRole");
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.User", b =>
@@ -436,7 +393,7 @@ namespace FalconOne.DAL.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("nvarchar(max)")
-                        .HasComputedColumnSql("'FOUSR' + CAST([ResourceId] AS nvarchar(max))");
+                        .HasComputedColumnSql("20240305184531170-'FOUSR' + CAST([ResourceId] AS nvarchar(max))");
 
                     b.Property<int>("ResourceId")
                         .ValueGeneratedOnAdd()
@@ -597,39 +554,6 @@ namespace FalconOne.DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FalconOne.Models.Entities.SecurityClaim", b =>
-                {
-                    b.HasOne("FalconOne.Models.Entities.SecurityPolicy", "ApplicationPolicy")
-                        .WithMany("PolicyClaims")
-                        .HasForeignKey("ApplicationPolicyId");
-
-                    b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
-                        .WithMany("SecurityClaims")
-                        .HasForeignKey("TenantId");
-
-                    b.Navigation("ApplicationPolicy");
-
-                    b.Navigation("Tenant");
-                });
-
-            modelBuilder.Entity("FalconOne.Models.Entities.SecurityPolicy", b =>
-                {
-                    b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
-                        .WithMany("SecurityPolicies")
-                        .HasForeignKey("TenantId");
-
-                    b.Navigation("Tenant");
-                });
-
-            modelBuilder.Entity("FalconOne.Models.Entities.SecurityRole", b =>
-                {
-                    b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
-                        .WithMany("SecurityRoles")
-                        .HasForeignKey("TenantId");
-
-                    b.Navigation("Tenant");
-                });
-
             modelBuilder.Entity("FalconOne.Models.Entities.SystemLog", b =>
                 {
                     b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
@@ -665,6 +589,25 @@ namespace FalconOne.DAL.Migrations
                     b.Navigation("Tenant");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FalconOne.Models.Entities.TenantUserRole", b =>
+                {
+                    b.HasOne("FalconOne.Models.Entities.SecurityRole", "SecurityRole")
+                        .WithMany("TenantUserRoles")
+                        .HasForeignKey("SecurityRoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FalconOne.Models.Entities.TenantUser", "TenantUser")
+                        .WithMany("TenantUserRoles")
+                        .HasForeignKey("TenantUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SecurityRole");
+
+                    b.Navigation("TenantUser");
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.User", b =>
@@ -776,20 +719,19 @@ namespace FalconOne.DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FalconOne.Models.Entities.SecurityPolicy", b =>
+            modelBuilder.Entity("FalconOne.Models.Entities.SecurityRole", b =>
                 {
-                    b.Navigation("PolicyClaims");
+                    b.Navigation("TenantUserRoles");
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.Tenant", b =>
                 {
-                    b.Navigation("SecurityClaims");
-
-                    b.Navigation("SecurityPolicies");
-
-                    b.Navigation("SecurityRoles");
-
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("FalconOne.Models.Entities.TenantUser", b =>
+                {
+                    b.Navigation("TenantUserRoles");
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.User", b =>

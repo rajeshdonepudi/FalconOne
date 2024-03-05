@@ -9,12 +9,9 @@ namespace FalconOne.Models.Entities
     {
         public User()
         {
-            FirstName = string.Empty;
-            LastName = string.Empty;
-
-            RefreshTokens = new List<RefreshToken>();
-
+            RefreshTokens = new HashSet<RefreshToken>();
         }
+
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string? MiddleName { get; set; }
@@ -25,22 +22,20 @@ namespace FalconOne.Models.Entities
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public string ResourceAlias { get; private set; }
-        public List<RefreshToken> RefreshTokens { get; set; }
+
         public DateTime? ModifiedOn { get; set; }
         public DateTime CreatedOn { get; set; }
         public Guid? ProfilePictureId { get; set; }
         public virtual Image? ProfilePicture { get; set; }
-        public EmployeeGenderEnum Gender { get; set; } = EmployeeGenderEnum.NotSpecified;
         public DateTime DateOfBirth { get; set; }
+        public bool PhysicallyChallenged { get; set; }
+
+        public EmployeeGenderEnum Gender { get; set; } = EmployeeGenderEnum.NotSpecified;
         public MaritalStatusEnum MaritalStatus { get; set; } = MaritalStatusEnum.NotSpecified;
         public BloodGroupTypeEnum BloodGroup { get; set; } = BloodGroupTypeEnum.NotSpecified;
-        public bool PhysicallyChallenged { get; set; }
+
+        public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
         public virtual ICollection<Address> Addresses { get; set; }
         public virtual ICollection<TenantUser> Tenants { get; set; }
-
-        public bool OwnsToken(string token)
-        {
-            return RefreshTokens?.Find(x => x.Token == token) != null;
-        }
     }
 }

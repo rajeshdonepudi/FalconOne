@@ -1,5 +1,4 @@
 ﻿using FalconeOne.BLL.Interfaces;
-using FalconOne.Models.DTOs.Security;
 using FalconOne.Models.DTOs.Users;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,12 +9,10 @@ namespace FalconOne.API.Controllers.Security
     public class RoleManagementController : BaseSecureController
     {
         private readonly IAppRoleService _appRoleService;
-        private readonly IAppClaimService _appClaimService;
 
-        public RoleManagementController(IAppRoleService appRoleService, IAppClaimService appClaimService)
+        public RoleManagementController(IAppRoleService appRoleService)
         {
             _appRoleService = appRoleService;
-            _appClaimService = appClaimService;
         }
 
         [HttpPost("create-role")]
@@ -26,18 +23,6 @@ namespace FalconOne.API.Controllers.Security
             if (result)
             {
                 return Created(GetRequestURI(), role);
-            }
-            return BadRequest();
-        }
-
-        [HttpPost("add-claim-to-role")]
-        public async Task<IActionResult> AddClaimToRole(AddClaimToRoleDto model)
-        {
-            var result = await _appClaimService.AddClaimToRoleAsync(model);
-
-            if (result)
-            {
-                return Created(GetRequestURI(), model);
             }
             return BadRequest();
         }

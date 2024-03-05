@@ -61,6 +61,7 @@ namespace FalconOne.DAL
             await Dispose(true);
             GC.SuppressFinalize(this);
         }
+
         protected virtual async Task Dispose(bool disposing)
         {
             if (disposing)

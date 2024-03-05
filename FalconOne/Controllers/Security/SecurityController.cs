@@ -17,16 +17,6 @@ namespace FalconOne.API.Controllers.Security
             _securityService = securityService;
         }
 
-        [HttpGet("claims/lookup")]
-        [FalconOneAuthorize(new string[] { "Admin" })]
-        [ResourceIdentifier(ResourceIdentifier.Security.GET_SECURITY_CLAIMS_LOOKUP)]
-        public async Task<IActionResult> GetSecurityClaims()
-        {
-            var response = await _securityService.GetTenantSecurityClaimsForLookup();
-
-            return Ok(response);
-        }
-
         [HttpGet("roles/lookup")]
         [FalconOneAuthorize(new string[] { "Admin" })]
         [ResourceIdentifier(ResourceIdentifier.Security.GET_SECURITY_ROLES_LOOKUP)]

@@ -6,7 +6,7 @@
         {
             services.AddAuthorization(options =>
             {
-
+                
             });
         }
     }
