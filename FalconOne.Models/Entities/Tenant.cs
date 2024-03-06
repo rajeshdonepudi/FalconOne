@@ -1,10 +1,13 @@
 ﻿using FalconOne.Models.Contracts;
+using FalconOne.Models.EntityConfiguration;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FalconOne.Models.Entities
 {
-    public class Tenant : ITrackableEntity
+    [EntityTypeConfiguration(typeof(TenantConfiguration))]
+    public class Tenant : ITrackableEntity, ISoftDeletable
     {
         public Tenant()
         {
@@ -24,5 +27,6 @@ namespace FalconOne.Models.Entities
         public DateTime CreatedOn { get; set; }
         public Image? ProfilePicture { get; set; }
         public virtual ICollection<TenantUser> Users { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

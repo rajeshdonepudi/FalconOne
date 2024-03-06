@@ -2,6 +2,7 @@
 using Bogus.DataSets;
 using FalconOne.Enumerations.Employee;
 using FalconOne.Models.Entities;
+using FalconOne.Security;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text;
 
@@ -35,7 +36,7 @@ namespace FalconOne.DAL
                 {
                     await Task.Factory.StartNew(() =>
                     {
-                        for (int i = 1; i < 10000; i++)
+                        for (int i = 1; i <= 10; i++)
                         {
                             Console.WriteLine($"----------------------------------------");
                             Console.WriteLine("Started Batch Execution No.: {0}", i);
@@ -59,6 +60,12 @@ namespace FalconOne.DAL
                         }
                     });
                 }
+
+                if(!context.Roles.Any())
+                {
+                    await context.Roles.AddRangeAsync(GetSecurityRoles());
+                    await context.SaveChangesAsync();
+                }
             }
         }
 
@@ -70,6 +77,32 @@ namespace FalconOne.DAL
             return tenantUserFaker.Generate(count);
         }
 
+        public static List<SecurityRole> GetSecurityRoles()
+        {
+            var roles = new List<SecurityRole>()
+            {
+                new SecurityRole
+                {
+                    Name = SecurityRoles.GOD,
+                    CreatedOn = DateTime.UtcNow,
+                    NormalizedName = SecurityRoles.GOD.ToUpper(),
+                },
+                new SecurityRole
+                {
+                    Name = SecurityRoles.TENANT_ADMIN,
+                    CreatedOn = DateTime.UtcNow,
+                    NormalizedName = SecurityRoles.TENANT_ADMIN.ToUpper()
+                },
+                new SecurityRole
+                {
+                    Name = SecurityRoles.TENANT_USER,
+                    CreatedOn = DateTime.UtcNow,
+                    NormalizedName = SecurityRoles.TENANT_USER.ToUpper()
+                }
+            };
+
+            return roles;
+        }
 
 
 

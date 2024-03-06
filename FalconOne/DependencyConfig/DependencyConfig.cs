@@ -15,7 +15,6 @@ namespace FalconOne.API.DependencyConfig
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IAppRoleService, AppRoleService>();
             builder.Services.AddTransient<AsyncActionFilter>();
             builder.Services.AddTransient<ITokenService, TokenService>();
             builder.Services.AddTransient<IAppConfigService, AppConfigService>();

@@ -8,7 +8,7 @@ namespace FalconOne.Models.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        public string Title { get; set; }
-        public byte[] Data { get; set; }
+        public required string Title { get; set; }
+        public required byte[] Data { get; set; }
     }
 }

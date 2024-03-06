@@ -8,6 +8,9 @@ namespace FalconOne.DAL
     {
         public DbSet<SystemLog> SystemLogs { get; set; }
         public DbSet<Tenant> Tenants { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<TenantUser> TenantUsers { get; set; }
+        public DbSet<TenantUserRole> TenantUserRoles { get; set; }
 
         public FalconOneContext()
         {
@@ -32,7 +35,8 @@ namespace FalconOne.DAL
 
             builder.Entity<Tenant>()
                    .Property(a => a.AccountAlias)
-                   .HasComputedColumnSql($"{GenerateTimeBasedId()}-'FOTEN' + CAST([AccountId] AS nvarchar(max))");
+                   .HasColumnType("nvarchar(max)")
+                   .HasComputedColumnSql($"CONVERT(NVARCHAR(max), {GenerateTimeBasedId()}) + '-FALO_TEN' + CAST([AccountId] AS NVARCHAR(max))");
 
             #endregion
 
@@ -43,7 +47,10 @@ namespace FalconOne.DAL
 
             builder.Entity<User>()
                    .Property(x => x.ResourceAlias)
-                   .HasComputedColumnSql($"{GenerateTimeBasedId()}-'FOUSR' + CAST([ResourceId] AS nvarchar(max))");
+                   .HasColumnType("nvarchar(max)")
+                   .HasComputedColumnSql($"CONVERT(NVARCHAR(max), {GenerateTimeBasedId()}) + '-FALO_USR' + CAST([ResourceId] AS NVARCHAR(max))");
+
+
             #endregion
         }
 

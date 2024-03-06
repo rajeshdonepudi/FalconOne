@@ -88,7 +88,7 @@ namespace FalconOne.DAL.Migrations
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     ResourceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ResourceAlias = table.Column<string>(type: "nvarchar(max)", nullable: false, computedColumnSql: "20240305184531170-'FOUSR' + CAST([ResourceId] AS nvarchar(max))"),
+                    ResourceAlias = table.Column<string>(type: "nvarchar(max)", nullable: false, computedColumnSql: "CONVERT(NVARCHAR(max), 20240306051803942) + '-FALO_USR' + CAST([ResourceId] AS NVARCHAR(max))"),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ProfilePictureId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -131,11 +131,12 @@ namespace FalconOne.DAL.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AccountId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountAlias = table.Column<string>(type: "nvarchar(max)", nullable: false, computedColumnSql: "20240305184531170-'FOTEN' + CAST([AccountId] AS nvarchar(max))"),
+                    AccountAlias = table.Column<string>(type: "nvarchar(max)", nullable: false, computedColumnSql: "CONVERT(NVARCHAR(max), 20240306051803942) + '-FALO_TEN' + CAST([AccountId] AS NVARCHAR(max))"),
                     Host = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProfilePictureId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    ProfilePictureId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -269,8 +270,7 @@ namespace FalconOne.DAL.Migrations
                 name: "RefreshTokens",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Expires = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -325,24 +325,25 @@ namespace FalconOne.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TenantUser",
+                name: "TenantUsers",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TenantUser", x => x.Id);
+                    table.PrimaryKey("PK_TenantUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TenantUser_AspNetUsers_UserId",
+                        name: "FK_TenantUsers_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TenantUser_Tenants_TenantId",
+                        name: "FK_TenantUsers_Tenants_TenantId",
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
@@ -350,26 +351,27 @@ namespace FalconOne.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TenantUserRole",
+                name: "TenantUserRoles",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TenantUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SecurityRoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    SecurityRoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TenantUserRole", x => x.Id);
+                    table.PrimaryKey("PK_TenantUserRoles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TenantUserRole_AspNetRoles_SecurityRoleId",
+                        name: "FK_TenantUserRoles_AspNetRoles_SecurityRoleId",
                         column: x => x.SecurityRoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TenantUserRole_TenantUser_TenantUserId",
+                        name: "FK_TenantUserRoles_TenantUsers_TenantUserId",
                         column: x => x.TenantUserId,
-                        principalTable: "TenantUser",
+                        principalTable: "TenantUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -444,24 +446,24 @@ namespace FalconOne.DAL.Migrations
                 column: "ProfilePictureId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TenantUser_TenantId",
-                table: "TenantUser",
-                column: "TenantId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TenantUser_UserId",
-                table: "TenantUser",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TenantUserRole_SecurityRoleId",
-                table: "TenantUserRole",
+                name: "IX_TenantUserRoles_SecurityRoleId",
+                table: "TenantUserRoles",
                 column: "SecurityRoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TenantUserRole_TenantUserId",
-                table: "TenantUserRole",
+                name: "IX_TenantUserRoles_TenantUserId",
+                table: "TenantUserRoles",
                 column: "TenantUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TenantUsers_TenantId",
+                table: "TenantUsers",
+                column: "TenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TenantUsers_UserId",
+                table: "TenantUsers",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -492,7 +494,7 @@ namespace FalconOne.DAL.Migrations
                 name: "SystemLogs");
 
             migrationBuilder.DropTable(
-                name: "TenantUserRole");
+                name: "TenantUserRoles");
 
             migrationBuilder.DropTable(
                 name: "Country");
@@ -501,7 +503,7 @@ namespace FalconOne.DAL.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "TenantUser");
+                name: "TenantUsers");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

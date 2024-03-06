@@ -1,4 +1,5 @@
-﻿using FalconOne.Models.EntityConfiguration;
+﻿using FalconOne.Models.Contracts;
+using FalconOne.Models.EntityConfiguration;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace FalconOne.Models.Entities
 {
     [EntityTypeConfiguration(typeof(TenantUserConfiguration))]
-    public class TenantUser
+    public class TenantUser : ISoftDeletable
     {
         public TenantUser()
         {
@@ -23,6 +24,7 @@ namespace FalconOne.Models.Entities
         public Guid UserId { get; set; }
         public virtual User User { get; set; }
 
+        public bool IsDeleted { get; set; }
         public virtual ICollection<TenantUserRole> TenantUserRoles { get; set; }
     }
 }

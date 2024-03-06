@@ -118,6 +118,46 @@ namespace FalconOne.DAL.Migrations
                     b.ToTable("Image");
                 });
 
+            modelBuilder.Entity("FalconOne.Models.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByIp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ReasonRevoked")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReplacedByToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Revoked")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RevokedByIp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("FalconOne.Models.Entities.SecurityRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -234,7 +274,7 @@ namespace FalconOne.DAL.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("nvarchar(max)")
-                        .HasComputedColumnSql("20240305184531170-'FOTEN' + CAST([AccountId] AS nvarchar(max))");
+                        .HasComputedColumnSql("CONVERT(NVARCHAR(max), 20240306051803942) + '-FALO_TEN' + CAST([AccountId] AS NVARCHAR(max))");
 
                     b.Property<int>("AccountId")
                         .ValueGeneratedOnAdd()
@@ -248,6 +288,9 @@ namespace FalconOne.DAL.Migrations
                     b.Property<string>("Host")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
@@ -272,6 +315,9 @@ namespace FalconOne.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<Guid>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
@@ -284,7 +330,7 @@ namespace FalconOne.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TenantUser");
+                    b.ToTable("TenantUsers");
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.TenantUserRole", b =>
@@ -292,6 +338,9 @@ namespace FalconOne.DAL.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("SecurityRoleId")
                         .HasColumnType("uniqueidentifier");
@@ -305,7 +354,7 @@ namespace FalconOne.DAL.Migrations
 
                     b.HasIndex("TenantUserId");
 
-                    b.ToTable("TenantUserRole");
+                    b.ToTable("TenantUserRoles");
                 });
 
             modelBuilder.Entity("FalconOne.Models.Entities.User", b =>
@@ -393,7 +442,7 @@ namespace FalconOne.DAL.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("nvarchar(max)")
-                        .HasComputedColumnSql("20240305184531170-'FOUSR' + CAST([ResourceId] AS nvarchar(max))");
+                        .HasComputedColumnSql("CONVERT(NVARCHAR(max), 20240306051803942) + '-FALO_USR' + CAST([ResourceId] AS NVARCHAR(max))");
 
                     b.Property<int>("ResourceId")
                         .ValueGeneratedOnAdd()
@@ -554,6 +603,17 @@ namespace FalconOne.DAL.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("FalconOne.Models.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("FalconOne.Models.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("FalconOne.Models.Entities.SystemLog", b =>
                 {
                     b.HasOne("FalconOne.Models.Entities.Tenant", "Tenant")
@@ -616,56 +676,7 @@ namespace FalconOne.DAL.Migrations
                         .WithMany()
                         .HasForeignKey("ProfilePictureId");
 
-                    b.OwnsMany("FalconOne.Models.Entities.RefreshToken", "RefreshTokens", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<DateTime>("Created")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<string>("CreatedByIp")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<DateTime>("Expires")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<string>("ReasonRevoked")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("ReplacedByToken")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<DateTime?>("Revoked")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<string>("RevokedByIp")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Token")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<Guid>("UserId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("UserId");
-
-                            b1.ToTable("RefreshTokens");
-
-                            b1.WithOwner("User")
-                                .HasForeignKey("UserId");
-
-                            b1.Navigation("User");
-                        });
-
                     b.Navigation("ProfilePicture");
-
-                    b.Navigation("RefreshTokens");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -737,6 +748,8 @@ namespace FalconOne.DAL.Migrations
             modelBuilder.Entity("FalconOne.Models.Entities.User", b =>
                 {
                     b.Navigation("Addresses");
+
+                    b.Navigation("RefreshTokens");
 
                     b.Navigation("Tenants");
                 });

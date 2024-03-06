@@ -1,16 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FalconOne.Models.Entities
 {
-    [Owned]
-    [Table("RefreshTokens")]
     public class RefreshToken
     {
         [Key]
-        public int Id { get; set; }
-        public User User { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
         public string? Token { get; set; }
         public DateTime Expires { get; set; }
         public DateTime Created { get; set; }
@@ -22,5 +20,7 @@ namespace FalconOne.Models.Entities
         public bool IsExpired => DateTime.UtcNow >= Expires;
         public bool IsRevoked => Revoked != null;
         public bool IsActive => Revoked == null && !IsExpired;
+
+        public virtual User User { get; set; }
     }
 }
