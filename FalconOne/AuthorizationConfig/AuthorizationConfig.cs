@@ -1,4 +1,5 @@
 ﻿using FalconOne.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FalconOne.API.AuthorizationConfig
 {
@@ -8,6 +9,11 @@ namespace FalconOne.API.AuthorizationConfig
         {
             services.AddAuthorization(options =>
             {
+                options.DefaultPolicy = new AuthorizationPolicyBuilder()
+                                           .RequireAuthenticatedUser()
+                                           .RequireRole(SecurityRoles.GOD)
+                                           .Build();
+
                 options.AddPolicy(SecurityPolicies.GOD_POLICY, p =>
                 {
                     p.RequireRole(SecurityRoles.GOD);
@@ -15,14 +21,29 @@ namespace FalconOne.API.AuthorizationConfig
 
                 options.AddPolicy(SecurityPolicies.TENANT_USER_POLICY, p =>
                 {
-                    p.RequireRole(SecurityRoles.TENANT_USER);
+                    p.AllowedRoles(new List<string> { SecurityRoles.TENANT_USER });
                 });
 
                 options.AddPolicy(SecurityPolicies.TENANT_ADMIN_POLICY, p =>
                 {
-                    p.RequireRole(SecurityRoles.TENANT_ADMIN);
+                    p.AllowedRoles(new List<string> { SecurityRoles.TENANT_ADMIN });
                 });
             });
+        }
+
+        private static void AllowedRoles(this AuthorizationPolicyBuilder builder, List<string> roles)
+        {
+            var allowed = new List<string>
+            {
+                SecurityRoles.GOD
+            };
+
+            foreach (var role in roles)
+            {
+                roles.Add(role);
+            }
+
+            builder.RequireRole(allowed.ToArray());
         }
     }
 }

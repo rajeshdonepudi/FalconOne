@@ -70,7 +70,12 @@ namespace FalconeOne.BLL.Services
 
             await EmailVerificationCheck(user);
 
-            SignInResult result = await _signInManager.PasswordSignInAsync(user, model.Password, false, true);
+            //if(!IsBase64Encoded(model.Password))
+            //{
+            //    model.Password = ConvertToBase64(model.Password);
+            //}
+
+            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
 
             if (!result.Succeeded)
             {
@@ -295,6 +300,13 @@ namespace FalconeOne.BLL.Services
         private async Task<string> GenerateJWTToken(User user)
         {
             IList<Claim> claims = await _userManager.GetClaimsAsync(user);
+
+            var roleClaims = await _unitOfWork.UserRepository.GetUserRoles(await _tenantService.GetTenantId(), user.Id, CancellationToken.None);
+
+            foreach (var claim in roleClaims)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, claim.Name!));
+            }
 
             claims.Add(new Claim("TenantId", (await _tenantService.GetTenantId()).ToString()));
 

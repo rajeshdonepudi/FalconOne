@@ -4,8 +4,9 @@ namespace FalconOne.API.Controllers
     [ApiAuthorize]
     public class BaseSecureController : BaseController
     {
-        public BaseSecureController() : base()
+        public BaseSecureController()
         {
+
         }
     }
 }

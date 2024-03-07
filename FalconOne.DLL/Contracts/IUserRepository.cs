@@ -12,5 +12,6 @@ namespace FalconOne.DAL.Contracts
         Task<User> GetTenantUserInfoByEmail(Guid tenantId, string email, CancellationToken cancellationToken);
         Task<User> GetUserInfoByEmail(string email, CancellationToken cancellationToken);
         Task<UserManagementDashboardInfoDto> GetUserManagementDashboardInfoByTenantId(Guid tenantId, CancellationToken cancellationToken);
+        Task<List<SecurityRole>> GetUserRoles(Guid tenantId, Guid userId, CancellationToken cancellationToken);
     }
 }

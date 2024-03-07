@@ -55,6 +55,16 @@ namespace FalconOne.DAL.Repositories
             return info;
         }
 
+        public async Task<List<SecurityRole>> GetUserRoles(Guid tenantId, Guid userId, CancellationToken cancellationToken)
+        {
+            var result = await _context.TenantUsers.Where(x => x.TenantId == tenantId && x.UserId == userId)
+                                                   .SelectMany(x => x.TenantUserRoles)
+                                                   .Select(x => x.SecurityRole)
+                                                   .AsNoTracking()
+                                                   .ToListAsync(cancellationToken);
+            return result;
+        }
+
         public async Task<bool> IsUserNameAvailable(string username, CancellationToken cancellationToken)
         {
             var result = await _context.Users.AnyAsync(x => x.UserName != username, cancellationToken);

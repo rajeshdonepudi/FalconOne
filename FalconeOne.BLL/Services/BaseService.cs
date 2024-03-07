@@ -64,6 +64,26 @@ namespace FalconeOne.BLL.Services
             return string.Join(',', identityErrors.Select(x => x.Description).ToArray());
         }
 
+        protected static bool IsBase64Encoded(string input)
+        {
+            try
+            {
+                byte[] buffer = Convert.FromBase64String(input);
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+
+        protected static string ConvertToBase64(string text)
+        {
+            string base64String = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(text));
+
+            return base64String;
+        }
+
         private async Task<bool> IsValidTenant(Guid tenantId, Guid userId)
         {
             Tenant? tenant = await _unitOfWork.TenantRepository.GetByIdAsync(tenantId, CancellationToken.None);

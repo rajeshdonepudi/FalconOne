@@ -1,4 +1,6 @@
 ﻿using FalconeOne.BLL.Interfaces;
+using FalconOne.API.Attributes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FalconOne.API.Controllers.System
@@ -15,6 +17,8 @@ namespace FalconOne.API.Controllers.System
         }
 
         [HttpPost("hash-password")]
+        [AllowAnonymous]
+        [ResourceIdentifier(ResourceCodes.ResourceIdentifier.Settings.HASH_PASSWORD)]
         public async Task<IActionResult> HashPassword(string password)
         {
             var result = await _advancedSettingsService.HashPasswordAsync(password);

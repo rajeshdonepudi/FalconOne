@@ -2,6 +2,11 @@
 {
     public class ResourceIdentifier
     {
+        public static class Settings
+        {
+            public const string HASH_PASSWORD = "HASH_PASSWORD";
+        }
+
         public static class Account
         {
             public const string USER_CREATE = "USER_CREATE";
@@ -27,6 +32,7 @@
             public const string GET_SECURITY_ROLES_LOOKUP = "GET_SECURITY_ROLES_LOOKUP";
             public const string HASH_USER_PASSWORD = "HASH_USER_PASSWORD";
             public const string CREATE_NEW_POLICY = "CREATE_NEW_POLICY";
+            public const string GET_ROLE = "GET_ROLE";
         }
     }
 }

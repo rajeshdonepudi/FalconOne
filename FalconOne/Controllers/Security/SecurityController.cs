@@ -1,5 +1,7 @@
 ﻿using FalconeOne.BLL.Interfaces;
+using FalconOne.API.Attributes;
 using FalconOne.Models.DTOs.Users;
+using FalconOne.Security;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FalconOne.API.Controllers.Security
@@ -16,6 +18,8 @@ namespace FalconOne.API.Controllers.Security
         }
 
         [HttpGet("get-role")]
+        [ApiAuthorize(Policy = SecurityPolicies.TENANT_USER_POLICY)]
+        [ResourceIdentifier(ResourceCodes.ResourceIdentifier.Security.GET_ROLE)]
         public async Task<IActionResult> GetRole([FromQuery] string roleId)
         {
             var result = await _securityService.GetRoleAsync(roleId);

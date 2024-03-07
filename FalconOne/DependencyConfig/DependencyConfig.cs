@@ -4,6 +4,7 @@ using FalconOne.API.Filters;
 using FalconOne.DAL;
 using FalconOne.DAL.Contracts;
 using FalconOne.Models.Contracts;
+using Microsoft.AspNetCore.Identity;
 
 namespace FalconOne.API.DependencyConfig
 {
@@ -21,6 +22,8 @@ namespace FalconOne.API.DependencyConfig
             builder.Services.AddScoped<ITenantProvider, TenantProvider>();
             builder.Services.AddTransient<IUserService, UserService>();
             builder.Services.AddTransient<ISecurityService, SecurityService>();
+            builder.Services.AddTransient<IAdvancedSettingsService, AdvancedSettingsService>();
+            builder.Services.AddTransient<IPasswordHasher<object>, PasswordHasher<object>>();
         }
     }
 }

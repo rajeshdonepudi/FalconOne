@@ -6,6 +6,7 @@ namespace FalconOne.API.Controllers
 {
     [ServiceFilter(typeof(AsyncActionFilter))]
     [ProducesResponseType(typeof(ApiErrorResponseDto), StatusCodes.Status400BadRequest)]
+    [ApiController]
     public class BaseController : Controller
     {
         protected string GetRequestURI()
