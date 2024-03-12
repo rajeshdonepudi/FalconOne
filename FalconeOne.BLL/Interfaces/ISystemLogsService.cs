@@ -12,7 +12,11 @@ namespace FalconeOne.BLL.Interfaces
         /// <param name="model"></param>
         /// <returns></returns>
         Task SaveRequestInfoAsync(RequestInformationDto model);
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pageParams"></param>
+        /// <returns></returns>
         Task<PagedList<SystemLog>> GetAllAsync(PageParams pageParams);
     }
 }

@@ -21,11 +21,11 @@ namespace FalconeOne.BLL.Services
 
         public async Task<Guid> GetTenantId()
         {
-            bool useLocalTenantId = Convert.ToBoolean(await _appConfigService.GetValue("useLocalTenantId"));
+            bool useLocalTenantId = Convert.ToBoolean(await _appConfigService.GetValueAsync("useLocalTenantId"));
 
             if (useLocalTenantId)
             {
-                return Guid.Parse(await _appConfigService.GetValue("localTenantId"));
+                return Guid.Parse(await _appConfigService.GetValueAsync("localTenantId"));
             }
             else
             {

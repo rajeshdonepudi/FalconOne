@@ -7,6 +7,6 @@
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        Task<string> GetValue(string key);
+        Task<string> GetValueAsync(string key);
     }
 }

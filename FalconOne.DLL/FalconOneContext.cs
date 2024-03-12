@@ -24,7 +24,7 @@ namespace FalconOne.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); 
+            base.OnModelCreating(modelBuilder);
 
             EntityConfiguration(modelBuilder);
         }
@@ -49,8 +49,6 @@ namespace FalconOne.DAL
                    .Property(x => x.ResourceAlias)
                    .HasColumnType("nvarchar(max)")
                    .HasComputedColumnSql($"CONVERT(NVARCHAR(max), {GenerateTimeBasedId()}) + '-FALO_USR' + CAST([ResourceId] AS NVARCHAR(max))");
-
-
             #endregion
         }
 

@@ -60,7 +60,7 @@ namespace FalconeOne.BLL.Services
 
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto model)
         {
-            User? user = await _unitOfWork.UserRepository
+            User user = await _unitOfWork.UserRepository
                                           .GetTenantUserInfoByEmail(await _tenantService.GetTenantId(), model.Email, CancellationToken.None);
 
             if (user is null)
@@ -70,23 +70,14 @@ namespace FalconeOne.BLL.Services
 
             await EmailVerificationCheck(user);
 
-            //if(!IsBase64Encoded(model.Password))
-            //{
-            //    model.Password = ConvertToBase64(model.Password);
-            //}
+            var signInResult = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
 
-            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
+            HandleSignInAction(signInResult);
 
-            if (!result.Succeeded)
-            {
-                throw new ApiException(result.ToString());
-            }
+            var accessToken = await GenerateAccessTokenAsync(user);
+            var refreshToken = await GenerateRefreshTokenAsync();
 
-            string jwtToken = await GenerateJWTToken(user);
-
-            RefreshToken? refreshToken = await GenerateRefreshTokenAsync();
-
-            await RemoveExpiredRefreshTokensAsync(user);
+            await RemoveExpiredRefreshTokensAsync(user.Id, CancellationToken.None);
 
             user.RefreshTokens.Add(refreshToken);
 
@@ -94,29 +85,27 @@ namespace FalconeOne.BLL.Services
 
             await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
-            var authResponse = new LoginResponseDto()
+            var response = new LoginResponseDto()
             {
                 Email = user.Email!,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Id = user.Id,
-                JWTToken = jwtToken,
+                AccessToken = accessToken,
                 RefreshToken = refreshToken?.Token!,
                 TenantId = await _tenantService.GetTenantId(),
-                ProfilePicture = user.ProfilePicture is not null ? _identiconProvider.Create(user?.ProfilePicture?.Data).ToBase64() : string.Empty,
+                ProfilePicture = user.ProfilePicture is not null ? GenerateProfilePicture(user?.ProfilePicture?.Data) : string.Empty,
             };
 
-            authResponse.JWTToken = jwtToken;
+            response.AccessToken = accessToken;
 
-            authResponse.RefreshToken = refreshToken?.Token!;
+            response.RefreshToken = refreshToken?.Token!;
 
-            return authResponse;
+            return response;
         }
 
         public async Task<RegisterResponse> RegisterAsync(SignupRequestDto model)
         {
-            var res = _identiconProvider.Create($"{model.FirstName} {model.LastName}");
-
             var newUser = new User()
             {
                 FirstName = model.FirstName,
@@ -127,7 +116,7 @@ namespace FalconeOne.BLL.Services
                 CreatedOn = DateTime.UtcNow,
                 ProfilePicture = new Image
                 {
-                    Data = res.GetBytes(),
+                    Data = GenerateProfilePicture(model.FirstName, model.LastName),
                     Title = $"{model.FirstName}_{model.LastName}_profile"
                 }
             };
@@ -170,7 +159,7 @@ namespace FalconeOne.BLL.Services
 
         public async Task<RefreshAccessTokenResponseDto> GetJWTByRefreshTokenAsync(string refreshToken)
         {
-            User? account = await _userManager.Users.Include(x => x.RefreshTokens).FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
+            User account = await _userManager.Users.Include(x => x.RefreshTokens).FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
 
             if (account is null)
             {
@@ -188,11 +177,11 @@ namespace FalconeOne.BLL.Services
                 throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
             }
 
-            RefreshToken newRefreshToken = await RotateRefreshTokenAsync(token, "");
+            RefreshToken newRefreshToken = await RotateRefreshTokenAsync(token, GetClientIPAddress());
 
             account.RefreshTokens.Add(newRefreshToken);
 
-            await RemoveExpiredRefreshTokensAsync(account);
+            await RemoveExpiredRefreshTokensAsync(account.Id, CancellationToken.None);
 
             var result = await _userManager.UpdateAsync(account);
 
@@ -201,7 +190,7 @@ namespace FalconeOne.BLL.Services
                 throw new ApiException(FormatIdentityErrors(result.Errors));
             }
 
-            string jwtToken = await GenerateJWTToken(account);
+            string jwtToken = await GenerateAccessTokenAsync(account);
 
             var response = new RefreshAccessTokenResponseDto()
             {
@@ -214,7 +203,6 @@ namespace FalconeOne.BLL.Services
         public async Task<bool> ResetPasswordAsync(ResetPasswordRequestDto model)
         {
             var user = await _userManager.FindByIdAsync(model.UserId);
-
 
             if (user is null)
             {
@@ -232,33 +220,7 @@ namespace FalconeOne.BLL.Services
             return result.Succeeded;
         }
 
-        public async Task<bool> RevokeRefreshTokenAsync(string refreshToken)
-        {
-            User? account = await _userManager.Users.FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
 
-            RefreshToken? token = account?.RefreshTokens.FirstOrDefault(x => x.Token == refreshToken);
-
-            if (account is null)
-            {
-                throw new ApiException(ErrorMessages.INVALID_REFRESH_TOKEN);
-            }
-
-            if (!token.IsActive)
-            {
-                throw new ApiException(ErrorMessages.REFRESH_TOKEN_EXPIRED);
-            }
-
-            UpdateRefreshTokenSettings(token, string.Empty, ErrorMessages.REFRESH_TOKEN_REVOKED, string.Empty);
-
-            var result = await _userManager.UpdateAsync(account);
-
-            if (!result.Succeeded)
-            {
-                throw new ApiException(FormatIdentityErrors(result.Errors));
-            }
-
-            return result.Succeeded;
-        }
 
         public async Task<bool> ConfirmEmailAsync(ConfirmEmailRequestDto model)
         {
@@ -283,7 +245,7 @@ namespace FalconeOne.BLL.Services
             return result.Succeeded;
         }
 
-        public async Task<bool> IsUserNameAvailable(string username)
+        public async Task<bool> IsUserNameAvailableAsync(string username)
         {
             if (!string.IsNullOrEmpty(username))
             {
@@ -297,7 +259,7 @@ namespace FalconeOne.BLL.Services
         #endregion
 
         #region Private methods
-        private async Task<string> GenerateJWTToken(User user)
+        private async Task<string> GenerateAccessTokenAsync(User user)
         {
             IList<Claim> claims = await _userManager.GetClaimsAsync(user);
 
@@ -316,6 +278,17 @@ namespace FalconeOne.BLL.Services
 
             return await Task.FromResult(token);
         }
+
+        private byte[] GenerateProfilePicture(string input1, string input2)
+        {
+            return _identiconProvider.Create($"{input1} {input2}").GetBytes();
+        }
+
+        private string GenerateProfilePicture(byte[] data)
+        {
+            return _identiconProvider.Create(data).ToBase64();
+        }
+
         private async Task<RefreshToken> GenerateRefreshTokenAsync()
         {
             RefreshToken refreshToken = await GetRefreshTokenAsync();
@@ -339,30 +312,29 @@ namespace FalconeOne.BLL.Services
             return await Task.FromResult(new RefreshToken
             {
                 Token = Convert.ToHexString(GetRandomBytes(64)),
-                Expires = DateTime.UtcNow.AddDays(double.Parse(await _appConfigService.GetValue("JWT:RefreshTokenValidity"))),
+                Expires = DateTime.UtcNow.AddDays(double.Parse(await _appConfigService.GetValueAsync("JWT:RefreshTokenValidityInDays"))),
                 Created = DateTime.UtcNow,
-                CreatedByIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString(),
+                CreatedByIp = GetClientIPAddress(),
             });
         }
         private byte[] GetRandomBytes(int length)
         {
             return RandomNumberGenerator.GetBytes(length);
         }
-        private async Task RemoveExpiredRefreshTokensAsync(User user)
+
+        private async Task RemoveExpiredRefreshTokensAsync(Guid userId, CancellationToken cancellationToken)
         {
-            double expiry = double.Parse(await _appConfigService.GetValue("JWT:RefreshTokenValidity"));
+            var tokens = await _unitOfWork.RefreshTokenRepository.GetAllAsync(x => x.UserId == userId, cancellationToken);
 
-            var lastRefreshToken = user.RefreshTokens.LastOrDefault();
+            var lastRefreshToken = tokens.LastOrDefault();
 
-            var tokens = user.RefreshTokens.Where(x => x.Id != lastRefreshToken!.Id && !x.IsActive && x.Created.AddMinutes(expiry) <= DateTime.UtcNow);
+            var oldTokens = tokens.Where(x => x.Id != lastRefreshToken!.Id).ToList();
 
-            foreach (var token in tokens)
-            {
-                user.RefreshTokens.Remove(token);
-            }
+            _unitOfWork.RefreshTokenRepository.RemoveRangeAsync(oldTokens);
 
-            await _userManager.UpdateAsync(user);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
+
         private async Task RevokeDescendantRefreshTokensAsync(RefreshToken refreshToken, User user, string ipAddress, string reason)
         {
             if (!string.IsNullOrEmpty(refreshToken.ReplacedByToken))
@@ -382,6 +354,7 @@ namespace FalconeOne.BLL.Services
                 }
             }
         }
+
         private void UpdateRefreshTokenSettings(RefreshToken token, string ipAddress = "", string reason = null, string replacedByToken = null)
         {
             token.Revoked = DateTime.UtcNow;
@@ -389,11 +362,25 @@ namespace FalconeOne.BLL.Services
             token.ReasonRevoked = reason;
             token.ReplacedByToken = replacedByToken;
         }
+
         private async Task<RefreshToken> RotateRefreshTokenAsync(RefreshToken refreshToken, string ipAddress)
         {
             RefreshToken newRefreshToken = await GenerateRefreshTokenAsync();
             UpdateRefreshTokenSettings(refreshToken, ipAddress, ErrorMessages.REPLACED_WITH_NEW_TOKEN, newRefreshToken.Token!);
             return newRefreshToken;
+        }
+
+        private void HandleSignInAction(SignInResult result)
+        {
+            if (result.IsLockedOut)
+            {
+                throw new ApiException(MessageHelper.LoginErrors.ACCOUNT_LOCKED);
+            }
+
+            if (result.IsNotAllowed)
+            {
+                throw new ApiException(MessageHelper.LoginErrors.LOGIN_FAILED);
+            }
         }
         #endregion
     }

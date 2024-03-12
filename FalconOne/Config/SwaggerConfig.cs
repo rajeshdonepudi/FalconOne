@@ -1,6 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 
-namespace FalconOne.API.SwaggerConfig
+namespace FalconOne.API.Config
 {
     public static class SwaggerConfig
     {

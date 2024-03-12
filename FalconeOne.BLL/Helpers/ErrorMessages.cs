@@ -38,6 +38,7 @@
         {
             public static string LOGIN_FAILED = "Login attempt failed.";
             public static string LOGIN_SUCCESSFUL = "Login successful.";
+            public static string ACCOUNT_LOCKED = "You account has been locked out. Please try after minutes.";
         }
 
         public static class GeneralErrors

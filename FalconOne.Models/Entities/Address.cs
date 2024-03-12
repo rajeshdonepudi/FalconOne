@@ -19,7 +19,7 @@ namespace FalconOne.Models.Entities
         public LocationTypeEnum LocationType { get; set; } = LocationTypeEnum.NotSpecified;
         public Guid UserId { get; set; }
         public Guid CountryId { get; set; }
-      
+
         public DateTime? ModifiedOn { get; set; }
         public DateTime CreatedOn { get; set; }
 

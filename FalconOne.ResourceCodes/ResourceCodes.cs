@@ -33,6 +33,14 @@
             public const string HASH_USER_PASSWORD = "HASH_USER_PASSWORD";
             public const string CREATE_NEW_POLICY = "CREATE_NEW_POLICY";
             public const string GET_ROLE = "GET_ROLE";
+            public const string CREATE_ROLE = "CREATE_ROLE";
+            public const string DELETE_ROLE = "DELETE_ROLE";
+            public const string GET_ALL_ROLES = "GET_ALL_ROLES";
+        }
+
+        public static class Logging
+        {
+            public const string VIEW_SECURITY_LOGS = "VIEW_SECURITY_LOGS";
         }
     }
 }

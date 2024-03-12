@@ -1,8 +1,8 @@
-﻿using FalconOne.Models.EntityConfiguration;
+﻿using FalconOne.Models.Contracts;
+using FalconOne.Models.EntityConfiguration;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using FalconOne.Models.Contracts;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FalconOne.Models.Entities
 {

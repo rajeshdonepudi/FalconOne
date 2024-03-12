@@ -6,6 +6,7 @@ using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using System.Net;
 
 namespace FalconeOne.BLL.Services
 {
@@ -29,18 +30,33 @@ namespace FalconeOne.BLL.Services
             _tenantService = tenantService;
         }
 
+        protected string GetClientIPAddress()
+        {
+            string ipAddress = _httpContextAccessor?.HttpContext?.Connection?.RemoteIpAddress?.ToString()!;
+
+            if (IPAddress.TryParse(ipAddress, out var parsedAddress))
+            {
+                if (parsedAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                {
+                    ipAddress = parsedAddress.MapToIPv4().ToString();
+                }
+            }
+
+            return ipAddress;
+        }
+
         public async Task<Guid> GetCurrentTenantId()
         {
 
             if (_httpContextAccessor.HttpContext.User.Identities.Any())
             {
                 var tenant = _httpContextAccessor?.HttpContext?.User?.Identities?
-                                                    .SelectMany(x => x.Claims)
-                                                    .FirstOrDefault(x => x.Type == "TenantId");
+                                                  .SelectMany(x => x.Claims)
+                                                  .FirstOrDefault(x => x.Type == "TenantId");
 
                 var user = _httpContextAccessor?.HttpContext?.User?.Identities?
-                                                    .SelectMany(x => x.Claims)
-                                                    .FirstOrDefault(x => x.Type == "UserId");
+                                                .SelectMany(x => x.Claims)
+                                                .FirstOrDefault(x => x.Type == "UserId");
 
                 if (!string.IsNullOrEmpty(tenant.Value) && !string.IsNullOrEmpty(user.Value))
                 {

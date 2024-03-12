@@ -1,7 +1,7 @@
 ﻿using FalconOne.Security;
 using Microsoft.AspNetCore.Authorization;
 
-namespace FalconOne.API.AuthorizationConfig
+namespace FalconOne.API.Config
 {
     public static class AuthorizationConfig
     {
@@ -40,7 +40,7 @@ namespace FalconOne.API.AuthorizationConfig
 
             foreach (var role in roles)
             {
-                roles.Add(role);
+                allowed.Add(role);
             }
 
             builder.RequireRole(allowed.ToArray());

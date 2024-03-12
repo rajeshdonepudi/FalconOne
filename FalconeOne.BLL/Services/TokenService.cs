@@ -17,7 +17,7 @@ namespace FalconeOne.BLL.Services
 
         public async Task<string> GenerateJWTToken<T, T1>(T type, T1 claims)
         {
-            string secret = await _appConfigService.GetValue("JWT:Secret");
+            string secret = await _appConfigService.GetValueAsync("JWT:Secret");
 
             JwtSecurityTokenHandler tokenHandler = new();
 
@@ -25,9 +25,9 @@ namespace FalconeOne.BLL.Services
 
             SecurityTokenDescriptor tokenDescriptor = new()
             {
-                Audience = await _appConfigService.GetValue("JWT:Audience"),
-                Issuer = await _appConfigService.GetValue("JWT:Issuer"),
-                Expires = DateTime.UtcNow.AddMinutes(double.Parse(await _appConfigService.GetValue("JWT:Expires"))),
+                Audience = await _appConfigService.GetValueAsync("JWT:Audience"),
+                Issuer = await _appConfigService.GetValueAsync("JWT:Issuer"),
+                Expires = DateTime.UtcNow.AddMinutes(double.Parse(await _appConfigService.GetValueAsync("JWT:ExpiresInMinutes"))),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 

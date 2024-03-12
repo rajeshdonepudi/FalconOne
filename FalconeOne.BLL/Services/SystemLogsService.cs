@@ -41,7 +41,8 @@ namespace FalconeOne.BLL.Services
 
         public async Task<PagedList<SystemLog>> GetAllAsync(PageParams pageParams)
         {
-            var res = await _unitOfWork.RequestInformationRepository.GetAllRequestInfoPaginatedAsync(pageParams, CancellationToken.None);
+            var res = await _unitOfWork.RequestInformationRepository
+                                       .GetAllRequestInfoPaginatedAsync(pageParams, CancellationToken.None);
 
             return res;
         }

@@ -73,5 +73,10 @@ namespace FalconOne.DAL
                 _context.Set<T>().UpdateRange(entities);
             });
         }
+
+        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken)
+        {
+            return await _context.Set<T>().Where(expression).ToListAsync(cancellationToken);
+        }
     }
 }

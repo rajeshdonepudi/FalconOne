@@ -8,6 +8,7 @@ using FalconOne.Models.DTOs.Users;
 using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace FalconeOne.BLL.Services
@@ -32,6 +33,36 @@ namespace FalconeOne.BLL.Services
         }
         #endregion
 
+        public async Task<bool> RevokeAccess(string refreshToken)
+        {
+            User? account = await _userManager.Users.FirstOrDefaultAsync(x => x.RefreshTokens.Any(x => x.Token == refreshToken));
+
+            var token = await _unitOfWork.RefreshTokenRepository.FindAsync(x => x.Token == refreshToken, CancellationToken.None);
+
+            if (account is null)
+            {
+                throw new ApiException(ErrorMessages.INVALID_REFRESH_TOKEN);
+            }
+
+            if (!token.IsActive)
+            {
+                throw new ApiException(ErrorMessages.REFRESH_TOKEN_EXPIRED);
+            }
+
+            token.Revoked = DateTime.UtcNow;
+            token.RevokedByIp = GetClientIPAddress();
+            token.ReasonRevoked = ErrorMessages.REFRESH_TOKEN_REVOKED;
+            token.ReplacedByToken = string.Empty;
+
+            var result = await _userManager.UpdateAsync(account);
+
+            if (!result.Succeeded)
+            {
+                throw new ApiException(FormatIdentityErrors(result.Errors));
+            }
+
+            return result.Succeeded;
+        }
         public async Task<bool> DeleteAsync(string userId)
         {
             if (string.IsNullOrEmpty(userId))

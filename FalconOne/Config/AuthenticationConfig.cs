@@ -1,47 +1,13 @@
-﻿using FalconOne.DAL;
+﻿using FalconOne.API.Providers;
+using FalconOne.DAL;
 using FalconOne.Models.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace FalconOne.API.AuthenticationConfig
+namespace FalconOne.API.Config
 {
-    public class FalconOneEmailConfirmationTokenProviderOptions
-   : DataProtectionTokenProviderOptions
-    {
-        public FalconOneEmailConfirmationTokenProviderOptions()
-        {
-            Name = "FalconOneEmailConfirmationTokenProvider";
-            TokenLifespan = TimeSpan.FromMinutes(15);
-        }
-    }
-    public class FalconOneEmailConfirmationTokenProvider<TUser>
-    : DataProtectorTokenProvider<TUser> where TUser : class
-    {
-        private readonly ILogger logger;
-
-        public FalconOneEmailConfirmationTokenProvider(IDataProtectionProvider dataProtectionProvider,
-                                        IOptions<FalconOneEmailConfirmationTokenProviderOptions> options, ILogger<FalconOneEmailConfirmationTokenProvider<TUser>> logger)
-            : base(dataProtectionProvider, options, logger)
-        {
-        }
-        public override Task<string> GenerateAsync(string purpose, UserManager<TUser> manager, TUser user)
-        {
-            return base.GenerateAsync(purpose, manager, user);
-        }
-
-        public override Task<bool> ValidateAsync(string purpose, string token, UserManager<TUser> manager, TUser user)
-        {
-            return base.ValidateAsync(purpose, token, manager, user);
-        }
-        public override Task<bool> CanGenerateTwoFactorTokenAsync(UserManager<TUser> manager, TUser user)
-        {
-            return base.CanGenerateTwoFactorTokenAsync(manager, user);
-        }
-    }
     public static class AuthenticationConfig
     {
         public static void Configure(WebApplicationBuilder builder)
@@ -61,6 +27,11 @@ namespace FalconOne.API.AuthenticationConfig
                 options.SignIn.RequireConfirmedPhoneNumber = false;
                 options.SignIn.RequireConfirmedEmail = true;
                 options.Stores.MaxLengthForKeys = 6;
+                options.SignIn.RequireConfirmedAccount = true;
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+                options.Lockout.MaxFailedAccessAttempts = 3;
+
 
             }).AddEntityFrameworkStores<FalconOneContext>()
               .AddDefaultTokenProviders()

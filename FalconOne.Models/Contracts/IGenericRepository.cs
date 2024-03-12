@@ -8,6 +8,7 @@ namespace FalconOne.Models.Contracts
         Task AddRangeAsync(List<T> entities, CancellationToken cancellationToken);
         Task<T> FindAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken);
         Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken);
+        Task<List<T>> GetAllAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken);
         Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         void RemoveAsync(T entity);
         void RemoveRangeAsync(List<T> entities);

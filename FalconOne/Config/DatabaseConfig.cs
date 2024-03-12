@@ -1,7 +1,7 @@
 ﻿using FalconOne.DAL;
 using Microsoft.EntityFrameworkCore;
 
-namespace FalconOne.API.DatabaseConfig
+namespace FalconOne.API.Config
 {
     public static class DatabaseConfig
     {

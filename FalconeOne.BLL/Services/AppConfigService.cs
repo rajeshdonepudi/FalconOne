@@ -8,6 +8,7 @@ namespace FalconeOne.BLL.Services
     public class AppConfigService : IAppConfigService
     {
         private readonly IConfiguration _configuration;
+
         public AppConfigService(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -18,7 +19,7 @@ namespace FalconeOne.BLL.Services
         /// </summary>
         /// <param name="key"></param>
         /// <returns>string</returns>
-        public async Task<string> GetValue(string key)
+        public async Task<string> GetValueAsync(string key)
         {
             var val = _configuration[key];
 

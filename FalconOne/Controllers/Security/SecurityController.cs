@@ -18,7 +18,7 @@ namespace FalconOne.API.Controllers.Security
         }
 
         [HttpGet("get-role")]
-        [ApiAuthorize(Policy = SecurityPolicies.TENANT_USER_POLICY)]
+        [ApiAuthorize(Policy = SecurityPolicies.TENANT_ADMIN_POLICY)]
         [ResourceIdentifier(ResourceCodes.ResourceIdentifier.Security.GET_ROLE)]
         public async Task<IActionResult> GetRole([FromQuery] string roleId)
         {
@@ -28,6 +28,8 @@ namespace FalconOne.API.Controllers.Security
         }
 
         [HttpPost("create-role")]
+        [ApiAuthorize(Policy = SecurityPolicies.TENANT_ADMIN_POLICY)]
+        [ResourceIdentifier(ResourceCodes.ResourceIdentifier.Security.CREATE_ROLE)]
         public async Task<IActionResult> CreateRole(UserRoleDto model)
         {
             var result = await _securityService.CreateRoleAsync(model);
@@ -38,6 +40,8 @@ namespace FalconOne.API.Controllers.Security
         }
 
         [HttpDelete("delete-role")]
+        [ApiAuthorize(Policy = SecurityPolicies.TENANT_ADMIN_POLICY)]
+        [ResourceIdentifier(ResourceCodes.ResourceIdentifier.Security.DELETE_ROLE)]
         public async Task<IActionResult> DeleteRole(string roleId)
         {
             var result = await _securityService.DeleteRoleAsync(roleId);
@@ -47,7 +51,9 @@ namespace FalconOne.API.Controllers.Security
             return BadRequest();
         }
 
-        [HttpGet("all")]
+        [HttpGet("all-roles")]
+        [ApiAuthorize(Policy = SecurityPolicies.TENANT_ADMIN_POLICY)]
+        [ResourceIdentifier(ResourceCodes.ResourceIdentifier.Security.GET_ALL_ROLES)]
         public async Task<IActionResult> GetRoles()
         {
             var result = await _securityService.GetAllRolesAsync();

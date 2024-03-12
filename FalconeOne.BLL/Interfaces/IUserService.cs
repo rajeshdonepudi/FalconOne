@@ -50,5 +50,7 @@ namespace FalconeOne.BLL.Interfaces
         /// <param name="model"></param>
         /// <returns></returns>
         Task<bool> AddUser(AddUserDto model);
+
+        Task<bool> RevokeAccess(string refreshToken);
     }
 }

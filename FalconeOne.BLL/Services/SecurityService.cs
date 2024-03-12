@@ -74,7 +74,7 @@ namespace FalconeOne.BLL.Services
         {
             var role = await _roleManager.FindByIdAsync(roleId);
 
-            if(role is null)
+            if (role is null)
             {
                 throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }

@@ -22,12 +22,7 @@ namespace FalconeOne.BLL.Interfaces
         /// <param name="refreshToken"></param>
         /// <returns></returns>
         Task<RefreshAccessTokenResponseDto> GetJWTByRefreshTokenAsync(string refreshToken);
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="refreshToken"></param>
-        /// <returns></returns>
-        Task<bool> RevokeRefreshTokenAsync(string refreshToken);
+
         /// <summary>
         /// 
         /// </summary>
@@ -51,6 +46,6 @@ namespace FalconeOne.BLL.Interfaces
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
-        Task<bool> IsUserNameAvailable(string username);
+        Task<bool> IsUserNameAvailableAsync(string username);
     }
 }

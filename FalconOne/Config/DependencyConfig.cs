@@ -6,7 +6,7 @@ using FalconOne.DAL.Contracts;
 using FalconOne.Models.Contracts;
 using Microsoft.AspNetCore.Identity;
 
-namespace FalconOne.API.DependencyConfig
+namespace FalconOne.API.Config
 {
     public static class DependencyConfig
     {

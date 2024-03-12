@@ -61,7 +61,7 @@ namespace FalconOne.DAL
                     });
                 }
 
-                if(!context.Roles.Any())
+                if (!context.Roles.Any())
                 {
                     await context.Roles.AddRangeAsync(GetSecurityRoles());
                     await context.SaveChangesAsync();
@@ -72,7 +72,7 @@ namespace FalconOne.DAL
         public static List<TenantUser> GenerateTenantUsers(int count = 1)
         {
             var tenantUserFaker = new Faker<TenantUser>()
-               .RuleFor(x => x.User, f => GenerateUsers().FirstOrDefault());
+                                      .RuleFor(x => x.User, f => GenerateUsers().FirstOrDefault());
 
             return tenantUserFaker.Generate(count);
         }
@@ -103,8 +103,6 @@ namespace FalconOne.DAL
 
             return roles;
         }
-
-
 
         public static List<User> GenerateUsers(int count = 1)
         {
