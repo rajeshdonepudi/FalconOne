@@ -1,0 +1,10 @@
+{
+    "extends": [
+      "react-app"
+    ],
+    "rules": {
+      "no-unused-vars": "off",
+      "import/first": "off"
+    }
+}
+
