@@ -7,7 +7,6 @@
         public static string USER_CREATED_SUCCESSFULLY = "Successfully created the user.";
         public static string USER_NOT_FOUND = "User not found.";
         public static string USER_CREATION_FAILED = "User creation failed.";
-        public static string LOGIN_SUCCESSFULL = "Login successfull.";
         public static string FAILED_TO_CREATE_USER = "Failed to create the user.";
         public static string FORGOT_PASSWORD_SUCCESS = "Password reset instructions sent to your registered email.";
         public static string RESET_PASSWORD_SUCESS = "Password reset successfull.";
@@ -16,7 +15,6 @@
         public static string INVALID_USER_ID = "Invalid user id.";
         public static string USER_DELETION_FAILED = "Failed to delete the user.";
         public static string USER_DELETED_SUCCESSFULLY = "User deleted successfully.";
-        public static string SUCESSFULL = "Successfull.";
         public static string FAILED_TO_CONFIRM_EMAIL = "Failed to confirm email.";
         public static string PLEASE_CONFIRM_EMAIL = "Email not yet confirmed, please confirm the email.";
         public static string NO_USERS_FOUND = "No users found.";
@@ -34,6 +32,11 @@
 
     public static class MessageHelper
     {
+        public static class SuccessMessages
+        {
+            public static string SUCESSFULL = "Successfull.";
+            public static string LOGIN_SUCCESSFULL = "Login successfull.";
+        }
         public static class LoginErrors
         {
             public static string LOGIN_FAILED = "Login attempt failed.";

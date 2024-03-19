@@ -2,6 +2,7 @@
 using FalconOne.Extensions.EntityFramework;
 using FalconOne.Helpers.Helpers;
 using FalconOne.Models.DTOs.Security;
+using FalconOne.Models.DTOs.Users;
 using FalconOne.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -12,11 +13,26 @@ namespace FalconOne.DAL.Repositories
     {
         public UserRepository(FalconOneContext context, IMemoryCache memoryCache) : base(context, memoryCache) { }
 
-        public async Task<PagedList<User>> GetAllUsersByTenantIdPaginatedAsync(Guid tenantId, PageParams pageParams, CancellationToken cancellationToken)
+        public async Task<PagedList<UserInfoDto>> GetAllUsersByTenantIdPaginatedAsync(Guid tenantId, PageParams pageParams, CancellationToken cancellationToken)
         {
             var result = await _context.Users.Where(x => x.Tenants.Any(x => x.TenantId == tenantId))
                                              .OrderByDescending(x => x.CreatedOn)
                                              .AsNoTracking()
+                                             .AsSplitQuery()
+                                             .Select(u => new UserInfoDto
+                                             {
+                                                 Email = u.Email,
+                                                 LastName = u.LastName,
+                                                 FirstName = u.FirstName,
+                                                 FullName = u.FirstName + " "+ u.LastName,
+                                                 ResourceAlias = u.ResourceAlias,
+                                                 Phone = u.PhoneNumber,
+                                                 IsActive = u.IsActive,
+                                                 EmailConfirmed = u.EmailConfirmed,
+                                                 PhoneNumberConfirmed = u.PhoneNumberConfirmed,
+                                                 LockoutEnabled = u.LockoutEnabled,
+                                                 TwoFactorEnabled = u.TwoFactorEnabled,
+                                             })
                                              .ToPagedListAsync(pageParams);
 
             return result;
@@ -35,6 +51,34 @@ namespace FalconOne.DAL.Repositories
             var user = await _context.Users.Where(x => x.Email == email)
                                            .Include(x => x.ProfilePicture)
                                            .FirstOrDefaultAsync(cancellationToken)!;
+            return user;
+        }
+
+        public async Task<User> GetUserByResourceAlias(string resourceAlias, CancellationToken cancellationToken)
+        {
+            var user = await _context.Users.Where(x => x.ResourceAlias == resourceAlias)
+                                           .FirstOrDefaultAsync(cancellationToken)!;
+            return user;
+        }
+
+
+        public async Task<UserInfoDto> GetUserInfoByResourceAlias(string resourceAlias, CancellationToken cancellationToken)
+        {
+            var user = await _context.Users.Where(x => x.ResourceAlias == resourceAlias)
+                                           .Select(u => new UserInfoDto
+                                           {
+                                               Email = u.Email,
+                                               LastName = u.LastName,
+                                               FirstName = u.FirstName,
+                                               FullName = u.FirstName + " " + u.LastName,
+                                               ResourceAlias = u.ResourceAlias,
+                                               Phone = u.PhoneNumber,
+                                               IsActive = u.IsActive,
+                                               EmailConfirmed = u.EmailConfirmed,
+                                               PhoneNumberConfirmed = u.PhoneNumberConfirmed,
+                                               LockoutEnabled = u.LockoutEnabled,
+                                               TwoFactorEnabled = u.TwoFactorEnabled,
+                                           }).FirstOrDefaultAsync(cancellationToken);
             return user;
         }
 

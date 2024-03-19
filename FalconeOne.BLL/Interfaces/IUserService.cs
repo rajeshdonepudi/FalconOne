@@ -2,7 +2,6 @@
 using FalconOne.Models.DTOs.Account;
 using FalconOne.Models.DTOs.Security;
 using FalconOne.Models.DTOs.Users;
-using FalconOne.Models.Entities;
 
 namespace FalconeOne.BLL.Interfaces
 {
@@ -13,7 +12,7 @@ namespace FalconeOne.BLL.Interfaces
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        Task<PagedList<User>> GetAllAsync(PageParams model);
+        Task<PagedList<UserInfoDto>> GetAllAsync(PageParams model);
         /// <summary>
         /// 
         /// </summary>
@@ -49,7 +48,7 @@ namespace FalconeOne.BLL.Interfaces
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        Task<bool> AddUser(AddUserDto model);
+        Task<bool> UpsertUser(UpsertUserDto model);
 
         Task<bool> RevokeAccess(string refreshToken);
     }

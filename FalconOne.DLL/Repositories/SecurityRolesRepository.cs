@@ -10,14 +10,9 @@ namespace FalconOne.DAL.Repositories
         public SecurityRolesRepository(FalconOneContext falconOneContext,
             IMemoryCache memoryCache) : base(falconOneContext, memoryCache) { }
 
-        public async Task<IEnumerable<KeyValuePair<Guid, string>>> GetTenantSecurityRolesForLookup(CancellationToken cancellationToken)
+        public async Task<IEnumerable<KeyValuePair<Guid, string>>> GetSecurityRolesForLookup(CancellationToken cancellationToken)
         {
             return await _context.Roles.Select(x => new KeyValuePair<Guid, string>(x.Id, x.Name)).ToListAsync(cancellationToken);
-        }
-
-        public Task<IEnumerable<KeyValuePair<Guid, string>>> GetTenantSecurityRolesForLookup(Guid tenantId, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
     }
 }

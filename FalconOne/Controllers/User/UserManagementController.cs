@@ -47,9 +47,9 @@ namespace FalconOne.API.Controllers.User
         [HttpPost("add-user")]
         [ApiAuthorize(Policy = SecurityPolicies.TENANT_ADMIN_POLICY)]
         [ResourceIdentifier(ResourceIdentifier.User.ADD_NEW_USER)]
-        public async Task<IActionResult> AddUser(AddUserDto model)
+        public async Task<IActionResult> AddUser(UpsertUserDto model)
         {
-            var result = await _userService.AddUser(model);
+            var result = await _userService.UpsertUser(model);
 
             if (result)
             {
@@ -79,6 +79,7 @@ namespace FalconOne.API.Controllers.User
         }
 
         [HttpPost("revoke-refresh-token")]
+        [ApiAuthorize(Policy = SecurityPolicies.TENANT_ADMIN_POLICY)]
         [ResourceIdentifier(ResourceIdentifier.Account.REVOKE_REFRESH_TOKEN)]
         public async Task<IActionResult> RevokeRefreshToken(RevokeRefreshTokenRequestDto model)
         {

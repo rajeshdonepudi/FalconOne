@@ -31,6 +31,7 @@ namespace FalconOne.API
             {
                 c.Filters.Add(new AsyncActionFilter());
                 c.Filters.Add<ApiExceptionFilterAttribute>();
+                c.Filters.Add<ApiResponseFilterAttribute>();
             });
 
             builder.Services.AddHttpClient();

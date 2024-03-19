@@ -5,6 +5,6 @@ namespace FalconOne.DAL.Contracts
 {
     public interface ISecurityRolesRepository : IGenericRepository<SecurityRole>
     {
-        Task<IEnumerable<KeyValuePair<Guid, string>>> GetTenantSecurityRolesForLookup(Guid tenantId, CancellationToken cancellationToken);
+        Task<IEnumerable<KeyValuePair<Guid, string>>> GetSecurityRolesForLookup(CancellationToken cancellationToken);
     }
 }

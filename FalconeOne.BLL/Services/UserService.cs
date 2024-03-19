@@ -86,29 +86,17 @@ namespace FalconeOne.BLL.Services
             return result.Succeeded;
         }
 
-        public async Task<PagedList<User>> GetAllAsync(PageParams model)
+        public async Task<PagedList<UserInfoDto>> GetAllAsync(PageParams model)
         {
             if (model is null)
             {
                 throw new ApiException(ErrorMessages.INVALID_REQUEST);
             }
 
-            var result = new List<UserInfoDto>();
-
             var users = await _unitOfWork.UserRepository
                                          .GetAllUsersByTenantIdPaginatedAsync(await _tenantService.GetTenantId(), model, CancellationToken.None);
 
-            foreach (var user in users.Items)
-            {
-                var res = new UserInfoDto
-                {
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.LastName,
-                    Id = user.Id,
-                };
-                result.Add(res);
-            }
+
             return users;
         }
 
@@ -131,7 +119,7 @@ namespace FalconeOne.BLL.Services
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.LastName,
-                Id = user.Id,
+                ResourceAlias = user.ResourceAlias,
             };
 
             return result;
@@ -166,37 +154,78 @@ namespace FalconeOne.BLL.Services
             return result.Succeeded;
         }
 
-        public async Task<bool> AddUser(AddUserDto model)
+        public async Task<bool> UpsertUser(UpsertUserDto model)
         {
-            var newUser = new User()
+            if (!string.IsNullOrEmpty(model.ResourceAlias))
             {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Email = model.Email,
-                CreatedOn = DateTime.UtcNow,
-                IsActive = model.IsActive,
-                EmailConfirmed = model.IsEmailConfirmed,
-                PhoneNumberConfirmed = model.IsPhoneConfirmed,
-                LockoutEnabled = model.IsLockoutEnabled,
-                TwoFactorEnabled = model.IsTwoFactorEnabled,
-                PhoneNumber = model.Phone,
-                UserName = model.UserName,
-                Tenants = new List<TenantUser>
+                var user = await _unitOfWork.UserRepository.GetUserByResourceAlias(model.ResourceAlias, CancellationToken.None);
+
+                if (user is not null)
                 {
-                    new TenantUser
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
+                    user.Email = model.Email;
+                    user.IsActive = model.IsActive;
+                    user.EmailConfirmed = model.EmailConfirmed;
+                    user.PhoneNumberConfirmed = model.PhoneConfirmed;
+                    user.LockoutEnabled = model.LockoutEnabled;
+                    user.TwoFactorEnabled = model.TwoFactorEnabled;
+                    user.PhoneNumber = model.Phone;
+
+                    if(!string.IsNullOrEmpty(model.ConfirmPassword))
                     {
-                        TenantId = await _tenantService.GetTenantId()
+                        var userHasPassword = await _userManager.HasPasswordAsync(user);
+
+                        if(userHasPassword)
+                        {
+                            var passwordChangeResult = await _userManager.ChangePasswordAsync(user, user.PasswordHash, model.ConfirmPassword);
+
+                            if (!passwordChangeResult.Succeeded)
+                            {
+                                throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
+                            }
+                        }
                     }
+
+                    var updateResult = await _userManager.UpdateAsync(user);
+
+                    return updateResult.Succeeded;
                 }
-            };
-
-            var userCreation = await _userManager.CreateAsync(newUser, model.ConfirmPassword);
-
-            if (!userCreation.Succeeded)
-            {
-                throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
             }
-            return userCreation.Succeeded;
+            else
+            {
+                var newUser = new User()
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                    CreatedOn = DateTime.UtcNow,
+                    IsActive = model.IsActive,
+                    EmailConfirmed = model.EmailConfirmed,
+                    PhoneNumberConfirmed = model.PhoneConfirmed,
+                    LockoutEnabled = model.LockoutEnabled,
+                    TwoFactorEnabled = model.TwoFactorEnabled,
+                    PhoneNumber = model.Phone,
+                    UserName = Guid.NewGuid().ToString(),
+                    PasswordHash = model.ConfirmPassword,
+                    Tenants = new List<TenantUser>
+                    {
+                        new TenantUser
+                        {
+                            TenantId = await _tenantService.GetTenantId()
+                        }
+                    }
+                };
+
+                var userCreation = await _userManager.CreateAsync(newUser, model.ConfirmPassword);
+
+                if (!userCreation.Succeeded)
+                {
+                    throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
+                }
+                return userCreation.Succeeded;
+            }
+            return false;
         }
 
         public async Task<UserManagementDashboardInfoDto> GetDashboardInfo()

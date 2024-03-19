@@ -17,7 +17,6 @@ namespace FalconOne.API.Controllers.System
         }
 
         [HttpPost("hash-password")]
-        [AllowAnonymous]
         [ResourceIdentifier(ResourceCodes.ResourceIdentifier.Settings.HASH_PASSWORD)]
         public async Task<IActionResult> HashPassword(string password)
         {

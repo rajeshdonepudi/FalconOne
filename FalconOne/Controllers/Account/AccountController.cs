@@ -66,7 +66,7 @@ namespace FalconOne.API.Controllers.Account
         {
             var response = await _accountService.GetJWTByRefreshTokenAsync(model.RefreshToken);
 
-            return BadRequest(response);
+            return Ok(response);
         }
 
         [HttpPost("username-available")]
