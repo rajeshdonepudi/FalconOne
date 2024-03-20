@@ -26,5 +26,6 @@ namespace FalconOne.Models.Entities
 
         public bool IsDeleted { get; set; }
         public virtual ICollection<TenantUserRole> TenantUserRoles { get; set; }
+        public DateTime DeletedOn { get; set; }
     }
 }

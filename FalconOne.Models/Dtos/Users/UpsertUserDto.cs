@@ -12,13 +12,13 @@ namespace FalconOne.Models.DTOs.Users
         [EmailAddress(ErrorMessage = "Invalid email.")]
         public required string Email { get; set; }
         public string? Phone { get; set; }
-        [Required(ErrorMessage = "Password is required.")]
+        //[Required(ErrorMessage = "Password is required.")]
         [MinLength(8)]
-        public required string Password { get; set; }
+        public string? Password { get; set; }
         [MinLength(8)]
-        [Required(ErrorMessage = "Confirm password is required.")]
+        //[Required(ErrorMessage = "Confirm password is required.")]
         [Compare("Password", ErrorMessage = "Password and Confirm password should match.")]
-        public required string ConfirmPassword { get; set; }
+        public string? ConfirmPassword { get; set; }
         public bool EmailConfirmed { get; set; } = false;
         public bool PhoneConfirmed { get; set; } = false;
         public bool LockoutEnabled { get; set; } = false;

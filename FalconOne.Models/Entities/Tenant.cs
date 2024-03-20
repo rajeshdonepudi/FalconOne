@@ -28,5 +28,6 @@ namespace FalconOne.Models.Entities
         public Image? ProfilePicture { get; set; }
         public virtual ICollection<TenantUser> Users { get; set; }
         public bool IsDeleted { get; set; }
+        public DateTime DeletedOn { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using FalconOne.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FalconOne.DAL.Migrations
 {
     [DbContext(typeof(FalconOneContext))]
-    partial class FalconOneContextModelSnapshot : ModelSnapshot
+    [Migration("20240320043118_AddedSoftDeletable")]
+    partial class AddedSoftDeletable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -274,7 +277,7 @@ namespace FalconOne.DAL.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("nvarchar(max)")
-                        .HasComputedColumnSql("CONVERT(NVARCHAR(max), 20240320050104133) + '-FALO_TEN' + CAST([AccountId] AS NVARCHAR(max))");
+                        .HasComputedColumnSql("CONVERT(NVARCHAR(max), 20240320043116925) + '-FALO_TEN' + CAST([AccountId] AS NVARCHAR(max))");
 
                     b.Property<int>("AccountId")
                         .ValueGeneratedOnAdd()
@@ -283,9 +286,6 @@ namespace FalconOne.DAL.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AccountId"));
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DeletedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Host")
@@ -318,9 +318,6 @@ namespace FalconOne.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("DeletedOn")
-                        .HasColumnType("datetime2");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -344,9 +341,6 @@ namespace FalconOne.DAL.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("DeletedOn")
-                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -386,9 +380,6 @@ namespace FalconOne.DAL.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DeletedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -460,7 +451,7 @@ namespace FalconOne.DAL.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("nvarchar(max)")
-                        .HasComputedColumnSql("CONVERT(NVARCHAR(max), 20240320050104133) + '-FALO_USR' + CAST([ResourceId] AS NVARCHAR(max))");
+                        .HasComputedColumnSql("CONVERT(NVARCHAR(max), 20240320043116925) + '-FALO_USR' + CAST([ResourceId] AS NVARCHAR(max))");
 
                     b.Property<int>("ResourceId")
                         .ValueGeneratedOnAdd()

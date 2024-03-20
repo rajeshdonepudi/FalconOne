@@ -31,6 +31,7 @@ import RouteGuard from "../guards/RouteGuard";
 import AuthUtilities from "../utilities/AuthUtilities";
 import { useDispatch } from "react-redux";
 import { logout } from "../store/Slices/authSlice";
+import { ToastContainer } from "react-toastify";
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -382,6 +383,18 @@ export default function DashboardLayout() {
           <DrawerHeader />
 
           {(<RouteGuard />) as any}
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
         </Box>
       </Box>
     </Box>

@@ -20,5 +20,6 @@ namespace FalconOne.Models.Entities
         public virtual SecurityRole SecurityRole { get; set; }
 
         public bool IsDeleted { get; set; }
+        public DateTime DeletedOn { get; set; }
     }
 }

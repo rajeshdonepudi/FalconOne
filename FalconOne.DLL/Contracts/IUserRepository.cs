@@ -16,5 +16,7 @@ namespace FalconOne.DAL.Contracts
         Task<UserInfoDto> GetUserInfoByResourceAlias(string resourceAlias, CancellationToken cancellationToken);
         Task<UserManagementDashboardInfoDto> GetUserManagementDashboardInfoByTenantId(Guid tenantId, CancellationToken cancellationToken);
         Task<List<SecurityRole>> GetUserRoles(Guid tenantId, Guid userId, CancellationToken cancellationToken);
+        Task<PagedList<UserInfoDto>> GetAllActiveUsersByTenantIdPaginatedAsync(Guid tenantId, PageParams pageParams, CancellationToken cancellationToken);
+        Task<IEnumerable<UserCreatedByYearDTO>> UserCreatedByYear();
     }
 }

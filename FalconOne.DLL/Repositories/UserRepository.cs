@@ -15,7 +15,7 @@ namespace FalconOne.DAL.Repositories
 
         public async Task<PagedList<UserInfoDto>> GetAllUsersByTenantIdPaginatedAsync(Guid tenantId, PageParams pageParams, CancellationToken cancellationToken)
         {
-            var result = await _context.Users.Where(x => x.Tenants.Any(x => x.TenantId == tenantId))
+            var result = await _context.Users.Where(x => !x.IsDeleted && x.Tenants.Any(x => x.TenantId == tenantId))
                                              .OrderByDescending(x => x.CreatedOn)
                                              .AsNoTracking()
                                              .AsSplitQuery()
@@ -25,6 +25,31 @@ namespace FalconOne.DAL.Repositories
                                                  LastName = u.LastName,
                                                  FirstName = u.FirstName,
                                                  FullName = u.FirstName + " "+ u.LastName,
+                                                 ResourceAlias = u.ResourceAlias,
+                                                 Phone = u.PhoneNumber,
+                                                 IsActive = u.IsActive,
+                                                 EmailConfirmed = u.EmailConfirmed,
+                                                 PhoneNumberConfirmed = u.PhoneNumberConfirmed,
+                                                 LockoutEnabled = u.LockoutEnabled,
+                                                 TwoFactorEnabled = u.TwoFactorEnabled,
+                                             })
+                                             .ToPagedListAsync(pageParams);
+
+            return result;
+        }
+
+        public async Task<PagedList<UserInfoDto>> GetAllActiveUsersByTenantIdPaginatedAsync(Guid tenantId, PageParams pageParams, CancellationToken cancellationToken)
+        {
+            var result = await _context.Users.Where(x => x.IsActive && !x.IsDeleted && x.Tenants.Any(x => x.TenantId == tenantId))
+                                             .OrderByDescending(x => x.CreatedOn)
+                                             .AsNoTracking()
+                                             .AsSplitQuery()
+                                             .Select(u => new UserInfoDto
+                                             {
+                                                 Email = u.Email,
+                                                 LastName = u.LastName,
+                                                 FirstName = u.FirstName,
+                                                 FullName = u.FirstName + " " + u.LastName,
                                                  ResourceAlias = u.ResourceAlias,
                                                  Phone = u.PhoneNumber,
                                                  IsActive = u.IsActive,
@@ -85,7 +110,7 @@ namespace FalconOne.DAL.Repositories
         public async Task<UserManagementDashboardInfoDto> GetUserManagementDashboardInfoByTenantId(Guid tenantId, CancellationToken cancellationToken)
         {
             var query = _context.Users.AsQueryable()
-                                      .Where(x => x.Tenants.Any(x => x.TenantId == tenantId));
+                                      .Where(x => !x.IsDeleted && x.Tenants.Any(x => x.TenantId == tenantId));
 
             var info = new UserManagementDashboardInfoDto();
 
@@ -97,6 +122,17 @@ namespace FalconOne.DAL.Repositories
             info.UnVerifiedUsers = await query.CountAsync(x => !x.EmailConfirmed);
 
             return info;
+        }
+
+        public async Task<IEnumerable<UserCreatedByYearDTO>> UserCreatedByYear()
+        {
+            var result = await _context.Users.GroupBy(x => x.CreatedOn.Year).Select(x => new UserCreatedByYearDTO
+            {
+                Year = x.Key,
+                TotalUsers = x.Count()
+            }).OrderBy(x => x.Year).ToListAsync();
+
+            return result;
         }
 
         public async Task<List<SecurityRole>> GetUserRoles(Guid tenantId, Guid userId, CancellationToken cancellationToken)

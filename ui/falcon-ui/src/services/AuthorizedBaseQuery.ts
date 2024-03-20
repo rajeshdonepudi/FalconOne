@@ -22,7 +22,7 @@ const baseQuery = retry(
     },
   }),
   {
-    maxRetries: 2,
+    maxRetries: 0,
   }
 );
 

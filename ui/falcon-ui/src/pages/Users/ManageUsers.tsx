@@ -12,8 +12,10 @@ import AppModal from "@ui-components/AppModal";
 import { UserActions } from "@/enumerations/Users/user-actions.enum";
 import { AppModalState } from "@models/Common/ModalState";
 import {
+  useDeleteUserMutation,
   useGetAllUsersQuery,
   useGetUserManagementDashboardInfoQuery,
+  useGetUsersCreatedByYearQuery,
   useUpsertUserMutation,
 } from "@services/User/UserManagementService";
 import UpsertUserForm from "@/components/features/Users/UpsertUserForm";
@@ -26,6 +28,18 @@ import { IconButton, Tooltip } from "@mui/material";
 import { UpsertUserModel } from "@/models/Users/UserModel";
 import AppDataGrid from "@/components/ui-components/AppDataGrid";
 import UpsertUserValidationScheme from "@/validation-schemes/Users/UpsertUserValidationScheme";
+import { toast } from "react-toastify";
+import {
+  CartesianGrid,
+  LineChart,
+  XAxis,
+  YAxis,
+  Tooltip as CTooltip,
+  Legend,
+  Line,
+  PieChart,
+  Pie,
+} from "recharts";
 
 const PermIdentityOutlinedIcon = lazy(
   () => import("@mui/icons-material/PermIdentityOutlined")
@@ -67,6 +81,7 @@ const ManageUsers = () => {
    * Queries
    */
   const { data: dashboardInfo } = useGetUserManagementDashboardInfoQuery(null);
+  const { data: usersCreated } = useGetUsersCreatedByYearQuery(null);
   const { data, isFetching } = useGetAllUsersQuery(paginationModel);
 
   const usersData = useMemo(() => {
@@ -77,6 +92,7 @@ const ManageUsers = () => {
    * Mutations
    */
   const [upsertUserMutation] = useUpsertUserMutation();
+  const [deleteUserMutation] = useDeleteUserMutation();
 
   /***
    * Event handlers
@@ -105,10 +121,27 @@ const ManageUsers = () => {
     });
   };
 
+  const showMessage = () => {
+    switch (pageActionsState.actionId) {
+      case UserActions.ADD_USER:
+        toast("User created successfully.");
+        break;
+      case UserActions.EDIT_USER:
+        toast("User updated successfully.");
+        break;
+      case UserActions.DELETE_USER:
+        toast("User deleted successfully");
+        break;
+    }
+  };
+
   const handleSubmit = (values: UpsertUserModel) => {
     console.log("form values", values);
     upsertUserMutation(values)
       .unwrap()
+      .then(() => {
+        showMessage();
+      })
       .then(() => {
         handleModalClose();
       });
@@ -128,31 +161,31 @@ const ManageUsers = () => {
       twoFactorEnabled: false,
       lockoutEnabled: false,
     },
-    validationSchema: UpsertUserValidationScheme,
+    validationSchema: UpsertUserValidationScheme(pageActionsState.actionId),
     onSubmit: handleSubmit,
   });
 
   const handleOk = () => {
-    formik.submitForm();
+    switch (pageActionsState.actionId) {
+      case UserActions.ADD_USER:
+      case UserActions.EDIT_USER:
+        formik.submitForm();
+        break;
+      case UserActions.DELETE_USER:
+        deleteUserMutation(pageActionsState.data.resourceAlias)
+          .unwrap()
+          .then(() => {
+            showMessage();
+          })
+          .then(() => {
+            handleModalClose();
+          });
+        break;
+    }
   };
 
   const onEditUser = (data: UpsertUserModel) => {
-    // formik.setValues({
-    //   firstName: data.firstName,
-    //   lastName: data.lastName,
-    //   email: data.email,
-    //   emailConfirmed: false,
-    //   phoneNumberConfirmed: false,
-    //   password: "",
-    //   id: "",
-    //   phone: "",
-    //   confirmPassword: "",
-    //   twoFactorEnabled: false,
-    //   lockoutEnabled: false,
-    // });
-
     formik.setValues(data);
-
     setPageActionsState({
       actionId: UserActions.EDIT_USER,
       title: `${commonLocale("update")} ${commonLocale("user")}`,
@@ -162,11 +195,11 @@ const ManageUsers = () => {
     });
   };
 
-  const onDeleteUser = (id: any) => {
+  const onDeleteUser = (resourceAlias: string) => {
     setPageActionsState({
       actionId: UserActions.DELETE_USER,
       title: `${commonLocale("delete")} ${commonLocale("user")}`,
-      data: { userId: id },
+      data: { resourceAlias },
       visible: true,
       okButtonText: commonLocale("delete"),
     });
@@ -225,7 +258,7 @@ const ManageUsers = () => {
               </Tooltip>
               <Tooltip title="Delete user">
                 <IconButton
-                  onClick={() => onDeleteUser(params.row.id)}
+                  onClick={() => onDeleteUser(params.row.resourceAlias)}
                   aria-label="Example"
                 >
                   <DeleteOutlineOutlinedIcon sx={{ color: "darkred" }} />
@@ -371,6 +404,54 @@ const ManageUsers = () => {
                     </Typography>
                   </Stack>
                 </AppCard>
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <Grid container gap={2}>
+                  <Grid item md={3} xs={12}>
+                    <AppCard>
+                      <LineChart
+                        width={300}
+                        height={300}
+                        data={usersCreated?.data as any}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                          name="Year"
+                          dataKey="year"
+                          padding={{ left: 30, right: 30 }}
+                        />
+                        <YAxis />
+                        <CTooltip />
+                        <Legend />
+
+                        <Line
+                          type="monotone"
+                          dataKey="totalUsers"
+                          stroke="#8884d8"
+                          activeDot={{ r: 8 }}
+                        />
+                      </LineChart>
+                    </AppCard>
+                  </Grid>
+                  <Grid item md={3} xs={12}>
+                    <AppCard>
+                      <PieChart width={400} height={400}>
+                        <Pie
+                          nameKey="year"
+                          dataKey="totalUsers"
+                          isAnimationActive={false}
+                          data={usersCreated?.data as any}
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={80}
+                          fill="#8884d8"
+                          label
+                        />
+                        <CTooltip />
+                      </PieChart>
+                    </AppCard>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>

@@ -12,7 +12,7 @@ namespace FalconeOne.BLL.Interfaces
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        Task<PagedList<UserInfoDto>> GetAllAsync(PageParams model);
+        Task<PagedList<UserInfoDto>> GetAllActiveAsync(PageParams model);
         /// <summary>
         /// 
         /// </summary>
@@ -34,12 +34,6 @@ namespace FalconeOne.BLL.Interfaces
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        Task<bool> DeleteAsync(string userId);
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         Task<bool> AddUserToRoleAsync(AddToRoleDto model);
@@ -51,5 +45,14 @@ namespace FalconeOne.BLL.Interfaces
         Task<bool> UpsertUser(UpsertUserDto model);
 
         Task<bool> RevokeAccess(string refreshToken);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="resourceAlias"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<bool> DeleteUserAsync(string resourceAlias, CancellationToken cancellationToken);
+
+        Task<IEnumerable<UserCreatedByYearDTO>> UserCreatedByYears();
     }
 }

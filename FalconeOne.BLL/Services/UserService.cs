@@ -63,30 +63,26 @@ namespace FalconeOne.BLL.Services
 
             return result.Succeeded;
         }
-        public async Task<bool> DeleteAsync(string userId)
+
+        public async Task<bool> DeleteUserAsync(string resourceAlias, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(userId))
+            var user = await _unitOfWork.UserRepository.GetUserByResourceAlias(resourceAlias, cancellationToken);
+
+            if(user is null)
             {
-                throw new ApiException(ErrorMessages.INVALID_REQUEST);
+                throw new ApiException("User deleted successfully.");
             }
 
-            User? user = await _userManager.FindByIdAsync(userId);
+            user.IsDeleted = true;
+            user.IsActive = false;
+            user.DeletedOn = DateTime.UtcNow;
 
-            if (user is null)
-            {
-                throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
-            }
+            var result = await _userManager.UpdateAsync(user);
 
-            var result = await _userManager.DeleteAsync(user);
-
-            if (!result.Succeeded)
-            {
-                throw new ApiException(FormatIdentityErrors(result.Errors));
-            }
             return result.Succeeded;
         }
 
-        public async Task<PagedList<UserInfoDto>> GetAllAsync(PageParams model)
+        public async Task<PagedList<UserInfoDto>> GetAllActiveAsync(PageParams model)
         {
             if (model is null)
             {
@@ -94,7 +90,7 @@ namespace FalconeOne.BLL.Services
             }
 
             var users = await _unitOfWork.UserRepository
-                                         .GetAllUsersByTenantIdPaginatedAsync(await _tenantService.GetTenantId(), model, CancellationToken.None);
+                                         .GetAllActiveUsersByTenantIdPaginatedAsync(await _tenantService.GetTenantId(), model, CancellationToken.None);
 
 
             return users;
@@ -174,17 +170,7 @@ namespace FalconeOne.BLL.Services
 
                     if(!string.IsNullOrEmpty(model.ConfirmPassword))
                     {
-                        var userHasPassword = await _userManager.HasPasswordAsync(user);
-
-                        if(userHasPassword)
-                        {
-                            var passwordChangeResult = await _userManager.ChangePasswordAsync(user, user.PasswordHash, model.ConfirmPassword);
-
-                            if (!passwordChangeResult.Succeeded)
-                            {
-                                throw new ApiException(ErrorMessages.SOMETHING_WENT_WRONG);
-                            }
-                        }
+                        user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.ConfirmPassword);
                     }
 
                     var updateResult = await _userManager.UpdateAsync(user);
@@ -233,6 +219,13 @@ namespace FalconeOne.BLL.Services
             var result = await _unitOfWork.UserRepository.GetUserManagementDashboardInfoByTenantId(await _tenantService.GetTenantId(), CancellationToken.None);
 
             return result;
+        }
+
+        public async Task<IEnumerable<UserCreatedByYearDTO>> UserCreatedByYears()
+        {
+            var user = await _unitOfWork.UserRepository.UserCreatedByYear();
+
+            return user;
         }
     }
 }

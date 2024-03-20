@@ -23,6 +23,7 @@
         public static class User
         {
             public const string ADD_NEW_USER = "ADD_NEW_USER";
+            public const string DELETE_USER = "DELETE_USER";
             public const string USER_MANAGMENT_DASHBOARD = "USER_MANAGEMENT_DASHBOARD";
         }
 

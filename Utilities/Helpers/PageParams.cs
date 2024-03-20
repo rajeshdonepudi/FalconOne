@@ -3,9 +3,9 @@
     public class PageParams
     {
         const int maxPageSize = 50;
-        private int _pageIndex = 0;
+        private int _pageIndex = 1;
 
-        public int PageIndex
+        public int Page
         {
             get
             {

@@ -1,5 +1,10 @@
 ﻿namespace FalconOne.Models.DTOs.Security
 {
+    public record UserCreatedByYearDTO
+    {
+        public long Year { get; set; }
+        public long TotalUsers { get; set; }
+    }
     public record UserManagementDashboardInfoDto
     {
         public long TotalUsers { get; set; }

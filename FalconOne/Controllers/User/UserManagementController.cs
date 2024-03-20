@@ -58,12 +58,26 @@ namespace FalconOne.API.Controllers.User
             return BadRequest();
         }
 
+        [HttpDelete("delete-user/{resourceAlias}")]
+        [ApiAuthorize(Policy = SecurityPolicies.TENANT_ADMIN_POLICY)]
+        [ResourceIdentifier(ResourceIdentifier.User.DELETE_USER)]
+        public async Task<IActionResult> DeleteUser(string resourceAlias)
+        {
+            var result = await _userService.DeleteUserAsync(resourceAlias, CancellationToken.None);
+
+            if (result)
+            {
+                return Ok(result);
+            }
+            return BadRequest();
+        }
+
         [HttpPost("all-users")]
         [ApiAuthorize(Policy = SecurityPolicies.TENANT_ADMIN_POLICY)]
         [ResourceIdentifier(ResourceIdentifier.Account.GET_USER)]
         public async Task<IActionResult> GetAllUsers(PageParams model)
         {
-            var response = await _userService.GetAllAsync(model);
+            var response = await _userService.GetAllActiveAsync(model);
 
             return Ok(response);
         }
@@ -90,6 +104,14 @@ namespace FalconOne.API.Controllers.User
                 return Ok();
             }
             return BadRequest();
+        }
+
+        [HttpGet("user-created-year")]
+        [ApiAuthorize(Policy = SecurityPolicies.TENANT_ADMIN_POLICY)]
+        [ResourceIdentifier(ResourceIdentifier.Account.REVOKE_REFRESH_TOKEN)]
+        public async Task<IActionResult> UserCreatedByYear()
+        {
+            return Ok(await _userService.UserCreatedByYears());
         }
     }
 }

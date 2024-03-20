@@ -6,10 +6,12 @@ import { UserManagementDashboardInfoModel } from "@models/Users/DashboardInfoMod
 import { UpsertUserModel, UserModel } from "@models/Users/UserModel";
 import AuthorizedBaseQuery from "../AuthorizedBaseQuery";
 import UserManagementEndpoints from "@/endpoints/User/UserManagementEndpoints";
+import { UserCreatedByYear } from "@/models/Users/reports/UsersCreatedByYear";
 
 const userManagementTags = {
   manageUserList: "USER_MANAGEMENT_USERS_LIST",
   userManagementDashboardInfo: "USER_MANAGEMENT_DASHBOARD_INFO",
+  userCreatedByYear: "users-created-by-year",
 };
 
 export const userManagementAPI = createApi({
@@ -18,6 +20,7 @@ export const userManagementAPI = createApi({
   tagTypes: [
     userManagementTags.manageUserList,
     userManagementTags.userManagementDashboardInfo,
+    userManagementTags.userCreatedByYear,
   ],
   endpoints: (builder) => ({
     getAllUsers: builder.query<ApiResponse<PagedList<UserModel[]>>, PageParams>(
@@ -52,11 +55,29 @@ export const userManagementAPI = createApi({
         userManagementTags.userManagementDashboardInfo,
       ],
     }),
+    deleteUser: builder.mutation<ApiResponse<boolean>, string>({
+      query: (resourceAlias: string) => ({
+        url: UserManagementEndpoints.deleteUser(resourceAlias),
+        method: "DELETE",
+      }),
+      invalidatesTags: [
+        userManagementTags.manageUserList,
+        userManagementTags.userManagementDashboardInfo,
+      ],
+    }),
+    getUsersCreatedByYear: builder.query<ApiResponse<UserCreatedByYear>, null>({
+      query: () => ({
+        url: UserManagementEndpoints.userCreatedByYear,
+      }),
+      providesTags: [userManagementTags.userCreatedByYear],
+    }),
   }),
 });
 
 export const {
   useGetAllUsersQuery,
   useUpsertUserMutation,
+  useDeleteUserMutation,
   useGetUserManagementDashboardInfoQuery,
+  useGetUsersCreatedByYearQuery,
 } = userManagementAPI;

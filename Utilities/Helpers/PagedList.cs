@@ -10,7 +10,7 @@
 
         public PagedList(List<T> items, PageParams model, int totalItems)
         {
-            PageIndex = model.PageIndex;
+            PageIndex = model.Page;
             PageSize = model.PageSize;
             TotalItems = totalItems;
             Items = items;

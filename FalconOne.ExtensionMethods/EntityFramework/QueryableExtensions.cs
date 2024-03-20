@@ -9,7 +9,12 @@ namespace FalconOne.Extensions.EntityFramework
         {
             var totalItems = await query.CountAsync();
 
-            var items = await query.Skip(((model.PageIndex + 1) - 1) * model.PageSize)
+            if(model.Page == 0)
+            {
+                model.Page = 1;
+            }
+
+            var items = await query.Skip(((model.Page) - 1) * model.PageSize)
                                    .Take(model.PageSize)
                                    .ToListAsync();
 
