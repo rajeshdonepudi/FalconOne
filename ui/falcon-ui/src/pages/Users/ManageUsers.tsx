@@ -39,6 +39,12 @@ import {
   Line,
   PieChart,
   Pie,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  Rectangle,
+  Label,
+  Cell,
 } from "recharts";
 
 const PermIdentityOutlinedIcon = lazy(
@@ -286,6 +292,29 @@ const ManageUsers = () => {
     }
   };
 
+  const COLORS = [
+    "#008DDA",
+    "#41C9E2",
+    "#ACE2E1",
+    "#F7EEDD",
+    "#007F73",
+    "#4CCD99",
+    "#FFC700",
+    "#FFF455",
+    "#FF407D",
+    "#FFCAD4",
+    "#40679E",
+    "#1B3C73",
+    "#B1B2FF",
+    "#AAC4FF",
+    "#6096B4",
+  ];
+
+  const getRandomColor = () => {
+    let num = Math.floor(Math.random() * COLORS.length);
+    return COLORS[num];
+  };
+
   return (
     <>
       <AppLazyLoader>
@@ -405,50 +434,106 @@ const ManageUsers = () => {
                   </Stack>
                 </AppCard>
               </Grid>
-              <Grid item xs={12} md={12}>
-                <Grid container gap={2}>
-                  <Grid item md={3} xs={12}>
-                    <AppCard>
-                      <LineChart
-                        width={300}
+              <Grid item md={6}>
+                <AppCard>
+                  <div style={{ width: "100%", height: 250 }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        width={500}
                         height={300}
                         data={usersCreated?.data as any}
+                        margin={{
+                          top: 5,
+                          right: 30,
+                          left: 20,
+                          bottom: 5,
+                        }}
                       >
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis
-                          name="Year"
-                          dataKey="year"
-                          padding={{ left: 30, right: 30 }}
+                        <XAxis name="Year" dataKey="year" />
+                        <YAxis
+                          label={{
+                            value: "Total Users Created",
+                            angle: -90,
+                            position: "insideBottomLeft",
+                          }}
                         />
-                        <YAxis />
                         <CTooltip />
                         <Legend />
-
-                        <Line
-                          type="monotone"
-                          dataKey="totalUsers"
-                          stroke="#8884d8"
-                          activeDot={{ r: 8 }}
-                        />
-                      </LineChart>
+                        <Bar name="Year" dataKey="totalUsers" fill="#8884d8">
+                          {COLORS.map((entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={COLORS[index % COLORS.length]}
+                            />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </AppCard>
+              </Grid>
+              <Grid item md={12}>
+                <Grid container spacing={0.8}>
+                  <Grid item md={6} xs={12}>
+                    <AppCard>
+                      <div style={{ width: "100%", height: 250 }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                          <LineChart data={usersCreated?.data as any}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis
+                              name="Year"
+                              dataKey="year"
+                              // padding={{ left: 30, right: 30 }}
+                            />
+                            <YAxis
+                              label={{
+                                value: "Total Users Created",
+                                angle: -90,
+                                position: "insideBottomLeft",
+                              }}
+                            />
+                            <CTooltip />
+                            <Legend />
+                            <Line
+                              name="Year"
+                              type="monotone"
+                              dataKey="totalUsers"
+                              stroke={"#00ADB5"}
+                              activeDot={{ r: 8 }}
+                            />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
                     </AppCard>
                   </Grid>
-                  <Grid item md={3} xs={12}>
+                  <Grid item md={6} xs={12}>
                     <AppCard>
-                      <PieChart width={400} height={400}>
-                        <Pie
-                          nameKey="year"
-                          dataKey="totalUsers"
-                          isAnimationActive={false}
-                          data={usersCreated?.data as any}
-                          cx="50%"
-                          cy="50%"
-                          outerRadius={80}
-                          fill="#8884d8"
-                          label
-                        />
-                        <CTooltip />
-                      </PieChart>
+                      <div style={{ width: "100%", height: 250 }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart width={400} height={400}>
+                            <Pie
+                              nameKey="year"
+                              dataKey="totalUsers"
+                              isAnimationActive={false}
+                              data={usersCreated?.data as any}
+                              cx="50%"
+                              cy="50%"
+                              outerRadius={80}
+                              fill="#008DDA"
+                              label
+                            >
+                              {COLORS.map((entry, index) => (
+                                <Cell
+                                  key={`cell-${index}`}
+                                  fill={COLORS[index % COLORS.length]}
+                                />
+                              ))}
+                            </Pie>
+                            <CTooltip />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </div>
                     </AppCard>
                   </Grid>
                 </Grid>

@@ -53,6 +53,7 @@ export const userManagementAPI = createApi({
       invalidatesTags: [
         userManagementTags.manageUserList,
         userManagementTags.userManagementDashboardInfo,
+        userManagementTags.userCreatedByYear,
       ],
     }),
     deleteUser: builder.mutation<ApiResponse<boolean>, string>({
@@ -63,6 +64,7 @@ export const userManagementAPI = createApi({
       invalidatesTags: [
         userManagementTags.manageUserList,
         userManagementTags.userManagementDashboardInfo,
+        userManagementTags.userCreatedByYear,
       ],
     }),
     getUsersCreatedByYear: builder.query<ApiResponse<UserCreatedByYear>, null>({

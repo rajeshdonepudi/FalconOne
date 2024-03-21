@@ -130,7 +130,7 @@ namespace FalconOne.DAL.Repositories
             {
                 Year = x.Key,
                 TotalUsers = x.Count()
-            }).OrderBy(x => x.Year).ToListAsync();
+            }).OrderByDescending(x => x.Year).Take(10).ToListAsync();
 
             return result;
         }
